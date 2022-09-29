@@ -1,5 +1,6 @@
 package jp.unaguna.mappedftp;
 
+import jp.unaguna.mappedftp.filesystem.ReadOnlyFileSystemFactory;
 import org.apache.ftpserver.FtpServer;
 import org.apache.ftpserver.FtpServerFactory;
 import org.apache.ftpserver.ftplet.FtpException;
@@ -17,6 +18,8 @@ public class ReadOnlyServer {
 
         UserManager userManager = ftpServerFactory.getUserManager();
         userManager.save(anonymous);
+
+        ftpServerFactory.setFileSystem(new ReadOnlyFileSystemFactory());
 
         FtpServer server = ftpServerFactory.createServer();
         server.start();
