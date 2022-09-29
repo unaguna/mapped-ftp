@@ -1,4 +1,4 @@
-package jp.unaguna.mappedftp.filesystem;
+package jp.unaguna.mappedftp.filesystem.tree;
 
 import java.io.InputStream;
 import java.io.OutputStream;
