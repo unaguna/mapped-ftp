@@ -4,6 +4,10 @@ import org.apache.ftpserver.ftplet.FileSystemView;
 import org.apache.ftpserver.ftplet.FtpException;
 import org.apache.ftpserver.ftplet.FtpFile;
 
+import java.nio.file.NoSuchFileException;
+import java.nio.file.NotDirectoryException;
+import java.nio.file.Paths;
+
 public class FileTreeSystemView implements FileSystemView {
     private final FileTreeNode root;
     private FileTreeNode workingDirectory;
@@ -25,16 +29,24 @@ public class FileTreeSystemView implements FileSystemView {
 
     @Override
     public boolean changeWorkingDirectory(String dir) throws FtpException {
-        // TODO: 実装
-        return false;
+        final FileTreeNode node;
+        try {
+            node = pathToNode(dir);
+        } catch (NotDirectoryException | NoSuchFileException e) {
+            throw new FtpException(e);
+        }
+
+        this.workingDirectory = node;
+        return true;
     }
 
     @Override
     public FtpFile getFile(String file) throws FtpException {
-        // TODO: 実装
-        if (file.equals("/")) return root;
-        if (file.equals("./")) return workingDirectory;
-        return null;
+        try {
+            return pathToNode(file);
+        } catch (NotDirectoryException | NoSuchFileException e) {
+            throw new FtpException(e);
+        }
     }
 
     @Override
@@ -45,5 +57,15 @@ public class FileTreeSystemView implements FileSystemView {
     @Override
     public void dispose() {
 
+    }
+
+    private FileTreeNode pathToNode(String path) throws NotDirectoryException, NoSuchFileException {
+        if ("/".equals(path)) {
+            return root;
+        } else if (path.startsWith("/")) {
+            return root.getNodeByRelativePath(Paths.get(path.substring(1)));
+        } else {
+            return workingDirectory.getNodeByRelativePath(Paths.get(path));
+        }
     }
 }

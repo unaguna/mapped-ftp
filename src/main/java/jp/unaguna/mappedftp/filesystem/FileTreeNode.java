@@ -5,6 +5,8 @@ import org.apache.ftpserver.ftplet.FtpFile;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.NotDirectoryException;
 import java.nio.file.Path;
 import java.util.*;
 
@@ -63,6 +65,44 @@ public class FileTreeNode implements FtpFile {
             }
 
             childNode.addChild(file, relativePath.subpath(1, relativePath.getNameCount()));
+        }
+    }
+
+    public FileTreeNode getNodeByRelativePath(Path relativePath) throws NotDirectoryException, NoSuchFileException {
+        return getNodeByRelativePath(relativePath, relativePath);
+    }
+
+    public FileTreeNode getNodeByRelativePath(Path relativePath, Path originalRelativePath)
+            throws NotDirectoryException, NoSuchFileException {
+        if (relativePath.isAbsolute()) {
+            throw new IllegalArgumentException("relativePath must not be absolute: " + relativePath);
+        }
+        if (relativePath.getNameCount() == 0) {
+            return this;
+        }
+        if (relativePath.getName(0).toString().equals(".")) {
+            if (relativePath.getNameCount() == 1) {
+                return this;
+            } else {
+                return this.getNodeByRelativePath(relativePath.subpath(1, relativePath.getNameCount()), originalRelativePath);
+            }
+        }
+        // TODO: "../*" の取り扱い
+        if (this.children == null) {
+            throw new NotDirectoryException(this.getAbsolutePath());
+        }
+
+        final String childName = relativePath.getName(0).toString();
+        final FileTreeNode childNode = this.children.get(childName);
+
+        if (childNode == null) {
+            throw new NoSuchFileException(originalRelativePath.toString());
+        }
+
+        if (relativePath.getNameCount() <= 1) {
+            return childNode;
+        } else {
+            return childNode.getNodeByRelativePath(relativePath.subpath(1, relativePath.getNameCount()), originalRelativePath);
         }
     }
 
