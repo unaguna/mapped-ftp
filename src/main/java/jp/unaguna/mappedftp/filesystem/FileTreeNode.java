@@ -63,7 +63,7 @@ public class FileTreeNode implements FtpFile {
                 childNode.parent = this;
             }
 
-            childNode.addChild(file, relativePath.subpath(1, relativePath.getNameCount()));
+            childNode.addChild(file, relativePath.subpath(1));
         }
     }
 
@@ -80,7 +80,7 @@ public class FileTreeNode implements FtpFile {
             return this;
         }
         if (relativePath.getName(0).toString().equals(".")) {
-            return this.getNodeByRelativePath(relativePath.subpath(1, relativePath.getNameCount()), originalRelativePath);
+            return this.getNodeByRelativePath(relativePath.subpath(1), originalRelativePath);
         }
         // TODO: "../*" の取り扱い
         if (this.children == null) {
@@ -94,7 +94,7 @@ public class FileTreeNode implements FtpFile {
             throw new NoSuchFileException(originalRelativePath.toString());
         }
 
-        return childNode.getNodeByRelativePath(relativePath.subpath(1, relativePath.getNameCount()), originalRelativePath);
+        return childNode.getNodeByRelativePath(relativePath.subpath(1), originalRelativePath);
     }
 
     @Override

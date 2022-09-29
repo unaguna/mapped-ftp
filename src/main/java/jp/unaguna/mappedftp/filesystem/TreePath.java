@@ -64,6 +64,10 @@ public class TreePath {
         return new TreePath(beginIndex == 0 && this.absolute, newNames);
     }
 
+    public TreePath subpath(int beginIndex) {
+        return this.subpath(beginIndex, this.getNameCount());
+    }
+
     @Override
     public String toString() {
         final StringBuilder builder = new StringBuilder();
