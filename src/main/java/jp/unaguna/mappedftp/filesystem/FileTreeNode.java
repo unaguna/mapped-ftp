@@ -82,7 +82,13 @@ public class FileTreeNode implements FtpFile {
         if (relativePath.getName(0).toString().equals(".")) {
             return this.getNodeByRelativePath(relativePath.subpath(1), originalRelativePath);
         }
-        // TODO: "../*" の取り扱い
+        if (relativePath.getName(0).toString().equals("..")) {
+            if (parent != null) {
+                return parent.getNodeByRelativePath(relativePath.subpath(1), originalRelativePath);
+            } else {
+                return this.getNodeByRelativePath(relativePath.subpath(1), originalRelativePath);
+            }
+        }
         if (this.children == null) {
             throw new NotDirectoryException(this.getAbsolutePath());
         }
