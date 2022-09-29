@@ -1,4 +1,4 @@
-package jp.unaguna.mappedftp.filesystem;
+package jp.unaguna.mappedftp.filesystem.tree;
 
 import org.apache.ftpserver.ftplet.FtpFile;
 
