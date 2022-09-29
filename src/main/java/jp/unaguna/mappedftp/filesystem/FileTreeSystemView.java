@@ -63,9 +63,9 @@ public class FileTreeSystemView implements FileSystemView {
         if ("/".equals(path)) {
             return root;
         } else if (path.startsWith("/")) {
-            return root.getNodeByRelativePath(Paths.get(path.substring(1)));
+            return root.getNodeByRelativePath(TreePath.get(path.substring(1)));
         } else {
-            return workingDirectory.getNodeByRelativePath(Paths.get(path));
+            return workingDirectory.getNodeByRelativePath(TreePath.get(path));
         }
     }
 }

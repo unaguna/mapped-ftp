@@ -7,7 +7,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.NotDirectoryException;
-import java.nio.file.Path;
 import java.util.*;
 
 public class FileTreeNode implements FtpFile {
@@ -39,7 +38,7 @@ public class FileTreeNode implements FtpFile {
      * @param file 追加する子孫要素
      * @param relativePath 追加する要素の this からの相対パス
      */
-    public void addChild(FileTreeItem file, Path relativePath) {
+    public void addChild(FileTreeItem file, TreePath relativePath) {
         if (relativePath.isAbsolute()) {
             throw new IllegalArgumentException("relativePath must not be absolute: " + relativePath);
         }
@@ -68,11 +67,11 @@ public class FileTreeNode implements FtpFile {
         }
     }
 
-    public FileTreeNode getNodeByRelativePath(Path relativePath) throws NotDirectoryException, NoSuchFileException {
+    public FileTreeNode getNodeByRelativePath(TreePath relativePath) throws NotDirectoryException, NoSuchFileException {
         return getNodeByRelativePath(relativePath, relativePath);
     }
 
-    public FileTreeNode getNodeByRelativePath(Path relativePath, Path originalRelativePath)
+    public FileTreeNode getNodeByRelativePath(TreePath relativePath, TreePath originalRelativePath)
             throws NotDirectoryException, NoSuchFileException {
         if (relativePath.isAbsolute()) {
             throw new IllegalArgumentException("relativePath must not be absolute: " + relativePath);
