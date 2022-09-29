@@ -1,5 +1,6 @@
 package jp.unaguna.mappedftp.filesystem.tree;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
@@ -16,7 +17,7 @@ public class FileTreeItemReadOnlyFile implements FileTreeItem {
     }
 
     @Override
-    public InputStream createInputStream(long offset) {
+    public InputStream createInputStream(long offset) throws IOException {
         // perform as an empty file
         return new InputStream() {
             @Override
