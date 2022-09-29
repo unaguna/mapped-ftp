@@ -9,7 +9,12 @@ import java.nio.file.NoSuchFileException;
 import java.nio.file.NotDirectoryException;
 import java.util.*;
 
-public class FileTreeNode implements FtpFile {
+/**
+ * Concrete implementation of {@link LinkedFileNode}.
+ * This class maintains links to a parent directory and child files.
+ * It uses its tree structure to provide the functions required by {@link LinkedFileSystemView}.
+ */
+public class FileTreeNode implements LinkedFileNode {
     private FileTreeNode parent = null;
     private final String name;
     private final Map<String, FileTreeNode> children;
@@ -67,6 +72,7 @@ public class FileTreeNode implements FtpFile {
         }
     }
 
+    @Override
     public FileTreeNode getNodeByRelativePath(TreePath relativePath) throws NotDirectoryException, NoSuchFileException {
         return getNodeByRelativePath(relativePath, relativePath);
     }
