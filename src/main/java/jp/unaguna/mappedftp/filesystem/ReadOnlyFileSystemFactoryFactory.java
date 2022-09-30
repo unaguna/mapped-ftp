@@ -7,6 +7,7 @@ import jp.unaguna.mappedftp.filesystem.tree.FileTreeItemFromURL;
 import jp.unaguna.mappedftp.map.AttributeException;
 import jp.unaguna.mappedftp.map.AttributeHashMap;
 import jp.unaguna.mappedftp.map.IllegalAttributeException;
+import jp.unaguna.mappedftp.map.UnknownAttributeException;
 import org.apache.ftpserver.ftplet.FileSystemFactory;
 
 import java.net.MalformedURLException;
@@ -28,9 +29,12 @@ public class ReadOnlyFileSystemFactoryFactory extends FileSystemFactoryFactory {
             final FileTreeItem fileTreeItem = createFileTreeItem(fileAttributes);
             fileAttributes.remove("path");
 
-            files.put(path, fileTreeItem);
+            // Throw an exception if there are attributes not yet used (in other word, not yet popped)
+            if (fileAttributes.size() > 0) {
+                throw new UnknownAttributeException(fileAttributes.keySet());
+            }
 
-            // TODO: Throw an exception if there are attributes not yet used (in other word, not yet popped)
+            files.put(path, fileTreeItem);
         }
 
         return new ReadOnlyFileSystemFactory(files);
