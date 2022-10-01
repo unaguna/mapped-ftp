@@ -1,7 +1,9 @@
 package jp.unaguna.mappedftp.filesystem;
 
+import jp.unaguna.mappedftp.TestUtils;
 import jp.unaguna.mappedftp.UserStub;
 import jp.unaguna.mappedftp.config.ServerConfig;
+import jp.unaguna.mappedftp.filesystem.tree.FileTreeItemFromLocalFile;
 import jp.unaguna.mappedftp.filesystem.tree.FileTreeItemFromURL;
 import jp.unaguna.mappedftp.filesystem.tree.FileTreeNode;
 import jp.unaguna.mappedftp.map.AttributeException;
@@ -10,8 +12,11 @@ import jp.unaguna.mappedftp.map.IllegalAttributeException;
 import jp.unaguna.mappedftp.map.UnknownAttributeException;
 import org.apache.ftpserver.ftplet.FtpException;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 
 import java.net.MalformedURLException;
+import java.nio.file.InvalidPathException;
+import java.nio.file.Path;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -189,6 +194,128 @@ public class ReadOnlyFileSystemFactoryFactoryTest {
                 put("type", "url");
                 put("path", "/dir1/file1");
                 put("src", "https://dummy1.example.com/");
+                put("dummy", "");
+            }});
+        }};
+
+        final ReadOnlyFileSystemFactoryFactory factoryFactory = new ReadOnlyFileSystemFactoryFactory();
+
+        final ReadOnlyFileSystemFactory factory;
+        try {
+            factory = (ReadOnlyFileSystemFactory) factoryFactory.createFileSystemFactory(serverConfig);
+            factory.createFileSystemView(new UserStub());
+            fail("expected exception has not been thrown");
+
+        } catch (UnknownAttributeException e) {
+            // expected exception
+            assertTrue(e.getMessage().endsWith(": dummy"));
+
+        } catch (AttributeException|FtpException e) {
+            fail(e);
+        }
+    }
+
+    @Test
+    public void testCreate__type_local__attribute_src(TestInfo testInfo) {
+        Path localPath = TestUtils.getInputResource("local.txt", testInfo);
+
+        final ServerConfig serverConfig = new ServerConfig(){{
+            putFile(new AttributeHashMap(){{
+                put("type", "local");
+                put("path", "/dir1/file1");
+                put("src", localPath.toString());
+            }});
+        }};
+
+        final ReadOnlyFileSystemFactoryFactory factoryFactory = new ReadOnlyFileSystemFactoryFactory();
+
+        final ReadOnlyFileSystemFactory factory;
+        final LinkedFileSystemView fileSystemView;
+        try {
+            factory = (ReadOnlyFileSystemFactory) factoryFactory.createFileSystemFactory(serverConfig);
+            fileSystemView = (LinkedFileSystemView) factory.createFileSystemView(new UserStub());
+        } catch (AttributeException | FtpException e) {
+            fail(e);
+            return;
+        }
+
+        try {
+            final FileTreeNode nodeFile1 = (FileTreeNode) fileSystemView.getFile("/dir1/file1");
+            final FileTreeItemFromLocalFile itemFile1 = (FileTreeItemFromLocalFile) nodeFile1.getFile();
+            assertEquals(localPath, itemFile1.getSource());
+
+        } catch (FtpException e) {
+            fail(e);
+        }
+    }
+
+    @Test
+    public void testCreate__type_local__error_by_root_as_not_dir(TestInfo testInfo) {
+        Path localPath = TestUtils.getInputResource("local.txt", testInfo);
+
+        final ServerConfig serverConfig = new ServerConfig(){{
+            putFile(new AttributeHashMap(){{
+                put("type", "local");
+                put("path", "/");
+                put("src", localPath.toString());
+            }});
+        }};
+
+        final ReadOnlyFileSystemFactoryFactory factoryFactory = new ReadOnlyFileSystemFactoryFactory();
+
+        final ReadOnlyFileSystemFactory factory;
+        try {
+            factory = (ReadOnlyFileSystemFactory) factoryFactory.createFileSystemFactory(serverConfig);
+            factory.createFileSystemView(new UserStub());
+            fail("expected exception has not been thrown");
+
+        } catch (IllegalAttributeException e) {
+            // expected exception
+            assertEquals("cannot append a non-directory file on the root \"/\"", e.getMessage());
+
+        } catch (AttributeException|FtpException e) {
+            fail(e);
+        }
+    }
+
+    @Test
+    public void testCreate__type_local__error_by_illegal_path() {
+        final ServerConfig serverConfig = new ServerConfig(){{
+            putFile(new AttributeHashMap(){{
+                put("type", "local");
+                put("path", "/file1");
+                put("src", ":::::");
+            }});
+        }};
+
+        final ReadOnlyFileSystemFactoryFactory factoryFactory = new ReadOnlyFileSystemFactoryFactory();
+
+        final ReadOnlyFileSystemFactory factory;
+        try {
+            factory = (ReadOnlyFileSystemFactory) factoryFactory.createFileSystemFactory(serverConfig);
+            factory.createFileSystemView(new UserStub());
+            fail("expected exception has not been thrown");
+
+        } catch (IllegalAttributeException e) {
+            // expected exception
+            assertEquals("illegal attribute: src", e.getMessage());
+            assertInstanceOf(InvalidPathException.class, e.getCause());
+            assertTrue(e.getCause().getMessage().contains(":::::"));
+
+        } catch (AttributeException|FtpException e) {
+            fail(e);
+        }
+    }
+
+    @Test
+    public void testCreate__type_local__error_by_unknown_attribute(TestInfo testInfo) {
+        Path localPath = TestUtils.getInputResource("local.txt", testInfo);
+
+        final ServerConfig serverConfig = new ServerConfig(){{
+            putFile(new AttributeHashMap(){{
+                put("type", "local");
+                put("path", "/dir1/file1");
+                put("src", localPath.toString());
                 put("dummy", "");
             }});
         }};

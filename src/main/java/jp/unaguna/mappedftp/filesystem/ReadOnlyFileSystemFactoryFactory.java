@@ -3,6 +3,7 @@ package jp.unaguna.mappedftp.filesystem;
 import jp.unaguna.mappedftp.config.FileSystemFactoryFactory;
 import jp.unaguna.mappedftp.config.ServerConfig;
 import jp.unaguna.mappedftp.filesystem.tree.FileTreeItem;
+import jp.unaguna.mappedftp.filesystem.tree.FileTreeItemFromLocalFile;
 import jp.unaguna.mappedftp.filesystem.tree.FileTreeItemFromURL;
 import jp.unaguna.mappedftp.map.AttributeException;
 import jp.unaguna.mappedftp.map.AttributeHashMap;
@@ -12,6 +13,9 @@ import org.apache.ftpserver.ftplet.FileSystemFactory;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.InvalidPathException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -50,11 +54,26 @@ public class ReadOnlyFileSystemFactoryFactory extends FileSystemFactoryFactory {
 
         final String type = fileAttributes.pop("type");
         switch (type) {
+            case "local":
+                return createFileTreeItemFromLocalFile(fileAttributes);
             case "url":
                 return createFileTreeItemFromURL(fileAttributes);
             default:
                 throw new IllegalAttributeException("unknown type is specified: type=\"" + type + "\"");
         }
+    }
+
+    private FileTreeItem createFileTreeItemFromLocalFile(AttributeHashMap fileAttributes) throws AttributeException {
+
+        // load attributes
+        final Path local;
+        try {
+            local = Paths.get(fileAttributes.pop("src"));
+        } catch (InvalidPathException e) {
+            throw new IllegalAttributeException("src", e);
+        }
+
+        return new FileTreeItemFromLocalFile(local);
     }
 
     private FileTreeItem createFileTreeItemFromURL(AttributeHashMap fileAttributes) throws AttributeException {
