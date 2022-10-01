@@ -68,6 +68,10 @@ public class TreePath {
         return this.subpath(beginIndex, this.getNameCount());
     }
 
+    public TreePath toRelative() {
+        return new TreePath(false, this.names);
+    }
+
     @Override
     public String toString() {
         final StringBuilder builder = new StringBuilder();
