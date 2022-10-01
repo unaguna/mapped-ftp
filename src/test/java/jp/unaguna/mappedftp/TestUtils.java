@@ -21,6 +21,7 @@ public class TestUtils {
      * <ol>
      *     <li><code>./src/test/resources/cases/${simpleNameOfTestClass}_${nameOfTestMethod}/input/</code></li>
      *     <li><code>./src/test/resources/cases/${simpleNameOfTestClass}/input/</code></li>
+     *     <li><code>./src/test/resources/input/</code></li>
      * </ol>
      *
      * @param relativePath the name of file to get
@@ -45,6 +46,15 @@ public class TestUtils {
         path = Paths.get(
                 "src/test/resources/cases",
                 testClassName,
+                "input",
+                relativePath
+        );
+        if (Files.exists(path)) {
+            return path;
+        }
+
+        path = Paths.get(
+                "src/test/resources",
                 "input",
                 relativePath
         );
