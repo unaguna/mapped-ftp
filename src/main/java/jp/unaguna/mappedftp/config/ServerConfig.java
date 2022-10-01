@@ -2,6 +2,7 @@ package jp.unaguna.mappedftp.config;
 
 import jp.unaguna.mappedftp.map.AttributeHashMap;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -15,7 +16,20 @@ import java.util.List;
  * </p>
  */
 public class ServerConfig {
+    private Path configFilepath = null;
     private final List<AttributeHashMap> files = new ArrayList<>();
+
+    public String getConfigIdentifier() {
+        if (configFilepath != null) {
+            return configFilepath.toString();
+        } else {
+            return this.toString();
+        }
+    }
+
+    public void setConfigFilepath(Path configFilepath) {
+        this.configFilepath = configFilepath;
+    }
 
     /**
      * Add attributes of a file to serve on the server

@@ -17,22 +17,33 @@ import org.apache.ftpserver.usermanager.UserFactory;
 import java.nio.file.Paths;
 
 public class ReadOnlyServer {
-    public static void main(String[] args) throws FtpException, ConfigException {
-        ServerConfigLoader configLoader = new ServerConfigLoader();
-        String configPath = args[0];
-        ServerConfig config;
-        try {
-            config = configLoader.load(Paths.get(configPath));
-        } catch (Exception e) {
-            throw new ConfigException("loading config failed: " + configPath, e);
-        }
+    private FtpServer ftpServer = null;
+    private ServerConfig serverConfig = null;
 
+    public boolean isStarted() {
+        return ftpServer != null && !ftpServer.isStopped();
+    }
+
+    /**
+     * set a server configuration
+     *
+     * @param serverConfig the configurations to be set
+     * @throws IllegalStateException if the server has been started
+     */
+    public void setConfig(ServerConfig serverConfig) {
+        if (this.isStarted()) {
+            throw new IllegalStateException("Configuration cannot be changed after the server has been started.");
+        }
+        this.serverConfig = serverConfig;
+    }
+
+    public void start() throws FtpException, ConfigException {
         FileSystemFactoryFactory fileSystemFactoryFactory = new ReadOnlyFileSystemFactoryFactory();
         FileSystemFactory fileSystemFactory;
         try {
-            fileSystemFactory = fileSystemFactoryFactory.create(config);
+            fileSystemFactory = fileSystemFactoryFactory.create(serverConfig);
         } catch (AttributeException e) {
-            throw new ConfigException("loading config failed: " + configPath, e);
+            throw new ConfigException("loading config failed: " + serverConfig.getConfigIdentifier(), e);
         }
 
         FtpServerFactory ftpServerFactory = new FtpServerFactory();
@@ -46,7 +57,22 @@ public class ReadOnlyServer {
 
         ftpServerFactory.setFileSystem(fileSystemFactory);
 
-        FtpServer server = ftpServerFactory.createServer();
+        this.ftpServer = ftpServerFactory.createServer();
+        this.ftpServer.start();
+    }
+
+    public static void main(String[] args) throws FtpException, ConfigException {
+        ServerConfigLoader configLoader = new ServerConfigLoader();
+        String configPath = args[0];
+        ServerConfig config;
+        try {
+            config = configLoader.load(Paths.get(configPath));
+        } catch (Exception e) {
+            throw new ConfigException("loading config failed: " + configPath, e);
+        }
+
+        ReadOnlyServer server = new ReadOnlyServer();
+        server.setConfig(config);
         server.start();
     }
 }
