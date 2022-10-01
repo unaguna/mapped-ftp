@@ -1,14 +1,13 @@
 package jp.unaguna.mappedftp;
 
 import jp.unaguna.mappedftp.config.ConfigException;
-import jp.unaguna.mappedftp.config.FileSystemFactoryFactory;
+import jp.unaguna.mappedftp.config.ConfigurableFileSystemFactory;
 import jp.unaguna.mappedftp.config.ServerConfig;
 import jp.unaguna.mappedftp.config.ServerConfigLoader;
-import jp.unaguna.mappedftp.filesystem.ReadOnlyFileSystemFactoryFactory;
+import jp.unaguna.mappedftp.filesystem.ReadOnlyFileSystemFactory;
 import jp.unaguna.mappedftp.map.AttributeException;
 import org.apache.ftpserver.FtpServer;
 import org.apache.ftpserver.FtpServerFactory;
-import org.apache.ftpserver.ftplet.FileSystemFactory;
 import org.apache.ftpserver.ftplet.FtpException;
 import org.apache.ftpserver.ftplet.User;
 import org.apache.ftpserver.ftplet.UserManager;
@@ -18,8 +17,8 @@ import java.lang.reflect.Constructor;
 import java.nio.file.Paths;
 
 public class MappedFtpServer {
-    private static final Class<? extends FileSystemFactoryFactory> DEFAULT_FILESYSTEM_FACTORY_FACTORY =
-            ReadOnlyFileSystemFactoryFactory.class;
+    private static final Class<? extends ConfigurableFileSystemFactory> DEFAULT_FILESYSTEM_FACTORY_FACTORY =
+            ReadOnlyFileSystemFactory.class;
     private FtpServer ftpServer = null;
     private ServerConfig serverConfig = null;
     private String serverConfigName = null;
@@ -44,11 +43,10 @@ public class MappedFtpServer {
     }
 
     public void start() throws FtpException, ConfigException {
-        final FileSystemFactoryFactory fileSystemFactoryFactory = constructFileSystemFactoryFactory(serverConfig);
+        final ConfigurableFileSystemFactory fileSystemFactory = constructFileSystemFactory(serverConfig);
 
-        FileSystemFactory fileSystemFactory;
         try {
-            fileSystemFactory = fileSystemFactoryFactory.create(serverConfig);
+            fileSystemFactory.applyConfig(serverConfig);
         } catch (AttributeException e) {
             throw new ConfigException("loading config failed: " + serverConfigName, e);
         }
@@ -69,31 +67,31 @@ public class MappedFtpServer {
     }
 
     /**
-     * Create a {@link FileSystemFactoryFactory} according to the configurations and return it.
+     * Create a {@link ConfigurableFileSystemFactory} according to the configurations and return it.
      *
      * <p>
-     *     It creates an instance of the {@link FileSystemFactoryFactory} specified in the configuration.
+     *     It creates an instance of the {@link ConfigurableFileSystemFactory} specified in the configuration.
      *     If not specified, creates an instance of the default class.
      * </p>
      *
      * @param serverConfig the configurations
      * @return constructed instance
-     * @throws ConfigException when it failed to construct FileSystemFactoryFactory specified in configurations
+     * @throws ConfigException when it failed to construct ConfigurableFileSystemFactory specified in configurations
      */
-    private static FileSystemFactoryFactory constructFileSystemFactoryFactory(ServerConfig serverConfig)
+    private static ConfigurableFileSystemFactory constructFileSystemFactory(ServerConfig serverConfig)
             throws ConfigException {
 
-        if (serverConfig.getFileSystemFactoryFactoryClass() != null) {
-            final Class<? extends FileSystemFactoryFactory> cls = serverConfig.getFileSystemFactoryFactoryClass();
+        if (serverConfig.getFileSystemFactoryClass() != null) {
+            final Class<? extends ConfigurableFileSystemFactory> cls = serverConfig.getFileSystemFactoryClass();
             try {
-                return constructFileSystemFactoryFactory(cls);
+                return constructFileSystemFactory(cls);
             } catch (ReflectiveOperationException e) {
                 throw new ConfigException("failed to construct " + cls, e);
             }
         } else {
             // if factory class is not specified, use the default class
             try {
-                return constructFileSystemFactoryFactory(DEFAULT_FILESYSTEM_FACTORY_FACTORY);
+                return constructFileSystemFactory(DEFAULT_FILESYSTEM_FACTORY_FACTORY);
             } catch (ReflectiveOperationException e) {
                 // It is not a ConfigException because the used class was not configured one.
                 throw new RuntimeException(e);
@@ -102,16 +100,16 @@ public class MappedFtpServer {
     }
 
     /**
-     * Create a {@link FileSystemFactoryFactory} instance
+     * Create a {@link ConfigurableFileSystemFactory} instance
      *
      * @param cls the class
      * @return constructed instance
-     * @throws ReflectiveOperationException when it failed to construct FileSystemFactoryFactory
+     * @throws ReflectiveOperationException when it failed to construct ConfigurableFileSystemFactory
      */
-    private static FileSystemFactoryFactory constructFileSystemFactoryFactory(
-            Class<? extends FileSystemFactoryFactory> cls
+    private static ConfigurableFileSystemFactory constructFileSystemFactory(
+            Class<? extends ConfigurableFileSystemFactory> cls
     ) throws ReflectiveOperationException {
-        final Constructor<? extends FileSystemFactoryFactory> constructor = cls.getConstructor();
+        final Constructor<? extends ConfigurableFileSystemFactory> constructor = cls.getConstructor();
         return constructor.newInstance();
     }
 

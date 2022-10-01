@@ -20,7 +20,7 @@ import java.nio.file.Path;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ReadOnlyFileSystemFactoryFactoryTest {
+public class ReadOnlyFileSystemFactoryTest {
     @Test
     public void testCreate__attribute_path() {
         final ServerConfig serverConfig = new ServerConfig(){{
@@ -36,12 +36,10 @@ public class ReadOnlyFileSystemFactoryFactoryTest {
             }});
         }};
 
-        final ReadOnlyFileSystemFactoryFactory factoryFactory = new ReadOnlyFileSystemFactoryFactory();
-
-        final ReadOnlyFileSystemFactory factory;
+        final ReadOnlyFileSystemFactory factory = new ReadOnlyFileSystemFactory();
         final LinkedFileSystemView fileSystemView;
         try {
-            factory = (ReadOnlyFileSystemFactory) factoryFactory.createFileSystemFactory(serverConfig);
+            factory.applyConfig(serverConfig);
             fileSystemView = (LinkedFileSystemView) factory.createFileSystemView(new UserStub());
         } catch (AttributeException | FtpException e) {
             fail(e);
@@ -74,11 +72,9 @@ public class ReadOnlyFileSystemFactoryFactoryTest {
             }});
         }};
 
-        final ReadOnlyFileSystemFactoryFactory factoryFactory = new ReadOnlyFileSystemFactoryFactory();
-
-        final ReadOnlyFileSystemFactory factory;
+        final ReadOnlyFileSystemFactory factory = new ReadOnlyFileSystemFactory();
         try {
-            factory = (ReadOnlyFileSystemFactory) factoryFactory.createFileSystemFactory(serverConfig);
+            factory.applyConfig(serverConfig);
             factory.createFileSystemView(new UserStub());
             fail("expected exception has not been thrown");
 
@@ -106,12 +102,10 @@ public class ReadOnlyFileSystemFactoryFactoryTest {
             }});
         }};
 
-        final ReadOnlyFileSystemFactoryFactory factoryFactory = new ReadOnlyFileSystemFactoryFactory();
-
-        final ReadOnlyFileSystemFactory factory;
+        final ReadOnlyFileSystemFactory factory = new ReadOnlyFileSystemFactory();
         final LinkedFileSystemView fileSystemView;
         try {
-            factory = (ReadOnlyFileSystemFactory) factoryFactory.createFileSystemFactory(serverConfig);
+            factory.applyConfig(serverConfig);
             fileSystemView = (LinkedFileSystemView) factory.createFileSystemView(new UserStub());
         } catch (AttributeException | FtpException e) {
             fail(e);
@@ -141,11 +135,9 @@ public class ReadOnlyFileSystemFactoryFactoryTest {
             }});
         }};
 
-        final ReadOnlyFileSystemFactoryFactory factoryFactory = new ReadOnlyFileSystemFactoryFactory();
-
-        final ReadOnlyFileSystemFactory factory;
+        final ReadOnlyFileSystemFactory factory = new ReadOnlyFileSystemFactory();
         try {
-            factory = (ReadOnlyFileSystemFactory) factoryFactory.createFileSystemFactory(serverConfig);
+            factory.applyConfig(serverConfig);
             factory.createFileSystemView(new UserStub());
             fail("expected exception has not been thrown");
 
@@ -168,11 +160,9 @@ public class ReadOnlyFileSystemFactoryFactoryTest {
             }});
         }};
 
-        final ReadOnlyFileSystemFactoryFactory factoryFactory = new ReadOnlyFileSystemFactoryFactory();
-
-        final ReadOnlyFileSystemFactory factory;
+        final ReadOnlyFileSystemFactory factory = new ReadOnlyFileSystemFactory();
         try {
-            factory = (ReadOnlyFileSystemFactory) factoryFactory.createFileSystemFactory(serverConfig);
+            factory.applyConfig(serverConfig);
             factory.createFileSystemView(new UserStub());
             fail("expected exception has not been thrown");
 
@@ -198,11 +188,9 @@ public class ReadOnlyFileSystemFactoryFactoryTest {
             }});
         }};
 
-        final ReadOnlyFileSystemFactoryFactory factoryFactory = new ReadOnlyFileSystemFactoryFactory();
-
-        final ReadOnlyFileSystemFactory factory;
+        final ReadOnlyFileSystemFactory factory = new ReadOnlyFileSystemFactory();
         try {
-            factory = (ReadOnlyFileSystemFactory) factoryFactory.createFileSystemFactory(serverConfig);
+            factory.applyConfig(serverConfig);
             factory.createFileSystemView(new UserStub());
             fail("expected exception has not been thrown");
 
@@ -227,12 +215,10 @@ public class ReadOnlyFileSystemFactoryFactoryTest {
             }});
         }};
 
-        final ReadOnlyFileSystemFactoryFactory factoryFactory = new ReadOnlyFileSystemFactoryFactory();
-
-        final ReadOnlyFileSystemFactory factory;
+        final ReadOnlyFileSystemFactory factory = new ReadOnlyFileSystemFactory();
         final LinkedFileSystemView fileSystemView;
         try {
-            factory = (ReadOnlyFileSystemFactory) factoryFactory.createFileSystemFactory(serverConfig);
+            factory.applyConfig(serverConfig);
             fileSystemView = (LinkedFileSystemView) factory.createFileSystemView(new UserStub());
         } catch (AttributeException | FtpException e) {
             fail(e);
@@ -261,11 +247,9 @@ public class ReadOnlyFileSystemFactoryFactoryTest {
             }});
         }};
 
-        final ReadOnlyFileSystemFactoryFactory factoryFactory = new ReadOnlyFileSystemFactoryFactory();
-
-        final ReadOnlyFileSystemFactory factory;
+        final ReadOnlyFileSystemFactory factory = new ReadOnlyFileSystemFactory();
         try {
-            factory = (ReadOnlyFileSystemFactory) factoryFactory.createFileSystemFactory(serverConfig);
+            factory.applyConfig(serverConfig);
             factory.createFileSystemView(new UserStub());
             fail("expected exception has not been thrown");
 
@@ -288,11 +272,9 @@ public class ReadOnlyFileSystemFactoryFactoryTest {
             }});
         }};
 
-        final ReadOnlyFileSystemFactoryFactory factoryFactory = new ReadOnlyFileSystemFactoryFactory();
-
-        final ReadOnlyFileSystemFactory factory;
+        final ReadOnlyFileSystemFactory factory = new ReadOnlyFileSystemFactory();
         try {
-            factory = (ReadOnlyFileSystemFactory) factoryFactory.createFileSystemFactory(serverConfig);
+            factory.applyConfig(serverConfig);
             factory.createFileSystemView(new UserStub());
             fail("expected exception has not been thrown");
 
@@ -320,11 +302,9 @@ public class ReadOnlyFileSystemFactoryFactoryTest {
             }});
         }};
 
-        final ReadOnlyFileSystemFactoryFactory factoryFactory = new ReadOnlyFileSystemFactoryFactory();
-
-        final ReadOnlyFileSystemFactory factory;
+        final ReadOnlyFileSystemFactory factory = new ReadOnlyFileSystemFactory();
         try {
-            factory = (ReadOnlyFileSystemFactory) factoryFactory.createFileSystemFactory(serverConfig);
+            factory.applyConfig(serverConfig);
             factory.createFileSystemView(new UserStub());
             fail("expected exception has not been thrown");
 
