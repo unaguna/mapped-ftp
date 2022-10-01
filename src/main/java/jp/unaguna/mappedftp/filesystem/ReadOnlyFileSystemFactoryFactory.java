@@ -34,6 +34,11 @@ public class ReadOnlyFileSystemFactoryFactory extends FileSystemFactoryFactory {
                 throw new UnknownAttributeException(fileAttributes.keySet());
             }
 
+            // Throw an exception if a non-directory file is set to the root path
+            if (fileTreeItem.isRegularFile() && path.equals("/")) {
+                throw new IllegalAttributeException("cannot append a non-directory file on the root \"/\"");
+            }
+
             files.put(path, fileTreeItem);
         }
 
