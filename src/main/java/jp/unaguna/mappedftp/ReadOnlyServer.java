@@ -19,6 +19,7 @@ import java.nio.file.Paths;
 public class ReadOnlyServer {
     private FtpServer ftpServer = null;
     private ServerConfig serverConfig = null;
+    private FileSystemFactoryFactory fileSystemFactoryFactory = null;
 
     public boolean isStarted() {
         return ftpServer != null && !ftpServer.isStopped();
@@ -37,8 +38,25 @@ public class ReadOnlyServer {
         this.serverConfig = serverConfig;
     }
 
+    /**
+     * set a factory to create {@link FileSystemFactory}
+     *
+     * @param fileSystemFactoryFactory the factory
+     * @throws IllegalStateException if the server has been started
+     */
+    public void setFileSystemFactoryFactory(FileSystemFactoryFactory fileSystemFactoryFactory) {
+        if (this.isStarted()) {
+            throw new IllegalStateException("filesystem cannot be changed after the server has been started.");
+        }
+        this.fileSystemFactoryFactory = fileSystemFactoryFactory;
+    }
+
     public void start() throws FtpException, ConfigException {
-        FileSystemFactoryFactory fileSystemFactoryFactory = new ReadOnlyFileSystemFactoryFactory();
+        // use default FileSystemFactoryFactory if not specified
+        if (this.fileSystemFactoryFactory == null) {
+            setFileSystemFactoryFactory(new ReadOnlyFileSystemFactoryFactory());
+        }
+
         FileSystemFactory fileSystemFactory;
         try {
             fileSystemFactory = fileSystemFactoryFactory.create(serverConfig);
