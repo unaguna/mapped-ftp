@@ -48,6 +48,17 @@ public class ReadOnlyFileSystemFactoryFactory extends FileSystemFactoryFactory {
     private FileTreeItem createFileTreeItem(AttributeHashMap fileAttributes) throws AttributeException {
         // TODO: このメソッドごと依存性注入できるように FileTreeItemFactory を作る
 
+        final String type = fileAttributes.pop("type");
+        switch (type) {
+            case "url":
+                return createFileTreeItemFromURL(fileAttributes);
+            default:
+                throw new IllegalAttributeException("unknown type is specified: type=\"" + type + "\"");
+        }
+    }
+
+    private FileTreeItem createFileTreeItemFromURL(AttributeHashMap fileAttributes) throws AttributeException {
+
         // load attributes
         final URL url;
         try {

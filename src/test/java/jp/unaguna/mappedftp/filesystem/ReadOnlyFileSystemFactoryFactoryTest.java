@@ -20,10 +20,12 @@ public class ReadOnlyFileSystemFactoryFactoryTest {
     public void testCreate__attribute_path() {
         final ServerConfig serverConfig = new ServerConfig(){{
             putFile(new AttributeHashMap(){{
+                put("type", "url");
                 put("path", "/dir1/file1");
                 put("src", "https://dummy1.example.com/");
             }});
             putFile(new AttributeHashMap(){{
+                put("type", "url");
                 put("path", "/file2");
                 put("src", "https://dummy2.example.com/");
             }});
@@ -62,10 +64,12 @@ public class ReadOnlyFileSystemFactoryFactoryTest {
     public void testCreate__type_url__attribute_src() {
         final ServerConfig serverConfig = new ServerConfig(){{
             putFile(new AttributeHashMap(){{
+                put("type", "url");
                 put("path", "/dir1/file1");
                 put("src", "https://dummy1.example.com/");
             }});
             putFile(new AttributeHashMap(){{
+                put("type", "url");
                 put("path", "/file2");
                 put("src", "https://dummy2.example.com/");
             }});
@@ -100,6 +104,7 @@ public class ReadOnlyFileSystemFactoryFactoryTest {
     public void testCreate__type_url__error_by_root_as_not_dir() {
         final ServerConfig serverConfig = new ServerConfig(){{
             putFile(new AttributeHashMap(){{
+                put("type", "url");
                 put("path", "/");
                 put("src", "https://dummy1.example.com/");
             }});
@@ -126,6 +131,7 @@ public class ReadOnlyFileSystemFactoryFactoryTest {
     public void testCreate__type_url__error_by_illegal_url() {
         final ServerConfig serverConfig = new ServerConfig(){{
             putFile(new AttributeHashMap(){{
+                put("type", "url");
                 put("path", "/file1");
                 put("src", "dummy1.example.com");
             }});
@@ -154,6 +160,7 @@ public class ReadOnlyFileSystemFactoryFactoryTest {
     public void testCreate__type_url__error_by_unknown_attribute() {
         final ServerConfig serverConfig = new ServerConfig(){{
             putFile(new AttributeHashMap(){{
+                put("type", "url");
                 put("path", "/dir1/file1");
                 put("src", "https://dummy1.example.com/");
                 put("dummy", "");

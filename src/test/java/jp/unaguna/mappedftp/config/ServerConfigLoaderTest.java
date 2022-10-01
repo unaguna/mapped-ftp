@@ -34,12 +34,14 @@ public class ServerConfigLoaderTest {
 
         try {
             // assert files[0]
+            assertEquals("url", loadedFiles.get(0).pop("type"));
             assertEquals("/https/google.txt", loadedFiles.get(0).pop("path"));
             assertEquals("https://www.google.com/", loadedFiles.get(0).pop("src"));
             assertEquals(0, loadedFiles.get(0).size(),
                     () -> "redundant attributes: " + String.join(",", loadedFiles.get(0).keySet()));
 
             // assert files[1]
+            assertEquals("url", loadedFiles.get(1).pop("type"));
             assertEquals("/https/yahoo.txt", loadedFiles.get(1).pop("path"));
             assertEquals("https://www.yahoo.co.jp/", loadedFiles.get(1).pop("src"));
             assertEquals(0, loadedFiles.get(1).size(),
