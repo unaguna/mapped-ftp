@@ -61,6 +61,32 @@ public class ReadOnlyFileSystemFactoryFactoryTest {
     }
 
     @Test
+    public void testCreate__illegal_type() {
+        final ServerConfig serverConfig = new ServerConfig(){{
+            putFile(new AttributeHashMap(){{
+                put("type", "dummy");
+                put("path", "/dir1/file1");
+            }});
+        }};
+
+        final ReadOnlyFileSystemFactoryFactory factoryFactory = new ReadOnlyFileSystemFactoryFactory();
+
+        final ReadOnlyFileSystemFactory factory;
+        try {
+            factory = (ReadOnlyFileSystemFactory) factoryFactory.createFileSystemFactory(serverConfig);
+            factory.createFileSystemView(new UserStub());
+            fail("expected exception has not been thrown");
+
+        } catch (IllegalAttributeException e) {
+            // expected exception
+            assertEquals("unknown type is specified: type=\"dummy\"", e.getMessage());
+
+        } catch (AttributeException|FtpException e) {
+            fail(e);
+        }
+    }
+
+    @Test
     public void testCreate__type_url__attribute_src() {
         final ServerConfig serverConfig = new ServerConfig(){{
             putFile(new AttributeHashMap(){{
