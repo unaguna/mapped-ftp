@@ -38,22 +38,19 @@ public class ServerConfigLoader {
 
         Document document = documentbuilder.parse(configPath.toFile());
 
-        return load(document, configPath);
+        return load(document);
     }
 
     /**
      * Load a XML configuration.
      *
      * @param xmlDocument the configuration expressed by XML
-     * @param configPath path to register as the source of the configuration file
      * @return a configuration object
      * @throws ConfigException when the configuration specifies illegal configuration
      */
-    public ServerConfig load(Document xmlDocument, Path configPath) throws ConfigException {
+    public ServerConfig load(Document xmlDocument) throws ConfigException {
         ServerConfig config = new ServerConfig();
         Element root = xmlDocument.getDocumentElement();
-
-        config.setConfigFilepath(configPath);
 
         // ルート要素が期待と違えば例外
         if (!ROOT_TAG_NAME.equals(root.getTagName())) {

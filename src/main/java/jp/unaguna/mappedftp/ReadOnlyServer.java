@@ -22,6 +22,7 @@ public class ReadOnlyServer {
             ReadOnlyFileSystemFactoryFactory.class;
     private FtpServer ftpServer = null;
     private ServerConfig serverConfig = null;
+    private String serverConfigName = null;
 
     public boolean isStarted() {
         return ftpServer != null && !ftpServer.isStopped();
@@ -31,13 +32,15 @@ public class ReadOnlyServer {
      * set a server configuration
      *
      * @param serverConfig the configurations to be set
+     * @param serverConfigName the name of configurations (this is used in error messages)
      * @throws IllegalStateException if the server has been started
      */
-    public void setConfig(ServerConfig serverConfig) {
+    public void setConfig(ServerConfig serverConfig, String serverConfigName) {
         if (this.isStarted()) {
             throw new IllegalStateException("Configuration cannot be changed after the server has been started.");
         }
         this.serverConfig = serverConfig;
+        this.serverConfigName = serverConfigName;
     }
 
     public void start() throws FtpException, ConfigException {
@@ -47,7 +50,7 @@ public class ReadOnlyServer {
         try {
             fileSystemFactory = fileSystemFactoryFactory.create(serverConfig);
         } catch (AttributeException e) {
-            throw new ConfigException("loading config failed: " + serverConfig.getConfigIdentifier(), e);
+            throw new ConfigException("loading config failed: " + serverConfigName, e);
         }
 
         FtpServerFactory ftpServerFactory = new FtpServerFactory();
@@ -123,7 +126,7 @@ public class ReadOnlyServer {
         }
 
         ReadOnlyServer server = new ReadOnlyServer();
-        server.setConfig(config);
+        server.setConfig(config, configPath);
         server.start();
     }
 }

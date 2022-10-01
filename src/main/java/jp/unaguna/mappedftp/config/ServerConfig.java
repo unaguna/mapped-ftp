@@ -2,7 +2,6 @@ package jp.unaguna.mappedftp.config;
 
 import jp.unaguna.mappedftp.map.AttributeHashMap;
 
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -16,21 +15,8 @@ import java.util.List;
  * </p>
  */
 public class ServerConfig {
-    private Path configFilepath = null;
     private final List<AttributeHashMap> files = new ArrayList<>();
     private Class<? extends FileSystemFactoryFactory> fileSystemFactoryFactoryClass = null;
-
-    public String getConfigIdentifier() {
-        if (configFilepath != null) {
-            return configFilepath.toString();
-        } else {
-            return this.toString();
-        }
-    }
-
-    public void setConfigFilepath(Path configFilepath) {
-        this.configFilepath = configFilepath;
-    }
 
     public Class<? extends FileSystemFactoryFactory> getFileSystemFactoryFactoryClass() {
         return fileSystemFactoryFactoryClass;
