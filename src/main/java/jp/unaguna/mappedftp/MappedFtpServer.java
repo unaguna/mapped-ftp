@@ -17,7 +17,7 @@ import org.apache.ftpserver.usermanager.UserFactory;
 import java.lang.reflect.Constructor;
 import java.nio.file.Paths;
 
-public class ReadOnlyServer {
+public class MappedFtpServer {
     private static final Class<? extends FileSystemFactoryFactory> DEFAULT_FILESYSTEM_FACTORY_FACTORY =
             ReadOnlyFileSystemFactoryFactory.class;
     private FtpServer ftpServer = null;
@@ -125,7 +125,7 @@ public class ReadOnlyServer {
             throw new ConfigException("loading config failed: " + configPath, e);
         }
 
-        ReadOnlyServer server = new ReadOnlyServer();
+        MappedFtpServer server = new MappedFtpServer();
         server.setConfig(config, configPath);
         server.start();
     }
