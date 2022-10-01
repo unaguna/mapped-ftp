@@ -18,6 +18,7 @@ import java.util.List;
 public class ServerConfig {
     private Path configFilepath = null;
     private final List<AttributeHashMap> files = new ArrayList<>();
+    private Class<? extends FileSystemFactoryFactory> fileSystemFactoryFactoryClass = null;
 
     public String getConfigIdentifier() {
         if (configFilepath != null) {
@@ -29,6 +30,16 @@ public class ServerConfig {
 
     public void setConfigFilepath(Path configFilepath) {
         this.configFilepath = configFilepath;
+    }
+
+    public Class<? extends FileSystemFactoryFactory> getFileSystemFactoryFactoryClass() {
+        return fileSystemFactoryFactoryClass;
+    }
+
+    public void setFileSystemFactoryFactoryClass(
+            Class<? extends FileSystemFactoryFactory> fileSystemFactoryFactoryClass
+    ) {
+        this.fileSystemFactoryFactoryClass = fileSystemFactoryFactoryClass;
     }
 
     /**

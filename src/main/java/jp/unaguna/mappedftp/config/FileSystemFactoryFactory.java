@@ -5,6 +5,10 @@ import org.apache.ftpserver.ftplet.FileSystemFactory;
 
 /**
  * A factory of {@link FileSystemFactory}.
+ *
+ * <p>
+ *     This class must have a constructor with no arguments because an instance may be created by reflection.
+ * </p>
  */
 public abstract class FileSystemFactoryFactory {
     /**

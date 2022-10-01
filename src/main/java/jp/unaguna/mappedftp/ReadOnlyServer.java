@@ -14,12 +14,14 @@ import org.apache.ftpserver.ftplet.User;
 import org.apache.ftpserver.ftplet.UserManager;
 import org.apache.ftpserver.usermanager.UserFactory;
 
+import java.lang.reflect.Constructor;
 import java.nio.file.Paths;
 
 public class ReadOnlyServer {
+    private static final Class<? extends FileSystemFactoryFactory> DEFAULT_FILESYSTEM_FACTORY_FACTORY =
+            ReadOnlyFileSystemFactoryFactory.class;
     private FtpServer ftpServer = null;
     private ServerConfig serverConfig = null;
-    private FileSystemFactoryFactory fileSystemFactoryFactory = null;
 
     public boolean isStarted() {
         return ftpServer != null && !ftpServer.isStopped();
@@ -38,24 +40,8 @@ public class ReadOnlyServer {
         this.serverConfig = serverConfig;
     }
 
-    /**
-     * set a factory to create {@link FileSystemFactory}
-     *
-     * @param fileSystemFactoryFactory the factory
-     * @throws IllegalStateException if the server has been started
-     */
-    public void setFileSystemFactoryFactory(FileSystemFactoryFactory fileSystemFactoryFactory) {
-        if (this.isStarted()) {
-            throw new IllegalStateException("filesystem cannot be changed after the server has been started.");
-        }
-        this.fileSystemFactoryFactory = fileSystemFactoryFactory;
-    }
-
     public void start() throws FtpException, ConfigException {
-        // use default FileSystemFactoryFactory if not specified
-        if (this.fileSystemFactoryFactory == null) {
-            setFileSystemFactoryFactory(new ReadOnlyFileSystemFactoryFactory());
-        }
+        final FileSystemFactoryFactory fileSystemFactoryFactory = constructFileSystemFactoryFactory(serverConfig);
 
         FileSystemFactory fileSystemFactory;
         try {
@@ -77,6 +63,53 @@ public class ReadOnlyServer {
 
         this.ftpServer = ftpServerFactory.createServer();
         this.ftpServer.start();
+    }
+
+    /**
+     * Create a {@link FileSystemFactoryFactory} according to the configurations and return it.
+     *
+     * <p>
+     *     It creates an instance of the {@link FileSystemFactoryFactory} specified in the configuration.
+     *     If not specified, creates an instance of the default class.
+     * </p>
+     *
+     * @param serverConfig the configurations
+     * @return constructed instance
+     * @throws ConfigException when it failed to construct FileSystemFactoryFactory specified in configurations
+     */
+    private static FileSystemFactoryFactory constructFileSystemFactoryFactory(ServerConfig serverConfig)
+            throws ConfigException {
+
+        if (serverConfig.getFileSystemFactoryFactoryClass() != null) {
+            final Class<? extends FileSystemFactoryFactory> cls = serverConfig.getFileSystemFactoryFactoryClass();
+            try {
+                return constructFileSystemFactoryFactory(cls);
+            } catch (ReflectiveOperationException e) {
+                throw new ConfigException("failed to construct " + cls, e);
+            }
+        } else {
+            // if factory class is not specified, use the default class
+            try {
+                return constructFileSystemFactoryFactory(DEFAULT_FILESYSTEM_FACTORY_FACTORY);
+            } catch (ReflectiveOperationException e) {
+                // It is not a ConfigException because the used class was not configured one.
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    /**
+     * Create a {@link FileSystemFactoryFactory} instance
+     *
+     * @param cls the class
+     * @return constructed instance
+     * @throws ReflectiveOperationException when it failed to construct FileSystemFactoryFactory
+     */
+    private static FileSystemFactoryFactory constructFileSystemFactoryFactory(
+            Class<? extends FileSystemFactoryFactory> cls
+    ) throws ReflectiveOperationException {
+        final Constructor<? extends FileSystemFactoryFactory> constructor = cls.getConstructor();
+        return constructor.newInstance();
     }
 
     public static void main(String[] args) throws FtpException, ConfigException {
