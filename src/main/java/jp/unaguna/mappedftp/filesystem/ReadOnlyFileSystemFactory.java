@@ -21,7 +21,13 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class ReadOnlyFileSystemFactory implements ConfigurableFileSystemFactory {
+    private boolean configured = false;
     private final Map<String, FileTreeItem> files = new LinkedHashMap<>();
+
+    @Override
+    public boolean isConfigured() {
+        return configured;
+    }
 
     @Override
     public FileSystemView createFileSystemView(User user) throws FtpException {
@@ -54,6 +60,8 @@ public class ReadOnlyFileSystemFactory implements ConfigurableFileSystemFactory 
 
             files.put(path, fileTreeItem);
         }
+
+        this.configured = true;
     }
 
     private FileTreeItem createFileTreeItem(AttributeHashMap fileAttributes) throws AttributeException {
