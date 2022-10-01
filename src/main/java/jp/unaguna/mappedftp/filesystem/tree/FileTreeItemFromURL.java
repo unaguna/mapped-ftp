@@ -12,6 +12,10 @@ public class FileTreeItemFromURL extends FileTreeItemReadOnlyFile {
         this.source = source;
     }
 
+    public URL getSource() {
+        return source;
+    }
+
     @Override
     public InputStream createInputStream(long offset) throws IOException {
         URLConnection connection = source.openConnection();

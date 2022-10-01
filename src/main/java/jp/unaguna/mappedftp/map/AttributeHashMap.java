@@ -7,6 +7,10 @@ public class AttributeHashMap extends HashMap<String, String> {
         super(initialCapacity, loadFactor);
     }
 
+    public AttributeHashMap() {
+        super();
+    }
+
     /**
      * get value of the specified attribute
      *

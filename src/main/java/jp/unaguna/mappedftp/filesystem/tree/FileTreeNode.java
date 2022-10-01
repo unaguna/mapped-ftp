@@ -34,6 +34,10 @@ public class FileTreeNode implements LinkedFileNode {
         }
     }
 
+    public FileTreeItem getFile() {
+        return file;
+    }
+
     /**
      * 子孫要素を追加する。
      *
