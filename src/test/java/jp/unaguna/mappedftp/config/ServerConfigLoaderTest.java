@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.xml.sax.SAXException;
 
 import java.io.IOException;
@@ -109,24 +110,6 @@ public class ServerConfigLoaderTest {
         } catch (ConfigException e) {
             // expected exception
             assertEquals("Unexpected tag found: dummy", e.getMessage());
-
-        } catch (IOException | SAXException e) {
-            fail(e);
-        }
-    }
-
-    @Test
-    public void testLoadFiles__unknown_tag_in_files(TestInfo testInfo) {
-        final Path configPath = TestUtils.getInputResource("serverConfig__unknown_tag_in_files.xml", testInfo);
-
-        final ServerConfigLoader serverConfigLoader = new ServerConfigLoader();
-        try {
-            serverConfigLoader.load(configPath);
-            fail("expected exception has not been thrown");
-
-        } catch (ConfigException e) {
-            // expected exception
-            assertEquals("Unexpected tag found in <files>: dummy", e.getMessage());
 
         } catch (IOException | SAXException e) {
             fail(e);
@@ -250,25 +233,6 @@ public class ServerConfigLoaderTest {
     }
 
     @Test
-    public void testLoadUserManager__unknown_tag_in_file_user_manager(TestInfo testInfo) {
-        final Path configPath = TestUtils.getInputResource(
-                "serverConfig__unknown_tag_in_file-user-manager.xml", testInfo);
-
-        final ServerConfigLoader serverConfigLoader = new ServerConfigLoader();
-        try {
-            serverConfigLoader.load(configPath);
-            fail("expected exception has not been thrown");
-
-        } catch (ConfigException e) {
-            // expected exception
-            assertEquals("Unexpected tag found in <file-user-manager>: dummy", e.getMessage());
-
-        } catch (IOException | SAXException e) {
-            fail(e);
-        }
-    }
-
-    @Test
     public void testLoadUserManager__unknown_attr_in_file_user_manager(TestInfo testInfo) {
         final Path configPath = TestUtils.getInputResource(
                 "serverConfig__unknown_attr_in_file-user-manager.xml", testInfo);
@@ -281,6 +245,29 @@ public class ServerConfigLoaderTest {
         } catch (ConfigException e) {
             // expected exception
             assertEquals("Unexpected attribute found in <file-user-manager>: dummy=\"\"", e.getMessage());
+
+        } catch (IOException | SAXException e) {
+            fail(e);
+        }
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "files",
+            "file-user-manager"
+    })
+    public void testLoad__unknown_tag(String parentTagName, TestInfo testInfo) {
+        final String inputResourceName = "serverConfig__unknown_tag_in_" + parentTagName + ".xml";
+        final Path configPath = TestUtils.getInputResource(inputResourceName, testInfo);
+
+        final ServerConfigLoader serverConfigLoader = new ServerConfigLoader();
+        try {
+            serverConfigLoader.load(configPath);
+            fail("expected exception has not been thrown");
+
+        } catch (ConfigException e) {
+            // expected exception
+            assertEquals("Unexpected tag found in <" + parentTagName + ">: dummy", e.getMessage());
 
         } catch (IOException | SAXException e) {
             fail(e);
