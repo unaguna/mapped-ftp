@@ -35,7 +35,7 @@ public class TestUtils {
 
         path =  Paths.get(
                 "src/test/resources/cases",
-                testClassName + "_" + testMethodName,
+                testClassName + "#" + testMethodName,
                 "input",
                 relativePath
         );

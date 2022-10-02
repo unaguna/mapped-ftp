@@ -1,6 +1,7 @@
 package jp.unaguna.mappedftp.config;
 
 import com.sun.org.apache.xerces.internal.dom.AttributeMap;
+import jp.unaguna.mappedftp.encrypt.PasswordEncryptorType;
 import jp.unaguna.mappedftp.map.AttributeHashMap;
 import jp.unaguna.mappedftp.user.ConfigurablePropertiesUserManagerFactory;
 import org.w3c.dom.*;
@@ -160,6 +161,9 @@ public class ServerConfigLoader {
                 case "file":
                     appendFileUserManagerElementFileAttribute(config, attribute);
                     break;
+                case "encrypt-passwords":
+                    appendFileUserManagerElementEncryptPasswordAttribute(config, attribute);
+                    break;
                 default:
                     throw new ConfigException("Unexpected attribute found in <" + TAG_NAME + ">: " +
                             attributeName + "=\"" + attributeValue + "\"");
@@ -182,6 +186,26 @@ public class ServerConfigLoader {
         try {
             config.setUserPropertiesPath(Paths.get(attributeValue));
         } catch (InvalidPathException e) {
+            throw new ConfigException("Unexpected value is appended to the attribute \"" +
+                    attributeName + "\": " + attributeValue, e);
+        }
+    }
+
+    /**
+     * Load values from encrypt-passwords attribute of &lt;file-user-manager&gt; element and put it into {@link ServerConfig} object.
+     *
+     * @param config the configuration object to edit
+     * @param encryptPasswordAttribute the xml element
+     * @throws ConfigException when the xml element specifies illegal configuration
+     */
+    private void appendFileUserManagerElementEncryptPasswordAttribute(ServerConfig config, Attr encryptPasswordAttribute)
+            throws ConfigException {
+        final String attributeName = encryptPasswordAttribute.getName();
+        final String attributeValue = encryptPasswordAttribute.getValue();
+
+        try {
+            config.setEncryptPasswords(PasswordEncryptorType.of(attributeValue));
+        } catch (IllegalArgumentException e) {
             throw new ConfigException("Unexpected value is appended to the attribute \"" +
                     attributeName + "\": " + attributeValue, e);
         }
