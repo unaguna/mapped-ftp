@@ -6,6 +6,8 @@ import jp.unaguna.mappedftp.config.ServerConfig;
 import jp.unaguna.mappedftp.config.ServerConfigLoader;
 import jp.unaguna.mappedftp.filesystem.ReadOnlyFileSystemFactory;
 import jp.unaguna.mappedftp.map.AttributeException;
+import jp.unaguna.mappedftp.user.ConfigurablePropertiesUserManagerFactory;
+import jp.unaguna.mappedftp.user.ConfigurableUserManagerFactory;
 import org.apache.ftpserver.FtpServer;
 import org.apache.ftpserver.FtpServerFactory;
 import org.apache.ftpserver.ftplet.FtpException;
@@ -19,6 +21,8 @@ import java.nio.file.Paths;
 public class MappedFtpServer {
     private static final Class<? extends ConfigurableFileSystemFactory> DEFAULT_FILESYSTEM_FACTORY_FACTORY =
             ReadOnlyFileSystemFactory.class;
+    private static final Class<? extends ConfigurableUserManagerFactory> DEFAULT_USER_MANAGER_FACTORY =
+            ConfigurablePropertiesUserManagerFactory.class;
     private FtpServer ftpServer = null;
     private ServerConfig serverConfig = null;
     private String serverConfigName = null;
@@ -44,9 +48,11 @@ public class MappedFtpServer {
 
     public void start() throws FtpException, ConfigException {
         final ConfigurableFileSystemFactory fileSystemFactory = constructFileSystemFactory(serverConfig);
+        final ConfigurableUserManagerFactory userManagerFactory = constructUserManagerFactory(serverConfig);
 
         try {
             fileSystemFactory.applyConfig(serverConfig);
+            userManagerFactory.applyConfig(serverConfig);
         } catch (AttributeException e) {
             throw new ConfigException("loading config failed: " + serverConfigName, e);
         }
@@ -57,13 +63,61 @@ public class MappedFtpServer {
         userFactory.setName("anonymous");
         User anonymous = userFactory.createUser();
 
-        UserManager userManager = ftpServerFactory.getUserManager();
+        UserManager userManager = userManagerFactory.createUserManager();
+        ftpServerFactory.setUserManager(userManager);
         userManager.save(anonymous);
 
         ftpServerFactory.setFileSystem(fileSystemFactory);
 
         this.ftpServer = ftpServerFactory.createServer();
         this.ftpServer.start();
+    }
+
+    /**
+     * Create a {@link ConfigurableUserManagerFactory} according to the configurations and return it.
+     *
+     * <p>
+     *     It creates an instance of the {@link ConfigurableUserManagerFactory} specified in the configuration.
+     *     If not specified, creates an instance of the default class.
+     * </p>
+     *
+     * @param serverConfig the configurations
+     * @return constructed instance
+     * @throws ConfigException when it failed to construct ConfigurableUserManagerFactory specified in configurations
+     */
+    private static ConfigurableUserManagerFactory constructUserManagerFactory(ServerConfig serverConfig)
+            throws ConfigException {
+
+        if (serverConfig.getUserManagerFactoryClass() != null) {
+            final Class<? extends ConfigurableUserManagerFactory> cls = serverConfig.getUserManagerFactoryClass();
+            try {
+                return constructUserManagerFactory(cls);
+            } catch (ReflectiveOperationException e) {
+                throw new ConfigException("failed to construct " + cls, e);
+            }
+        } else {
+            // if factory class is not specified, use the default class
+            try {
+                return constructUserManagerFactory(DEFAULT_USER_MANAGER_FACTORY);
+            } catch (ReflectiveOperationException e) {
+                // It is not a ConfigException because the used class was not configured one.
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    /**
+     * Create a {@link ConfigurableUserManagerFactory} instance
+     *
+     * @param cls the class
+     * @return constructed instance
+     * @throws ReflectiveOperationException when it failed to construct ConfigurableUserManagerFactory
+     */
+    private static ConfigurableUserManagerFactory constructUserManagerFactory(
+            Class<? extends ConfigurableUserManagerFactory> cls
+    ) throws ReflectiveOperationException {
+        final Constructor<? extends ConfigurableUserManagerFactory> constructor = cls.getConstructor();
+        return constructor.newInstance();
     }
 
     /**
