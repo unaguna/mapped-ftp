@@ -3,12 +3,14 @@ package jp.unaguna.mappedftp.config;
 import jp.unaguna.mappedftp.TestUtils;
 import jp.unaguna.mappedftp.map.AttributeHashMap;
 import jp.unaguna.mappedftp.map.AttributeMissingException;
+import jp.unaguna.mappedftp.user.ConfigurablePropertiesUserManagerFactory;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 import org.xml.sax.SAXException;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -122,6 +124,115 @@ public class ServerConfigLoaderTest {
         } catch (ConfigException e) {
             // expected exception
             assertEquals("Unexpected tag found in <files>: dummy", e.getMessage());
+
+        } catch (IOException | SAXException e) {
+            fail(e);
+        }
+    }
+
+    @Test
+    public void testLoadUserManager(TestInfo testInfo) {
+        final Path configPath = TestUtils.getInputResource("serverConfig__user_manager.xml", testInfo);
+
+        final ServerConfigLoader serverConfigLoader = new ServerConfigLoader();
+        final ServerConfig serverConfig;
+        try {
+            serverConfig = serverConfigLoader.load(configPath);
+        } catch (ConfigException | IOException | SAXException e) {
+            fail(e);
+            return;
+        }
+
+        assertEquals(Paths.get("user.properties"), serverConfig.getUserPropertiesPath());
+        assertEquals(ConfigurablePropertiesUserManagerFactory.class, serverConfig.getUserManagerFactoryClass());
+    }
+
+    @Test
+    public void testLoadUserManager__without_user_manager(TestInfo testInfo) {
+        final Path configPath = TestUtils.getInputResource("serverConfig__without_user_manager.xml", testInfo);
+
+        final ServerConfigLoader serverConfigLoader = new ServerConfigLoader();
+        final ServerConfig serverConfig;
+        try {
+            serverConfig = serverConfigLoader.load(configPath);
+        } catch (ConfigException | IOException | SAXException e) {
+            fail(e);
+            return;
+        }
+
+        assertNull(serverConfig.getUserPropertiesPath());
+        assertNull(serverConfig.getUserManagerFactoryClass());
+    }
+
+    @Test
+    public void testLoadUserManager__duplicate_user_manager(TestInfo testInfo) {
+        final Path configPath = TestUtils.getInputResource("serverConfig__duplicate_user_manager.xml", testInfo);
+
+        final ServerConfigLoader serverConfigLoader = new ServerConfigLoader();
+        try {
+            serverConfigLoader.load(configPath);
+            fail("expected exception has not been thrown");
+
+        } catch (ConfigException e) {
+            // expected exception
+            assertEquals("Multiple user managers cannot be specified.", e.getMessage());
+
+        } catch (IOException | SAXException e) {
+            fail(e);
+        }
+    }
+
+    @Test
+    public void testLoadUserManager__illegal_file_in_file_user_manager(TestInfo testInfo) {
+        final Path configPath = TestUtils.getInputResource(
+                "serverConfig__illegal_file_in_file-user-manager.xml", testInfo);
+
+        final ServerConfigLoader serverConfigLoader = new ServerConfigLoader();
+        try {
+            serverConfigLoader.load(configPath);
+            fail("expected exception has not been thrown");
+
+        } catch (ConfigException e) {
+            // expected exception
+            assertEquals("Unexpected value is appended to the attribute \"file\": :::::", e.getMessage());
+
+        } catch (IOException | SAXException e) {
+            fail(e);
+        }
+    }
+
+    @Test
+    public void testLoadUserManager__unknown_tag_in_file_user_manager(TestInfo testInfo) {
+        final Path configPath = TestUtils.getInputResource(
+                "serverConfig__unknown_tag_in_file-user-manager.xml", testInfo);
+
+        final ServerConfigLoader serverConfigLoader = new ServerConfigLoader();
+        try {
+            serverConfigLoader.load(configPath);
+            fail("expected exception has not been thrown");
+
+        } catch (ConfigException e) {
+            // expected exception
+            assertEquals("Unexpected tag found in <file-user-manager>: dummy", e.getMessage());
+
+        } catch (IOException | SAXException e) {
+            fail(e);
+        }
+    }
+
+    @Test
+    public void testLoadUserManager__unknown_attr_in_file_user_manager(TestInfo testInfo) {
+        final Path configPath = TestUtils.getInputResource(
+                "serverConfig__unknown_attr_in_file-user-manager.xml", testInfo);
+
+        final ServerConfigLoader serverConfigLoader = new ServerConfigLoader();
+        try {
+            serverConfigLoader.load(configPath);
+            fail("expected exception has not been thrown");
+
+        } catch (ConfigException e) {
+            // expected exception
+            assertEquals("Unexpected attribute found in <file-user-manager>: dummy=\"\"", e.getMessage());
 
         } catch (IOException | SAXException e) {
             fail(e);
