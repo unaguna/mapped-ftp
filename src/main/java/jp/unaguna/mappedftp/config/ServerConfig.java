@@ -1,8 +1,11 @@
 package jp.unaguna.mappedftp.config;
 
+import jp.unaguna.mappedftp.encrypt.PasswordEncryptorType;
 import jp.unaguna.mappedftp.filesystem.ConfigurableFileSystemFactory;
 import jp.unaguna.mappedftp.map.AttributeHashMap;
+import jp.unaguna.mappedftp.user.ConfigurableUserManagerFactory;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -17,7 +20,10 @@ import java.util.List;
  */
 public class ServerConfig {
     private final List<AttributeHashMap> files = new ArrayList<>();
+    private Path userPropertiesPath = null;
+    private PasswordEncryptorType encryptPasswords = null;
     private Class<? extends ConfigurableFileSystemFactory> fileSystemFactoryClass = null;
+    private Class<? extends ConfigurableUserManagerFactory> userManagerFactoryClass = null;
 
     public Class<? extends ConfigurableFileSystemFactory> getFileSystemFactoryClass() {
         return fileSystemFactoryClass;
@@ -27,6 +33,30 @@ public class ServerConfig {
             Class<? extends ConfigurableFileSystemFactory> fileSystemFactoryClass
     ) {
         this.fileSystemFactoryClass = fileSystemFactoryClass;
+    }
+
+    public Class<? extends ConfigurableUserManagerFactory> getUserManagerFactoryClass() {
+        return userManagerFactoryClass;
+    }
+
+    public void setUserManagerFactoryClass(Class<? extends ConfigurableUserManagerFactory> userManagerFactoryClass) {
+        this.userManagerFactoryClass = userManagerFactoryClass;
+    }
+
+    public Path getUserPropertiesPath() {
+        return userPropertiesPath;
+    }
+
+    public void setUserPropertiesPath(Path userPropertiesPath) {
+        this.userPropertiesPath = userPropertiesPath;
+    }
+
+    public PasswordEncryptorType getEncryptPasswords() {
+        return encryptPasswords;
+    }
+
+    public void setEncryptPasswords(PasswordEncryptorType encryptPasswords) {
+        this.encryptPasswords = encryptPasswords;
     }
 
     /**

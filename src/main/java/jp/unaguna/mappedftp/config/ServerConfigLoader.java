@@ -1,7 +1,9 @@
 package jp.unaguna.mappedftp.config;
 
 import com.sun.org.apache.xerces.internal.dom.AttributeMap;
+import jp.unaguna.mappedftp.encrypt.PasswordEncryptorType;
 import jp.unaguna.mappedftp.map.AttributeHashMap;
+import jp.unaguna.mappedftp.user.ConfigurablePropertiesUserManagerFactory;
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 
@@ -9,7 +11,11 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
+import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A loader of {@link ServerConfig}.
@@ -49,6 +55,7 @@ public class ServerConfigLoader {
      * @throws ConfigException when the configuration specifies illegal configuration
      */
     public ServerConfig load(Document xmlDocument) throws ConfigException {
+        LoadContext context = new LoadContext();
         ServerConfig config = new ServerConfig();
         Element root = xmlDocument.getDocumentElement();
 
@@ -63,6 +70,10 @@ public class ServerConfigLoader {
             String tagName = element.getNodeName();
 
             switch (tagName) {
+                case "file-user-manager":
+                    // Reflection in config is done after loading the xml file.
+                    context.fileManagerNode.add(element);
+                    break;
                 case "files":
                     appendFilesElement(config, element);
                     break;
@@ -74,7 +85,130 @@ public class ServerConfigLoader {
             }
         }
 
+        appendUserManagerElement(config, context);
+
         return config;
+    }
+
+    /**
+     * Load values from &lt;*-user-manager&gt; element and put them into {@link ServerConfig} object.
+     *
+     * @param config the configuration object to edit
+     * @param context the context of loading
+     * @throws ConfigException when the xml element specifies illegal configuration
+     */
+    private void appendUserManagerElement(ServerConfig config, LoadContext context) throws ConfigException {
+        if (context.fileManagerNode.size() > 1) {
+            throw new ConfigException("Multiple user managers cannot be specified.");
+
+        } else if (context.fileManagerNode.size() == 1) {
+            appendUserManagerElement(config, context.fileManagerNode.get(0));
+
+        }
+    }
+
+    /**
+     * Load values from &lt;*-user-manager&gt; element and put them into {@link ServerConfig} object.
+     *
+     * @param config the configuration object to edit
+     * @param userManagerElement the xml element
+     * @throws ConfigException when the xml element specifies illegal configuration
+     */
+    private void appendUserManagerElement(ServerConfig config, Node userManagerElement) throws ConfigException {
+        final String tagName = userManagerElement.getNodeName();
+        switch (tagName) {
+            case "file-user-manager":
+                appendFileUserManagerElement(config, userManagerElement);
+                break;
+            default:
+                throw new ConfigException("Unexpected tag found: " + tagName);
+        }
+    }
+
+    /**
+     * Load values from &lt;file-user-manager&gt; element and put them into {@link ServerConfig} object.
+     *
+     * @param config the configuration object to edit
+     * @param userManagerElement the xml element
+     * @throws ConfigException when the xml element specifies illegal configuration
+     */
+    private void appendFileUserManagerElement(ServerConfig config, Node userManagerElement) throws ConfigException {
+        final String TAG_NAME = "file-user-manager";
+        final NodeList childElements = userManagerElement.getChildNodes();
+        final AttributeMap attributes = (AttributeMap) userManagerElement.getAttributes();
+
+        config.setUserManagerFactoryClass(ConfigurablePropertiesUserManagerFactory.class);
+
+        for(int i=0; i<childElements.getLength(); i++){
+            final Node element = childElements.item(i);
+            final String tagName = element.getNodeName();
+
+            switch (tagName) {
+                case "#text":
+                    // インデントなどは無視する
+                    break;
+                default:
+                    throw new ConfigException("Unexpected tag found in <" + TAG_NAME + ">: " + tagName);
+            }
+        }
+
+        for(int i=0; i<attributes.getLength(); i++){
+            final Attr attribute = (Attr) attributes.item(i);
+            final String attributeName = attribute.getName();
+            final String attributeValue = attribute.getValue();
+
+            switch (attributeName) {
+                case "file":
+                    appendFileUserManagerElementFileAttribute(config, attribute);
+                    break;
+                case "encrypt-passwords":
+                    appendFileUserManagerElementEncryptPasswordAttribute(config, attribute);
+                    break;
+                default:
+                    throw new ConfigException("Unexpected attribute found in <" + TAG_NAME + ">: " +
+                            attributeName + "=\"" + attributeValue + "\"");
+            }
+        }
+    }
+
+    /**
+     * Load values from file attribute of &lt;file-user-manager&gt; element and put it into {@link ServerConfig} object.
+     *
+     * @param config the configuration object to edit
+     * @param fileAttribute the xml element
+     * @throws ConfigException when the xml element specifies illegal configuration
+     */
+    private void appendFileUserManagerElementFileAttribute(ServerConfig config, Attr fileAttribute)
+            throws ConfigException {
+        final String attributeName = fileAttribute.getName();
+        final String attributeValue = fileAttribute.getValue();
+
+        try {
+            config.setUserPropertiesPath(Paths.get(attributeValue));
+        } catch (InvalidPathException e) {
+            throw new ConfigException("Unexpected value is appended to the attribute \"" +
+                    attributeName + "\": " + attributeValue, e);
+        }
+    }
+
+    /**
+     * Load values from encrypt-passwords attribute of &lt;file-user-manager&gt; element and put it into {@link ServerConfig} object.
+     *
+     * @param config the configuration object to edit
+     * @param encryptPasswordAttribute the xml element
+     * @throws ConfigException when the xml element specifies illegal configuration
+     */
+    private void appendFileUserManagerElementEncryptPasswordAttribute(ServerConfig config, Attr encryptPasswordAttribute)
+            throws ConfigException {
+        final String attributeName = encryptPasswordAttribute.getName();
+        final String attributeValue = encryptPasswordAttribute.getValue();
+
+        try {
+            config.setEncryptPasswords(PasswordEncryptorType.of(attributeValue));
+        } catch (IllegalArgumentException e) {
+            throw new ConfigException("Unexpected value is appended to the attribute \"" +
+                    attributeName + "\": " + attributeValue, e);
+        }
     }
 
     /**
@@ -132,5 +266,9 @@ public class ServerConfigLoader {
         }
 
         return map;
+    }
+
+    private static class LoadContext {
+        public final List<Node> fileManagerNode = new ArrayList<>();
     }
 }
