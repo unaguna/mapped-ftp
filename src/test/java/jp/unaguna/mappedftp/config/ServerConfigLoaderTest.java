@@ -47,8 +47,8 @@ public class ServerConfigLoaderTest {
             assertEquals(0, loadedFiles.get(1).size(),
                     () -> "redundant attributes: " + String.join(",", loadedFiles.get(1).keySet()));
 
-            // assert fileSystemFactoryFactoryClass
-            assertNull(serverConfig.getFileSystemFactoryFactoryClass());
+            // assert fileSystemFactoryClass
+            assertNull(serverConfig.getFileSystemFactoryClass());
 
         } catch (AttributeMissingException e) {
             fail(e);

@@ -1,5 +1,6 @@
 package jp.unaguna.mappedftp.config;
 
+import jp.unaguna.mappedftp.filesystem.ConfigurableFileSystemFactory;
 import jp.unaguna.mappedftp.map.AttributeHashMap;
 
 import java.util.ArrayList;
@@ -16,16 +17,16 @@ import java.util.List;
  */
 public class ServerConfig {
     private final List<AttributeHashMap> files = new ArrayList<>();
-    private Class<? extends FileSystemFactoryFactory> fileSystemFactoryFactoryClass = null;
+    private Class<? extends ConfigurableFileSystemFactory> fileSystemFactoryClass = null;
 
-    public Class<? extends FileSystemFactoryFactory> getFileSystemFactoryFactoryClass() {
-        return fileSystemFactoryFactoryClass;
+    public Class<? extends ConfigurableFileSystemFactory> getFileSystemFactoryClass() {
+        return fileSystemFactoryClass;
     }
 
-    public void setFileSystemFactoryFactoryClass(
-            Class<? extends FileSystemFactoryFactory> fileSystemFactoryFactoryClass
+    public void setFileSystemFactoryClass(
+            Class<? extends ConfigurableFileSystemFactory> fileSystemFactoryClass
     ) {
-        this.fileSystemFactoryFactoryClass = fileSystemFactoryFactoryClass;
+        this.fileSystemFactoryClass = fileSystemFactoryClass;
     }
 
     /**
