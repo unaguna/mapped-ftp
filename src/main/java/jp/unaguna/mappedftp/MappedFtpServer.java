@@ -1,7 +1,7 @@
 package jp.unaguna.mappedftp;
 
 import jp.unaguna.mappedftp.config.ConfigException;
-import jp.unaguna.mappedftp.config.ConfigurableFileSystemFactory;
+import jp.unaguna.mappedftp.filesystem.ConfigurableFileSystemFactory;
 import jp.unaguna.mappedftp.config.ServerConfig;
 import jp.unaguna.mappedftp.config.ServerConfigLoader;
 import jp.unaguna.mappedftp.filesystem.ReadOnlyFileSystemFactory;

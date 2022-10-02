@@ -1,6 +1,5 @@
 package jp.unaguna.mappedftp.filesystem;
 
-import jp.unaguna.mappedftp.config.ConfigurableFileSystemFactory;
 import jp.unaguna.mappedftp.config.ServerConfig;
 import jp.unaguna.mappedftp.filesystem.tree.*;
 import jp.unaguna.mappedftp.map.AttributeException;

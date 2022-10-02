@@ -1,5 +1,6 @@
 package jp.unaguna.mappedftp.config;
 
+import jp.unaguna.mappedftp.filesystem.ConfigurableFileSystemFactory;
 import jp.unaguna.mappedftp.map.AttributeHashMap;
 
 import java.util.ArrayList;
