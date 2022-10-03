@@ -11,6 +11,8 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -33,6 +35,19 @@ public class ServerConfigLoader {
      * @throws SAXException when the configuration file is not legal XML file
      */
     public ServerConfig load(Path configPath) throws ConfigException, IOException, SAXException {
+        return load(Files.newInputStream(configPath));
+    }
+
+    /**
+     * Load a XML configuration file.
+     *
+     * @param configFile configuration file to read
+     * @return a configuration object
+     * @throws ConfigException when the configuration file specifies illegal configuration
+     * @throws IOException when IO error is occurred within reading config file
+     * @throws SAXException when the configuration file is not legal XML file
+     */
+    public ServerConfig load(InputStream configFile) throws ConfigException, IOException, SAXException {
         DocumentBuilderFactory documentbuilderfactory = DocumentBuilderFactory.newInstance();
         documentbuilderfactory.setIgnoringComments(true);
         final DocumentBuilder documentbuilder;
@@ -42,7 +57,7 @@ public class ServerConfigLoader {
             throw new RuntimeException(e);
         }
 
-        Document document = documentbuilder.parse(configPath.toFile());
+        Document document = documentbuilder.parse(configFile);
 
         return load(document);
     }
