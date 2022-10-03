@@ -35,7 +35,9 @@ public class ServerConfigLoader {
      * @throws SAXException when the configuration file is not legal XML file
      */
     public ServerConfig load(Path configPath) throws ConfigException, IOException, SAXException {
-        return load(Files.newInputStream(configPath));
+        try (InputStream configAsStream = Files.newInputStream(configPath)) {
+            return load(configAsStream);
+        }
     }
 
     /**
