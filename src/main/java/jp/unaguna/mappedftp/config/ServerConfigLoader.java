@@ -201,7 +201,7 @@ public class ServerConfigLoader {
         final String attributeValue = fileAttribute.getValue();
 
         try {
-            config.setUserPropertiesPath(Paths.get(attributeValue));
+            config.setUserPropertiesPath(attributeValue);
         } catch (InvalidPathException e) {
             throw new ConfigException("Unexpected value is appended to the attribute \"" +
                     attributeName + "\": " + attributeValue, e);

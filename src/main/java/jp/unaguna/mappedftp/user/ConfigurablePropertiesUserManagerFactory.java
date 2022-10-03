@@ -10,6 +10,7 @@ import org.apache.ftpserver.usermanager.impl.PropertiesUserManager;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class ConfigurablePropertiesUserManagerFactory implements ConfigurableUserManagerFactory {
     private boolean isConfigured = false;
@@ -24,7 +25,9 @@ public class ConfigurablePropertiesUserManagerFactory implements ConfigurableUse
 
     @Override
     public void applyConfig(ServerConfig serverConfig) throws AttributeException {
-        this.userPropertiesPath = serverConfig.getUserPropertiesPath();
+        this.userPropertiesPath = serverConfig.getUserPropertiesPath() != null
+                ? Paths.get(serverConfig.getUserPropertiesPath())
+                : null;
         this.passwordEncryptorType = serverConfig.getEncryptPasswords();
 
         this.isConfigured = true;
