@@ -12,6 +12,8 @@ import org.apache.ftpserver.FtpServer;
 import org.apache.ftpserver.FtpServerFactory;
 import org.apache.ftpserver.ftplet.FtpException;
 import org.apache.ftpserver.ftplet.UserManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Constructor;
 import java.net.URL;
@@ -22,6 +24,8 @@ public class MappedFtpServer {
             ReadOnlyFileSystemFactory.class;
     private static final Class<? extends ConfigurableUserManagerFactory> DEFAULT_USER_MANAGER_FACTORY =
             ConfigurablePropertiesUserManagerFactory.class;
+
+    private static final Logger LOG = LoggerFactory.getLogger(MappedFtpServer.class.getName());
     private FtpServer ftpServer = null;
     private ServerConfig serverConfig = null;
     private String serverConfigName = null;
@@ -173,6 +177,7 @@ public class MappedFtpServer {
                 throw new RuntimeException("The default configuration file is not found.");
             }
 
+            LOG.info("Load default configuration file: " + defaultConfigUrl);
             configPath = defaultConfigUrl.toString();
             try {
                 config = configLoader.load(defaultConfigUrl);
@@ -181,6 +186,7 @@ public class MappedFtpServer {
             }
         } else {
             configPath = args[0];
+            LOG.info("Load configuration file: " + args[0]);
             try {
                 config = configLoader.load(Paths.get(configPath));
             } catch (Exception e) {
