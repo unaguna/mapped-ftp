@@ -12,10 +12,10 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,6 +36,21 @@ public class ServerConfigLoader {
      */
     public ServerConfig load(Path configPath) throws ConfigException, IOException, SAXException {
         try (InputStream configAsStream = Files.newInputStream(configPath)) {
+            return load(configAsStream);
+        }
+    }
+
+    /**
+     * Load a XML configuration file.
+     *
+     * @param configUrl the url of the configuration file to read
+     * @return a configuration object
+     * @throws ConfigException when the configuration file specifies illegal configuration
+     * @throws IOException when IO error is occurred within reading config file
+     * @throws SAXException when the configuration file is not legal XML file
+     */
+    public ServerConfig load(URL configUrl) throws ConfigException, IOException, SAXException {
+        try (InputStream configAsStream = configUrl.openStream()) {
             return load(configAsStream);
         }
     }

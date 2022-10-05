@@ -14,6 +14,7 @@ import org.apache.ftpserver.ftplet.FtpException;
 import org.apache.ftpserver.ftplet.UserManager;
 
 import java.lang.reflect.Constructor;
+import java.net.URL;
 import java.nio.file.Paths;
 
 public class MappedFtpServer {
@@ -161,13 +162,30 @@ public class MappedFtpServer {
     }
 
     public static void main(String[] args) throws FtpException, ConfigException {
-        ServerConfigLoader configLoader = new ServerConfigLoader();
-        String configPath = args[0];
-        ServerConfig config;
-        try {
-            config = configLoader.load(Paths.get(configPath));
-        } catch (Exception e) {
-            throw new ConfigException("loading config failed: " + configPath, e);
+        final ServerConfigLoader configLoader = new ServerConfigLoader();
+
+        final String configPath;
+        final ServerConfig config;
+        if (args.length == 0) {
+            final URL defaultConfigUrl =
+                    MappedFtpServer.class.getResource("/jp.unaguna.mappedftp/default_config.xml");
+            if (defaultConfigUrl == null) {
+                throw new RuntimeException("The default configuration file is not found.");
+            }
+
+            configPath = defaultConfigUrl.toString();
+            try {
+                config = configLoader.load(defaultConfigUrl);
+            } catch (Exception e) {
+                throw new ConfigException("loading default config failed", e);
+            }
+        } else {
+            configPath = args[0];
+            try {
+                config = configLoader.load(Paths.get(configPath));
+            } catch (Exception e) {
+                throw new ConfigException("loading config failed: " + configPath, e);
+            }
         }
 
         MappedFtpServer server = new MappedFtpServer();
