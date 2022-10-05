@@ -5,7 +5,6 @@ import jp.unaguna.mappedftp.filesystem.ConfigurableFileSystemFactory;
 import jp.unaguna.mappedftp.map.AttributeHashMap;
 import jp.unaguna.mappedftp.user.ConfigurableUserManagerFactory;
 
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;

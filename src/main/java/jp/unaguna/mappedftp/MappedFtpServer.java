@@ -1,9 +1,9 @@
 package jp.unaguna.mappedftp;
 
 import jp.unaguna.mappedftp.config.ConfigException;
-import jp.unaguna.mappedftp.filesystem.ConfigurableFileSystemFactory;
 import jp.unaguna.mappedftp.config.ServerConfig;
 import jp.unaguna.mappedftp.config.ServerConfigLoader;
+import jp.unaguna.mappedftp.filesystem.ConfigurableFileSystemFactory;
 import jp.unaguna.mappedftp.filesystem.ReadOnlyFileSystemFactory;
 import jp.unaguna.mappedftp.map.AttributeException;
 import jp.unaguna.mappedftp.user.ConfigurablePropertiesUserManagerFactory;
@@ -11,9 +11,7 @@ import jp.unaguna.mappedftp.user.ConfigurableUserManagerFactory;
 import org.apache.ftpserver.FtpServer;
 import org.apache.ftpserver.FtpServerFactory;
 import org.apache.ftpserver.ftplet.FtpException;
-import org.apache.ftpserver.ftplet.User;
 import org.apache.ftpserver.ftplet.UserManager;
-import org.apache.ftpserver.usermanager.UserFactory;
 
 import java.lang.reflect.Constructor;
 import java.nio.file.Paths;
@@ -59,13 +57,8 @@ public class MappedFtpServer {
 
         FtpServerFactory ftpServerFactory = new FtpServerFactory();
 
-        UserFactory userFactory = new UserFactory();
-        userFactory.setName("anonymous");
-        User anonymous = userFactory.createUser();
-
         UserManager userManager = userManagerFactory.createUserManager();
         ftpServerFactory.setUserManager(userManager);
-        userManager.save(anonymous);
 
         ftpServerFactory.setFileSystem(fileSystemFactory);
 
