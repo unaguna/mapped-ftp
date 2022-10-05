@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<MappedFtp>
-    <files>
-        <file type="url" path="/https/google.txt" src="https://www.google.com/" />
-        <file type="url" path="/https/yahoo.txt" src="https://www.yahoo.co.jp/" />
-        <file type="local" path="/my-pom.xml" src="./pom.xml" />
-    </files>
-</MappedFtp>

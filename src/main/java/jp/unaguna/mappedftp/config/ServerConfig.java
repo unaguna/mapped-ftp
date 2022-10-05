@@ -5,7 +5,6 @@ import jp.unaguna.mappedftp.filesystem.ConfigurableFileSystemFactory;
 import jp.unaguna.mappedftp.map.AttributeHashMap;
 import jp.unaguna.mappedftp.user.ConfigurableUserManagerFactory;
 
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -20,7 +19,7 @@ import java.util.List;
  */
 public class ServerConfig {
     private final List<AttributeHashMap> files = new ArrayList<>();
-    private Path userPropertiesPath = null;
+    private String userPropertiesPath = null;
     private PasswordEncryptorType encryptPasswords = null;
     private Class<? extends ConfigurableFileSystemFactory> fileSystemFactoryClass = null;
     private Class<? extends ConfigurableUserManagerFactory> userManagerFactoryClass = null;
@@ -43,11 +42,11 @@ public class ServerConfig {
         this.userManagerFactoryClass = userManagerFactoryClass;
     }
 
-    public Path getUserPropertiesPath() {
+    public String getUserPropertiesPath() {
         return userPropertiesPath;
     }
 
-    public void setUserPropertiesPath(Path userPropertiesPath) {
+    public void setUserPropertiesPath(String userPropertiesPath) {
         this.userPropertiesPath = userPropertiesPath;
     }
 

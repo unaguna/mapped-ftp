@@ -1,9 +1,9 @@
 package jp.unaguna.mappedftp;
 
 import jp.unaguna.mappedftp.config.ConfigException;
-import jp.unaguna.mappedftp.filesystem.ConfigurableFileSystemFactory;
 import jp.unaguna.mappedftp.config.ServerConfig;
 import jp.unaguna.mappedftp.config.ServerConfigLoader;
+import jp.unaguna.mappedftp.filesystem.ConfigurableFileSystemFactory;
 import jp.unaguna.mappedftp.filesystem.ReadOnlyFileSystemFactory;
 import jp.unaguna.mappedftp.map.AttributeException;
 import jp.unaguna.mappedftp.user.ConfigurablePropertiesUserManagerFactory;
@@ -11,11 +11,12 @@ import jp.unaguna.mappedftp.user.ConfigurableUserManagerFactory;
 import org.apache.ftpserver.FtpServer;
 import org.apache.ftpserver.FtpServerFactory;
 import org.apache.ftpserver.ftplet.FtpException;
-import org.apache.ftpserver.ftplet.User;
 import org.apache.ftpserver.ftplet.UserManager;
-import org.apache.ftpserver.usermanager.UserFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Constructor;
+import java.net.URL;
 import java.nio.file.Paths;
 
 public class MappedFtpServer {
@@ -23,6 +24,8 @@ public class MappedFtpServer {
             ReadOnlyFileSystemFactory.class;
     private static final Class<? extends ConfigurableUserManagerFactory> DEFAULT_USER_MANAGER_FACTORY =
             ConfigurablePropertiesUserManagerFactory.class;
+
+    private static final Logger LOG = LoggerFactory.getLogger(MappedFtpServer.class.getName());
     private FtpServer ftpServer = null;
     private ServerConfig serverConfig = null;
     private String serverConfigName = null;
@@ -59,13 +62,8 @@ public class MappedFtpServer {
 
         FtpServerFactory ftpServerFactory = new FtpServerFactory();
 
-        UserFactory userFactory = new UserFactory();
-        userFactory.setName("anonymous");
-        User anonymous = userFactory.createUser();
-
         UserManager userManager = userManagerFactory.createUserManager();
         ftpServerFactory.setUserManager(userManager);
-        userManager.save(anonymous);
 
         ftpServerFactory.setFileSystem(fileSystemFactory);
 
@@ -168,13 +166,32 @@ public class MappedFtpServer {
     }
 
     public static void main(String[] args) throws FtpException, ConfigException {
-        ServerConfigLoader configLoader = new ServerConfigLoader();
-        String configPath = args[0];
-        ServerConfig config;
-        try {
-            config = configLoader.load(Paths.get(configPath));
-        } catch (Exception e) {
-            throw new ConfigException("loading config failed: " + configPath, e);
+        final ServerConfigLoader configLoader = new ServerConfigLoader();
+
+        final String configPath;
+        final ServerConfig config;
+        if (args.length == 0) {
+            final URL defaultConfigUrl =
+                    MappedFtpServer.class.getResource("/jp.unaguna.mappedftp/default_config.xml");
+            if (defaultConfigUrl == null) {
+                throw new RuntimeException("The default configuration file is not found.");
+            }
+
+            LOG.info("Load default configuration file: " + defaultConfigUrl);
+            configPath = defaultConfigUrl.toString();
+            try {
+                config = configLoader.load(defaultConfigUrl);
+            } catch (Exception e) {
+                throw new ConfigException("loading default config failed", e);
+            }
+        } else {
+            configPath = args[0];
+            LOG.info("Load configuration file: " + args[0]);
+            try {
+                config = configLoader.load(Paths.get(configPath));
+            } catch (Exception e) {
+                throw new ConfigException("loading config failed: " + configPath, e);
+            }
         }
 
         MappedFtpServer server = new MappedFtpServer();

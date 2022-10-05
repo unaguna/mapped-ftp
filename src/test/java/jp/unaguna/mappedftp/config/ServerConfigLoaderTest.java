@@ -129,7 +129,7 @@ public class ServerConfigLoaderTest {
             return;
         }
 
-        assertEquals(Paths.get("user.properties"), serverConfig.getUserPropertiesPath());
+        assertEquals("user.properties", serverConfig.getUserPropertiesPath());
         assertEquals(ConfigurablePropertiesUserManagerFactory.class, serverConfig.getUserManagerFactoryClass());
     }
 
@@ -207,25 +207,6 @@ public class ServerConfigLoaderTest {
         } catch (ConfigException e) {
             // expected exception
             assertEquals("Multiple user managers cannot be specified.", e.getMessage());
-
-        } catch (IOException | SAXException e) {
-            fail(e);
-        }
-    }
-
-    @Test
-    public void testLoadUserManager__illegal_file_in_file_user_manager(TestInfo testInfo) {
-        final Path configPath = TestUtils.getInputResource(
-                "serverConfig__illegal_file_in_file-user-manager.xml", testInfo);
-
-        final ServerConfigLoader serverConfigLoader = new ServerConfigLoader();
-        try {
-            serverConfigLoader.load(configPath);
-            fail("expected exception has not been thrown");
-
-        } catch (ConfigException e) {
-            // expected exception
-            assertEquals("Unexpected value is appended to the attribute \"file\": :::::", e.getMessage());
 
         } catch (IOException | SAXException e) {
             fail(e);

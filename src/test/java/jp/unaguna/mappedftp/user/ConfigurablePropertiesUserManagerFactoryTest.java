@@ -49,7 +49,7 @@ public class ConfigurablePropertiesUserManagerFactoryTest {
         final Path userPropertiesPath = TestUtils.getInputResource("user.properties", testInfo);
 
         final ServerConfig serverConfig = new ServerConfig(){{
-            setUserPropertiesPath(userPropertiesPath);
+            setUserPropertiesPath(userPropertiesPath.toString());
         }};
 
         final ConfigurablePropertiesUserManagerFactory factory = new ConfigurablePropertiesUserManagerFactory();
