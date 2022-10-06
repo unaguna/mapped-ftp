@@ -375,7 +375,7 @@ public class ReadOnlyFileSystemFactoryTest {
     @Test
     public void testCreate__type_classpath__attribute_src() {
 //        Path localPath = TestUtils.getInputResource("local.txt", testInfo);
-        String path = "/input/local.txt";
+        String path = "/unittest/input/local.txt";
 
         final ServerConfig serverConfig = new ServerConfig(){{
             putFile(new AttributeHashMap(){{
@@ -411,7 +411,7 @@ public class ReadOnlyFileSystemFactoryTest {
     @Test
     public void testCreate__type_classpath__error_by_root_as_not_dir(TestInfo testInfo) {
 //        Path localPath = TestUtils.getInputResource("local.txt", testInfo);
-        String path = "/input/local.txt";
+        String path = "/unittest/input/local.txt";
 
         final ServerConfig serverConfig = new ServerConfig(){{
             putFile(new AttributeHashMap(){{
@@ -469,7 +469,7 @@ public class ReadOnlyFileSystemFactoryTest {
     @Test
     public void testCreate__type_classpath__error_by_unknown_attribute(TestInfo testInfo) {
 //        Path localPath = TestUtils.getInputResource("local.txt", testInfo);
-        String path = "/input/local.txt";
+        String path = "/unittest/input/local.txt";
 
         final ServerConfig serverConfig = new ServerConfig(){{
             putFile(new AttributeHashMap(){{

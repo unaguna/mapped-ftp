@@ -26,9 +26,9 @@ public class TestUtils {
      *     The file is searched in the following paths.
      * </p>
      * <ol>
-     *     <li><code>./src/test/resources/cases/${simpleNameOfTestClass}_${nameOfTestMethod}/input/</code></li>
-     *     <li><code>./src/test/resources/cases/${simpleNameOfTestClass}/input/</code></li>
-     *     <li><code>./src/test/resources/input/</code></li>
+     *     <li><code>./src/test/resources/unittest/cases/${simpleNameOfTestClass}_${nameOfTestMethod}/input/</code></li>
+     *     <li><code>./src/test/resources/unittest/cases/${simpleNameOfTestClass}/input/</code></li>
+     *     <li><code>./src/test/resources/unittest/input/</code></li>
      * </ol>
      *
      * @param relativePath the name of file to get
@@ -41,7 +41,7 @@ public class TestUtils {
         final String testMethodName = testInfo.getTestMethod().orElseThrow(NullPointerException::new).getName();
 
         path =  Paths.get(
-                "src/test/resources/cases",
+                "src/test/resources/unittest/cases",
                 testClassName + "#" + testMethodName,
                 "input",
                 relativePath
@@ -51,7 +51,7 @@ public class TestUtils {
         }
 
         path = Paths.get(
-                "src/test/resources/cases",
+                "src/test/resources/unittest/cases",
                 testClassName,
                 "input",
                 relativePath
@@ -61,7 +61,7 @@ public class TestUtils {
         }
 
         path = Paths.get(
-                "src/test/resources",
+                "src/test/resources/unittest",
                 "input",
                 relativePath
         );
