@@ -1,6 +1,5 @@
 package jp.unaguna.mappedftp.user;
 
-import jp.unaguna.mappedftp.TestUtils;
 import jp.unaguna.mappedftp.config.ServerConfig;
 import jp.unaguna.mappedftp.encrypt.PasswordEncryptorType;
 import jp.unaguna.mappedftp.map.AttributeException;
@@ -16,7 +15,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import java.nio.file.Path;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -46,10 +44,11 @@ public class ConfigurablePropertiesUserManagerFactoryTest {
 
     @Test
     public void testCreate__user_properties_path(TestInfo testInfo) {
-        final Path userPropertiesPath = TestUtils.getInputResource("user.properties", testInfo);
+//        final Path userPropertiesPath = TestUtils.getInputResource("user.properties", testInfo);
+        String userPropertiesPath = "/unittest/cases/ConfigurablePropertiesUserManagerFactoryTest/input/user.properties";
 
         final ServerConfig serverConfig = new ServerConfig(){{
-            setUserPropertiesPath(userPropertiesPath.toString());
+            setUserPropertiesPath(userPropertiesPath);
         }};
 
         final ConfigurablePropertiesUserManagerFactory factory = new ConfigurablePropertiesUserManagerFactory();

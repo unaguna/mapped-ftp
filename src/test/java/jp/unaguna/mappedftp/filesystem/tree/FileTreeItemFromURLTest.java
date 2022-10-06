@@ -5,22 +5,14 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 
 import java.io.*;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.file.Path;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class FileTreeItemFromURLTest {
     @Test
     public void testSource(TestInfo testInfo) {
-        final Path localPath = TestUtils.getInputResource("local.txt", testInfo);
-        final URL source;
-        try {
-            source = localPath.toUri().toURL();
-        } catch (MalformedURLException e) {
-            throw new RuntimeException(e);
-        }
+        final URL source = TestUtils.getInputResource("local.txt", testInfo);
 
         FileTreeItemFromURL fileTreeItem = new FileTreeItemFromURL(source);
 
@@ -29,13 +21,7 @@ public class FileTreeItemFromURLTest {
 
     @Test
     public void testInputStream(TestInfo testInfo) {
-        Path localPath = TestUtils.getInputResource("local.txt", testInfo);
-        final URL source;
-        try {
-            source = localPath.toUri().toURL();
-        } catch (MalformedURLException e) {
-            throw new RuntimeException(e);
-        }
+        final URL source = TestUtils.getInputResource("local.txt", testInfo);
 
         FileTreeItemFromURL fileTreeItem = new FileTreeItemFromURL(source);
 
