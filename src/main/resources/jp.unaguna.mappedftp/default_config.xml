@@ -2,6 +2,7 @@
 <MappedFtp>
     <file-user-manager file="/jp.unaguna.mappedftp/default_user.properties" />
     <files>
-        <file type="url" path="/https/google.txt" src="https://www.google.com/" />
+        <file type="classpath" path="/default-config/default_config.xml" src="/jp.unaguna.mappedftp/default_config.xml" />
+        <file type="classpath" path="/default-config/default_user.properties" src="/jp.unaguna.mappedftp/default_user.properties" />
     </files>
 </MappedFtp>
