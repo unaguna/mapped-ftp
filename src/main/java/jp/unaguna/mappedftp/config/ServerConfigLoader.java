@@ -1,6 +1,5 @@
 package jp.unaguna.mappedftp.config;
 
-import com.sun.org.apache.xerces.internal.dom.AttributeMap;
 import jp.unaguna.mappedftp.encrypt.PasswordEncryptorType;
 import jp.unaguna.mappedftp.map.AttributeHashMap;
 import jp.unaguna.mappedftp.user.ConfigurablePropertiesUserManagerFactory;
@@ -167,7 +166,7 @@ public class ServerConfigLoader {
     private void appendFileUserManagerElement(ServerConfig config, Node userManagerElement) throws ConfigException {
         final String TAG_NAME = "file-user-manager";
         final NodeList childElements = userManagerElement.getChildNodes();
-        final AttributeMap attributes = (AttributeMap) userManagerElement.getAttributes();
+        final NamedNodeMap attributes = userManagerElement.getAttributes();
 
         config.setUserManagerFactoryClass(ConfigurablePropertiesUserManagerFactory.class);
 
@@ -279,16 +278,16 @@ public class ServerConfigLoader {
      * @param fileElement the xml element
      */
     private void appendFileElement(ServerConfig config, Node fileElement) {
-        AttributeMap attributes = (AttributeMap) fileElement.getAttributes();
-        config.putFile(attributeMapToMap(attributes));
+        NamedNodeMap attributes = fileElement.getAttributes();
+        config.putFile(namedNodeMapToAttributeMap(attributes));
     }
 
     /**
-     * Convert an {@link AttributeMap} to an {@link AttributeHashMap}.
+     * Convert an {@link NamedNodeMap} to an {@link AttributeHashMap}.
      *
      * @param attributeMap the instance to convert
      */
-    private static AttributeHashMap attributeMapToMap(AttributeMap attributeMap) {
+    private static AttributeHashMap namedNodeMapToAttributeMap(NamedNodeMap attributeMap) {
         AttributeHashMap map = new AttributeHashMap(attributeMap.getLength(), 1.0F);
 
         for(int i=0; i<attributeMap.getLength(); i++) {
