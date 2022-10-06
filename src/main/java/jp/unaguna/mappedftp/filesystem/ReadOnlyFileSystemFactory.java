@@ -72,6 +72,8 @@ public class ReadOnlyFileSystemFactory implements ConfigurableFileSystemFactory 
                 return createFileTreeItemFromLocalFile(fileAttributes);
             case "url":
                 return createFileTreeItemFromURL(fileAttributes);
+            case "classpath":
+                return createFileTreeItemFromClasspath(fileAttributes);
             default:
                 throw new IllegalAttributeException("unknown type is specified: type=\"" + type + "\"");
         }
@@ -98,6 +100,18 @@ public class ReadOnlyFileSystemFactory implements ConfigurableFileSystemFactory 
             url = new URL(fileAttributes.pop("src"));
         } catch (MalformedURLException e) {
             throw new IllegalAttributeException("src", e);
+        }
+
+        return new FileTreeItemFromURL(url);
+    }
+
+    private static FileTreeItem createFileTreeItemFromClasspath(AttributeHashMap fileAttributes) throws AttributeException {
+
+        // load attributes
+        final String src = fileAttributes.pop("src");
+        final URL url = ReadOnlyFileSystemFactory.class.getResource(src);
+        if (url == null) {
+            throw new IllegalAttributeException("src", new Exception("no such resource: " + src));
         }
 
         return new FileTreeItemFromURL(url);

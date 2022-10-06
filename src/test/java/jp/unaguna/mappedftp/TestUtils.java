@@ -2,10 +2,17 @@ package jp.unaguna.mappedftp;
 
 import org.junit.jupiter.api.TestInfo;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * It provides functionality specific to tests of this project.
@@ -63,5 +70,52 @@ public class TestUtils {
         }
 
         throw new RuntimeException(new NoSuchFileException(relativePath));
+    }
+
+    /**
+     * Assert that expected lines equal to actual content of the text file.
+     *
+     * @param expectedLines expected lines
+     * @param actual the actual text file
+     * @throws IOException some error occurred when read the actual file
+     */
+    public static void assertTextFile(String[] expectedLines, InputStream actual) throws IOException {
+        try (
+                final InputStreamReader r = new InputStreamReader(actual);
+                final BufferedReader reader = new BufferedReader(r)
+        ) {
+            int i;
+            for (i=0; i < expectedLines.length; i++) {
+                final int lineNum = i;
+                final String expectedLine = expectedLines[i];
+                final String actualLine = reader.readLine();
+
+                if (actualLine != null) {
+                    assertEquals(expectedLine, actualLine,
+                            () -> "expected line[" + lineNum + "] was \"" + expectedLine + "\" but actual was \"" + actualLine + "\"");
+
+                } else {
+                    if (!expectedLine.equals("")) {
+                        fail("expected line[" + lineNum + "] was \"" + expectedLine + "\" but actual has lesser lines");
+                    }
+                }
+            }
+
+            // non-expected lines
+            for(;; i++) {
+                final String actualLine = reader.readLine();
+                if (actualLine == null) {
+                    break;
+                }
+
+                if (!actualLine.equals("")) {
+                    fail("expected text doesn't have line[" + i + "] but actual was \"" + actualLine + "\"");
+                }
+            }
+
+            // asserted
+        } finally {
+            actual.close();
+        }
     }
 }

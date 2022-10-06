@@ -14,10 +14,12 @@ import org.apache.ftpserver.ftplet.FtpException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 
+import static jp.unaguna.mappedftp.TestUtils.assertTextFile;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ReadOnlyFileSystemFactoryTest {
@@ -349,6 +351,131 @@ public class ReadOnlyFileSystemFactoryTest {
                 put("type", "local");
                 put("path", "/dir1/file1");
                 put("src", localPath.toString());
+                put("dummy", "");
+            }});
+        }};
+
+        final ReadOnlyFileSystemFactory factory = new ReadOnlyFileSystemFactory();
+        try {
+            factory.applyConfig(serverConfig);
+            assertTrue(factory.isConfigured());
+
+            factory.createFileSystemView(new UserStub());
+            fail("expected exception has not been thrown");
+
+        } catch (UnknownAttributeException e) {
+            // expected exception
+            assertTrue(e.getMessage().endsWith(": dummy"));
+
+        } catch (AttributeException|FtpException e) {
+            fail(e);
+        }
+    }
+
+    @Test
+    public void testCreate__type_classpath__attribute_src() {
+//        Path localPath = TestUtils.getInputResource("local.txt", testInfo);
+        String path = "/input/local.txt";
+
+        final ServerConfig serverConfig = new ServerConfig(){{
+            putFile(new AttributeHashMap(){{
+                put("type", "classpath");
+                put("path", "/dir1/file1");
+                put("src", path);
+            }});
+        }};
+
+        final ReadOnlyFileSystemFactory factory = new ReadOnlyFileSystemFactory();
+        final LinkedFileSystemView fileSystemView;
+        try {
+            factory.applyConfig(serverConfig);
+            assertTrue(factory.isConfigured());
+
+            fileSystemView = (LinkedFileSystemView) factory.createFileSystemView(new UserStub());
+        } catch (AttributeException | FtpException e) {
+            fail(e);
+            return;
+        }
+
+        try {
+            final FileTreeNode nodeFile1 = (FileTreeNode) fileSystemView.getFile("/dir1/file1");
+            final FileTreeItemFromURL itemFile1 = (FileTreeItemFromURL) nodeFile1.getFile();
+
+            assertTextFile(new String[]{"I am a text file for test"}, itemFile1.createInputStream(0));
+
+        } catch (FtpException|IOException e) {
+            fail(e);
+        }
+    }
+
+    @Test
+    public void testCreate__type_classpath__error_by_root_as_not_dir(TestInfo testInfo) {
+//        Path localPath = TestUtils.getInputResource("local.txt", testInfo);
+        String path = "/input/local.txt";
+
+        final ServerConfig serverConfig = new ServerConfig(){{
+            putFile(new AttributeHashMap(){{
+                put("type", "classpath");
+                put("path", "/");
+                put("src", path);
+            }});
+        }};
+
+        final ReadOnlyFileSystemFactory factory = new ReadOnlyFileSystemFactory();
+        try {
+            factory.applyConfig(serverConfig);
+            assertTrue(factory.isConfigured());
+
+            factory.createFileSystemView(new UserStub());
+            fail("expected exception has not been thrown");
+
+        } catch (IllegalAttributeException e) {
+            // expected exception
+            assertEquals("cannot append a non-directory file on the root \"/\"", e.getMessage());
+
+        } catch (AttributeException|FtpException e) {
+            fail(e);
+        }
+    }
+
+    @Test
+    public void testCreate__type_classpath__error_by_non_exist_path() {
+        final ServerConfig serverConfig = new ServerConfig(){{
+            putFile(new AttributeHashMap(){{
+                put("type", "classpath");
+                put("path", "/file1");
+                put("src", "/no/exist/path");
+            }});
+        }};
+
+        final ReadOnlyFileSystemFactory factory = new ReadOnlyFileSystemFactory();
+        try {
+            factory.applyConfig(serverConfig);
+            assertTrue(factory.isConfigured());
+
+            factory.createFileSystemView(new UserStub());
+            fail("expected exception has not been thrown");
+
+        } catch (IllegalAttributeException e) {
+            // expected exception
+            assertEquals("illegal attribute: src", e.getMessage());
+            assertTrue(e.getCause().getMessage().contains("/no/exist/path"));
+
+        } catch (AttributeException|FtpException e) {
+            fail(e);
+        }
+    }
+
+    @Test
+    public void testCreate__type_classpath__error_by_unknown_attribute(TestInfo testInfo) {
+//        Path localPath = TestUtils.getInputResource("local.txt", testInfo);
+        String path = "/input/local.txt";
+
+        final ServerConfig serverConfig = new ServerConfig(){{
+            putFile(new AttributeHashMap(){{
+                put("type", "classpath");
+                put("path", "/dir1/file1");
+                put("src", path);
                 put("dummy", "");
             }});
         }};
