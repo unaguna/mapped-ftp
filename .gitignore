@@ -44,3 +44,4 @@ build/
 ### unaguna ###
 /memo.*
 /debug/
+/debug_with_jar/
