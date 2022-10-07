@@ -3,7 +3,7 @@ package jp.unaguna.mappedftp.user;
 import jp.unaguna.mappedftp.config.ServerConfig;
 import jp.unaguna.mappedftp.dataclass.Either;
 import jp.unaguna.mappedftp.encrypt.PasswordEncryptorType;
-import jp.unaguna.mappedftp.internal.ClasspathUtils;
+import jp.unaguna.mappedftp.utils.ClasspathUtils;
 import jp.unaguna.mappedftp.map.AttributeException;
 import jp.unaguna.mappedftp.map.IllegalAttributeException;
 import org.apache.ftpserver.ftplet.UserManager;

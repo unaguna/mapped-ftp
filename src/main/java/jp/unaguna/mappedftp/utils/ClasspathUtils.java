@@ -1,4 +1,4 @@
-package jp.unaguna.mappedftp.internal;
+package jp.unaguna.mappedftp.utils;
 
 import java.net.URL;
 

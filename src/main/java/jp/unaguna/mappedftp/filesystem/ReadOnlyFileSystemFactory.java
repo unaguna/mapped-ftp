@@ -2,7 +2,7 @@ package jp.unaguna.mappedftp.filesystem;
 
 import jp.unaguna.mappedftp.config.ServerConfig;
 import jp.unaguna.mappedftp.filesystem.tree.*;
-import jp.unaguna.mappedftp.internal.ClasspathUtils;
+import jp.unaguna.mappedftp.utils.ClasspathUtils;
 import jp.unaguna.mappedftp.map.AttributeException;
 import jp.unaguna.mappedftp.map.AttributeHashMap;
 import jp.unaguna.mappedftp.map.IllegalAttributeException;

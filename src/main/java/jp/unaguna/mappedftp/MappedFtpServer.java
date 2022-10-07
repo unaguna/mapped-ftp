@@ -5,7 +5,7 @@ import jp.unaguna.mappedftp.config.ServerConfig;
 import jp.unaguna.mappedftp.config.ServerConfigLoader;
 import jp.unaguna.mappedftp.filesystem.ConfigurableFileSystemFactory;
 import jp.unaguna.mappedftp.filesystem.ReadOnlyFileSystemFactory;
-import jp.unaguna.mappedftp.internal.ClasspathUtils;
+import jp.unaguna.mappedftp.utils.ClasspathUtils;
 import jp.unaguna.mappedftp.map.AttributeException;
 import jp.unaguna.mappedftp.user.ConfigurablePropertiesUserManagerFactory;
 import jp.unaguna.mappedftp.user.ConfigurableUserManagerFactory;
