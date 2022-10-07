@@ -1,5 +1,6 @@
 package jp.unaguna.mappedftp;
 
+import jp.unaguna.mappedftp.dataclass.Pair;
 import org.junit.jupiter.api.TestInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +24,7 @@ public class TestUtils {
     private static final Logger LOG = LoggerFactory.getLogger(TestUtils.class.getName());
 
     /**
-     * Return the path of input file prepared for testing.
+     * Return the url of input file prepared for testing.
      *
      * <p>
      *     The file is searched in the following paths.
@@ -40,42 +41,81 @@ public class TestUtils {
      *
      * @param relativePath the name of file to get
      * @param testInfo the JUnit test information object
-     * @return the path of the specified input file
+     * @return the url of the specified input file
      * @throws NoSuchTestResourceException when specified resource is not found
-     * @see #getInputResourceAsTempFile(String, TestInfo) 
+     * @see #getInputResourceClasspath(String, TestInfo)
+     * @see #getInputResourceAsTempFile(String, TestInfo)
      */
     public static URL getInputResource(String relativePath, TestInfo testInfo) {
+        return getInputResourceInfo(relativePath, testInfo).getFirst();
+    }
+
+    /**
+     * Return the classpath of input file prepared for testing.
+     *
+     * <p>
+     *     The file is searched in the following paths.
+     * </p>
+     * <ol>
+     *     <li><code>/unittest/cases/${simpleNameOfTestClass}_${nameOfTestMethod}/input/</code></li>
+     *     <li><code>/unittest/cases/${simpleNameOfTestClass}/input/</code></li>
+     *     <li><code>/unittest/input/</code></li>
+     * </ol>
+     * <p>
+     *     If you want the path to a temporary file whose contents are copied, rather than a URL,
+     *     use {@link #getInputResourceAsTempFile(String, TestInfo)}.
+     * </p>
+     *
+     * @param relativePath the name of file to get
+     * @param testInfo the JUnit test information object
+     * @return the classpath of the specified input file
+     * @throws NoSuchTestResourceException when specified resource is not found
+     * @see #getInputResource(String, TestInfo)
+     * @see #getInputResourceAsTempFile(String, TestInfo)
+     */
+    public static String getInputResourceClasspath(String relativePath, TestInfo testInfo) {
+        return getInputResourceInfo(relativePath, testInfo).getSecond();
+    }
+
+    private static Pair<URL, String> getInputResourceInfo(String relativePath, TestInfo testInfo) {
+        String classpath;
         URL url;
         final String testClassName = testInfo.getTestClass().orElseThrow(NullPointerException::new).getSimpleName();
         final String testMethodName = testInfo.getTestMethod().orElseThrow(NullPointerException::new).getName();
 
-        url = getResource(
+        classpath = buildString(
+                "/",
                 "unittest/cases",
                 testClassName + "#" + testMethodName,
                 "input",
                 relativePath
         );
+        url = getResource(classpath);
         if (url != null) {
-            return url;
+            return Pair.of(url, classpath);
         }
 
-        url = getResource(
+        classpath = buildString(
+                "/",
                 "unittest/cases",
                 testClassName,
                 "input",
                 relativePath
         );
+        url = getResource(classpath);
         if (url != null) {
-            return url;
+            return Pair.of(url, classpath);
         }
 
-        url = getResource(
+        classpath = buildString(
+                "/",
                 "unittest",
                 "input",
                 relativePath
         );
+        url = getResource(classpath);
         if (url != null) {
-            return url;
+            return Pair.of(url, classpath);
         }
 
         throw new NoSuchTestResourceException(relativePath);
@@ -97,6 +137,7 @@ public class TestUtils {
      * @param testInfo the JUnit test information object
      * @return the path of a temporary file whose contents are same as the specified input file
      * @see #getInputResource(String, TestInfo)
+     * @see #getInputResourceClasspath(String, TestInfo)
      */
     public static TemporaryFile getInputResourceAsTempFile(String relativePath, TestInfo testInfo) {
         final URL resourceUrl = getInputResource(relativePath, testInfo);

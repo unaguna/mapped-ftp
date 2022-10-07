@@ -1,5 +1,6 @@
 package jp.unaguna.mappedftp.user;
 
+import jp.unaguna.mappedftp.TestUtils;
 import jp.unaguna.mappedftp.config.ServerConfig;
 import jp.unaguna.mappedftp.encrypt.PasswordEncryptorType;
 import jp.unaguna.mappedftp.map.AttributeException;
@@ -44,8 +45,7 @@ public class ConfigurablePropertiesUserManagerFactoryTest {
 
     @Test
     public void testCreate__user_properties_path(TestInfo testInfo) {
-//        final Path userPropertiesPath = TestUtils.getInputResource("user.properties", testInfo);
-        String userPropertiesPath = "/unittest/cases/ConfigurablePropertiesUserManagerFactoryTest/input/user.properties";
+        String userPropertiesPath = TestUtils.getInputResourceClasspath("user.properties", testInfo);
 
         final ServerConfig serverConfig = new ServerConfig(){{
             setUserPropertiesPath(userPropertiesPath);
