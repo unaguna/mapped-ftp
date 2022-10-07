@@ -2,6 +2,7 @@ package jp.unaguna.mappedftp.filesystem;
 
 import jp.unaguna.mappedftp.config.ServerConfig;
 import jp.unaguna.mappedftp.filesystem.tree.*;
+import jp.unaguna.mappedftp.utils.ClasspathUtils;
 import jp.unaguna.mappedftp.map.AttributeException;
 import jp.unaguna.mappedftp.map.AttributeHashMap;
 import jp.unaguna.mappedftp.map.IllegalAttributeException;
@@ -109,7 +110,7 @@ public class ReadOnlyFileSystemFactory implements ConfigurableFileSystemFactory 
 
         // load attributes
         final String src = fileAttributes.pop("src");
-        final URL url = ReadOnlyFileSystemFactory.class.getResource(src);
+        final URL url = ClasspathUtils.getResource(src);
         if (url == null) {
             throw new IllegalAttributeException("src", new Exception("no such resource: " + src));
         }

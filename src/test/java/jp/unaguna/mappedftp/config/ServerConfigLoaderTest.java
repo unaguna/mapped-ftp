@@ -13,8 +13,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.xml.sax.SAXException;
 
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,7 +23,7 @@ public class ServerConfigLoaderTest {
 
     @Test
     public void testLoadFiles(TestInfo testInfo) {
-        final Path configPath = TestUtils.getInputResource("serverConfig.xml", testInfo);
+        final URL configPath = TestUtils.getInputResource("serverConfig.xml", testInfo);
 
         final ServerConfigLoader serverConfigLoader = new ServerConfigLoader();
         final ServerConfig serverConfig;
@@ -63,7 +62,7 @@ public class ServerConfigLoaderTest {
 
     @Test
     public void testLoadFiles__miss_files(TestInfo testInfo) {
-        final Path configPath = TestUtils.getInputResource("serverConfig__miss_files.xml", testInfo);
+        final URL configPath = TestUtils.getInputResource("serverConfig__miss_files.xml", testInfo);
 
         final ServerConfigLoader serverConfigLoader = new ServerConfigLoader();
         final ServerConfig serverConfig;
@@ -82,7 +81,7 @@ public class ServerConfigLoaderTest {
 
     @Test
     public void testLoadFiles__unknown_root_tag(TestInfo testInfo) {
-        final Path configPath = TestUtils.getInputResource("serverConfig__unknown_root_tag.xml", testInfo);
+        final URL configPath = TestUtils.getInputResource("serverConfig__unknown_root_tag.xml", testInfo);
 
         final ServerConfigLoader serverConfigLoader = new ServerConfigLoader();
         try {
@@ -100,7 +99,7 @@ public class ServerConfigLoaderTest {
 
     @Test
     public void testLoadFiles__unknown_tag_in_root(TestInfo testInfo) {
-        final Path configPath = TestUtils.getInputResource("serverConfig__unknown_tag_in_root.xml", testInfo);
+        final URL configPath = TestUtils.getInputResource("serverConfig__unknown_tag_in_root.xml", testInfo);
 
         final ServerConfigLoader serverConfigLoader = new ServerConfigLoader();
         try {
@@ -118,7 +117,7 @@ public class ServerConfigLoaderTest {
 
     @Test
     public void testLoadUserManager(TestInfo testInfo) {
-        final Path configPath = TestUtils.getInputResource("serverConfig__user_manager.xml", testInfo);
+        final URL configPath = TestUtils.getInputResource("serverConfig__user_manager.xml", testInfo);
 
         final ServerConfigLoader serverConfigLoader = new ServerConfigLoader();
         final ServerConfig serverConfig;
@@ -135,7 +134,7 @@ public class ServerConfigLoaderTest {
 
     @Test
     public void testLoadUserManager__without_user_manager(TestInfo testInfo) {
-        final Path configPath = TestUtils.getInputResource("serverConfig__without_user_manager.xml", testInfo);
+        final URL configPath = TestUtils.getInputResource("serverConfig__without_user_manager.xml", testInfo);
 
         final ServerConfigLoader serverConfigLoader = new ServerConfigLoader();
         final ServerConfig serverConfig;
@@ -162,7 +161,7 @@ public class ServerConfigLoaderTest {
             PasswordEncryptorType expectedEncryptPasswords,
             TestInfo testInfo) {
         final String inputResourceName = "serverConfig__encrypt-password_" + attrValue + ".xml";
-        final Path configPath = TestUtils.getInputResource(inputResourceName, testInfo);
+        final URL configPath = TestUtils.getInputResource(inputResourceName, testInfo);
 
         final ServerConfigLoader serverConfigLoader = new ServerConfigLoader();
         final ServerConfig serverConfig;
@@ -178,7 +177,7 @@ public class ServerConfigLoaderTest {
 
     @Test
     public void testLoadUserManager__illegal_encrypt_passwords_in_file_user_manager(TestInfo testInfo) {
-        final Path configPath = TestUtils.getInputResource(
+        final URL configPath = TestUtils.getInputResource(
                 "serverConfig__illegal_encrypt_passwords_in_file-user-manager.xml", testInfo);
 
         final ServerConfigLoader serverConfigLoader = new ServerConfigLoader();
@@ -197,7 +196,7 @@ public class ServerConfigLoaderTest {
 
     @Test
     public void testLoadUserManager__duplicate_user_manager(TestInfo testInfo) {
-        final Path configPath = TestUtils.getInputResource("serverConfig__duplicate_user_manager.xml", testInfo);
+        final URL configPath = TestUtils.getInputResource("serverConfig__duplicate_user_manager.xml", testInfo);
 
         final ServerConfigLoader serverConfigLoader = new ServerConfigLoader();
         try {
@@ -215,7 +214,7 @@ public class ServerConfigLoaderTest {
 
     @Test
     public void testLoadUserManager__unknown_attr_in_file_user_manager(TestInfo testInfo) {
-        final Path configPath = TestUtils.getInputResource(
+        final URL configPath = TestUtils.getInputResource(
                 "serverConfig__unknown_attr_in_file-user-manager.xml", testInfo);
 
         final ServerConfigLoader serverConfigLoader = new ServerConfigLoader();
@@ -239,7 +238,7 @@ public class ServerConfigLoaderTest {
     })
     public void testLoad__unknown_tag(String parentTagName, TestInfo testInfo) {
         final String inputResourceName = "serverConfig__unknown_tag_in_" + parentTagName + ".xml";
-        final Path configPath = TestUtils.getInputResource(inputResourceName, testInfo);
+        final URL configPath = TestUtils.getInputResource(inputResourceName, testInfo);
 
         final ServerConfigLoader serverConfigLoader = new ServerConfigLoader();
         try {

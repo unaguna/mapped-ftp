@@ -16,7 +16,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import java.nio.file.Path;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -46,10 +45,10 @@ public class ConfigurablePropertiesUserManagerFactoryTest {
 
     @Test
     public void testCreate__user_properties_path(TestInfo testInfo) {
-        final Path userPropertiesPath = TestUtils.getInputResource("user.properties", testInfo);
+        String userPropertiesPath = TestUtils.getInputResourceClasspath("user.properties", testInfo);
 
         final ServerConfig serverConfig = new ServerConfig(){{
-            setUserPropertiesPath(userPropertiesPath.toString());
+            setUserPropertiesPath(userPropertiesPath);
         }};
 
         final ConfigurablePropertiesUserManagerFactory factory = new ConfigurablePropertiesUserManagerFactory();
