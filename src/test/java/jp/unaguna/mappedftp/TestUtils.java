@@ -11,7 +11,6 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.file.Files;
-import java.nio.file.NoSuchFileException;
 import java.nio.file.StandardCopyOption;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -42,6 +41,7 @@ public class TestUtils {
      * @param relativePath the name of file to get
      * @param testInfo the JUnit test information object
      * @return the path of the specified input file
+     * @throws NoSuchTestResourceException when specified resource is not found
      * @see #getInputResourceAsTempFile(String, TestInfo) 
      */
     public static URL getInputResource(String relativePath, TestInfo testInfo) {
@@ -78,7 +78,7 @@ public class TestUtils {
             return url;
         }
 
-        throw new RuntimeException(new NoSuchFileException(relativePath));
+        throw new NoSuchTestResourceException(relativePath);
     }
 
     /**
