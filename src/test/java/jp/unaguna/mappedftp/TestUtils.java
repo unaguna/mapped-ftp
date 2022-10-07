@@ -185,18 +185,22 @@ public class TestUtils {
         }
     }
 
+    private static String buildString(String separator, String ...parts) {
+        final StringBuilder pathBuilder = new StringBuilder(128);
+        pathBuilder.append(parts[0]);
+        for (int i=1; i < parts.length; i++) {
+            pathBuilder.append(separator);
+            pathBuilder.append(parts[i]);
+        }
+        return pathBuilder.toString();
+    }
+
     private static URL getResource(String... pathParts) {
         if (pathParts.length == 0) {
             throw new IllegalArgumentException("path must not be empty");
         }
 
-        final StringBuilder pathBuilder = new StringBuilder(128);
-        pathBuilder.append(pathParts[0]);
-        for (int i=1; i < pathParts.length; i++) {
-            pathBuilder.append("/");
-            pathBuilder.append(pathParts[i]);
-        }
-        final String path = pathBuilder.toString();
+        final String path = buildString("/", pathParts);
 
         return TestUtils.class.getClassLoader().getResource(path);
     }
