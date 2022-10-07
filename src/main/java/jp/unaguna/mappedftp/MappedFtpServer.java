@@ -5,6 +5,7 @@ import jp.unaguna.mappedftp.config.ServerConfig;
 import jp.unaguna.mappedftp.config.ServerConfigLoader;
 import jp.unaguna.mappedftp.filesystem.ConfigurableFileSystemFactory;
 import jp.unaguna.mappedftp.filesystem.ReadOnlyFileSystemFactory;
+import jp.unaguna.mappedftp.internal.ClasspathUtils;
 import jp.unaguna.mappedftp.map.AttributeException;
 import jp.unaguna.mappedftp.user.ConfigurablePropertiesUserManagerFactory;
 import jp.unaguna.mappedftp.user.ConfigurableUserManagerFactory;
@@ -171,8 +172,7 @@ public class MappedFtpServer {
         final String configPath;
         final ServerConfig config;
         if (args.length == 0) {
-            final URL defaultConfigUrl =
-                    MappedFtpServer.class.getResource("/jp.unaguna.mappedftp/default_config.xml");
+            final URL defaultConfigUrl = ClasspathUtils.getResource("jp.unaguna.mappedftp/default_config.xml");
             if (defaultConfigUrl == null) {
                 throw new RuntimeException("The default configuration file is not found.");
             }
