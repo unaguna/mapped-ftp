@@ -27,6 +27,8 @@ public class MappedFtpServer {
             ConfigurablePropertiesUserManagerFactory.class;
 
     private static final Logger LOG = LoggerFactory.getLogger(MappedFtpServer.class.getName());
+
+    private FtpServerFactory ftpServerFactory = null;
     private FtpServer ftpServer = null;
     private ServerConfig serverConfig = null;
     private String serverConfigName = null;
@@ -50,6 +52,18 @@ public class MappedFtpServer {
         this.serverConfigName = serverConfigName;
     }
 
+    /**
+     * specify FtpServerFactory
+     *
+     * <p>
+     *     If not specified, default factory is used.
+     * </p>
+     * @param ftpServerFactory
+     */
+    public void setFtpServerFactory(FtpServerFactory ftpServerFactory) {
+        this.ftpServerFactory = ftpServerFactory;
+    }
+
     public void start() throws FtpException, ConfigException {
         final ConfigurableFileSystemFactory fileSystemFactory = constructFileSystemFactory(serverConfig);
         final ConfigurableUserManagerFactory userManagerFactory = constructUserManagerFactory(serverConfig);
@@ -61,7 +75,9 @@ public class MappedFtpServer {
             throw new ConfigException("loading config failed: " + serverConfigName, e);
         }
 
-        FtpServerFactory ftpServerFactory = new FtpServerFactory();
+        if (ftpServerFactory == null) {
+            ftpServerFactory = new FtpServerFactory();
+        }
 
         UserManager userManager = userManagerFactory.createUserManager();
         ftpServerFactory.setUserManager(userManager);
