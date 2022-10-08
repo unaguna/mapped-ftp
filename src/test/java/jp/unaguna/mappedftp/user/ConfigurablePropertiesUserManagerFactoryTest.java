@@ -1,6 +1,7 @@
 package jp.unaguna.mappedftp.user;
 
 import jp.unaguna.mappedftp.TestUtils;
+import jp.unaguna.mappedftp.config.ConfigException;
 import jp.unaguna.mappedftp.config.ServerConfig;
 import jp.unaguna.mappedftp.encrypt.PasswordEncryptorType;
 import jp.unaguna.mappedftp.map.AttributeException;
@@ -28,7 +29,7 @@ public class ConfigurablePropertiesUserManagerFactoryTest {
         final ConfigurablePropertiesUserManagerFactory factory = new ConfigurablePropertiesUserManagerFactory();
         try {
             factory.applyConfig(serverConfig);
-        } catch (AttributeException e) {
+        } catch (AttributeException | ConfigException e) {
             fail(e);
             return;
         }
@@ -58,7 +59,7 @@ public class ConfigurablePropertiesUserManagerFactoryTest {
             assertTrue(factory.isConfigured());
 
             userManager = (PropertiesUserManager) factory.createUserManager();
-        } catch (AttributeException e) {
+        } catch (AttributeException | ConfigException e) {
             fail(e);
             return;
         }
@@ -86,7 +87,7 @@ public class ConfigurablePropertiesUserManagerFactoryTest {
             assertTrue(factory.isConfigured());
 
             userManager = (PropertiesUserManager) factory.createUserManager();
-        } catch (AttributeException e) {
+        } catch (AttributeException | ConfigException e) {
             fail(e);
             return;
         }
@@ -106,9 +107,9 @@ public class ConfigurablePropertiesUserManagerFactoryTest {
      */
     @ParameterizedTest
     @MethodSource("parameters__testCreate__encryptPasswords")
-    public void testCreate__encryptPasswords(PasswordEncryptorType encryptPasswords, Class<? extends PasswordEncryptor> expectedEncryptPasswords) {
+    public void testCreate__encryptPasswords(Class<? extends PasswordEncryptor> encryptPasswords, Class<? extends PasswordEncryptor> expectedEncryptPasswords) {
         final ServerConfig serverConfig = new ServerConfig(){{
-            setEncryptPasswords(encryptPasswords);
+            setPasswordEncryptorClass(encryptPasswords);
         }};
 
         final ConfigurablePropertiesUserManagerFactory factory = new ConfigurablePropertiesUserManagerFactory();
@@ -118,7 +119,7 @@ public class ConfigurablePropertiesUserManagerFactoryTest {
             assertTrue(factory.isConfigured());
 
             userManager = (PropertiesUserManager) factory.createUserManager();
-        } catch (AttributeException e) {
+        } catch (AttributeException | ConfigException e) {
             fail(e);
             return;
         }
@@ -129,9 +130,9 @@ public class ConfigurablePropertiesUserManagerFactoryTest {
     private static Stream<Arguments> parameters__testCreate__encryptPasswords() {
         return Stream.of(
                 Arguments.arguments(null, Md5PasswordEncryptor.class),
-                Arguments.arguments(PasswordEncryptorType.MD5, Md5PasswordEncryptor.class),
-                Arguments.arguments(PasswordEncryptorType.CLEAR, ClearTextPasswordEncryptor.class),
-                Arguments.arguments(PasswordEncryptorType.SALTED, SaltedPasswordEncryptor.class)
+                Arguments.arguments(PasswordEncryptorType.MD5.getPasswordEncryptorClass(), Md5PasswordEncryptor.class),
+                Arguments.arguments(PasswordEncryptorType.CLEAR.getPasswordEncryptorClass(), ClearTextPasswordEncryptor.class),
+                Arguments.arguments(PasswordEncryptorType.SALTED.getPasswordEncryptorClass(), SaltedPasswordEncryptor.class)
         );
     }
 }

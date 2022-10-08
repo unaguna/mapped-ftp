@@ -1,14 +1,18 @@
 package jp.unaguna.mappedftp.config;
 
 import jp.unaguna.mappedftp.TestUtils;
-import jp.unaguna.mappedftp.encrypt.PasswordEncryptorType;
 import jp.unaguna.mappedftp.map.AttributeHashMap;
 import jp.unaguna.mappedftp.map.AttributeMissingException;
 import jp.unaguna.mappedftp.user.ConfigurablePropertiesUserManagerFactory;
+import org.apache.ftpserver.usermanager.ClearTextPasswordEncryptor;
+import org.apache.ftpserver.usermanager.Md5PasswordEncryptor;
+import org.apache.ftpserver.usermanager.PasswordEncryptor;
+import org.apache.ftpserver.usermanager.SaltedPasswordEncryptor;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.xml.sax.SAXException;
 
@@ -16,6 +20,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -150,15 +155,10 @@ public class ServerConfigLoaderTest {
     }
 
     @ParameterizedTest
-    @CsvSource({
-            "unset,",
-            "clear, CLEAR",
-            "md5, MD5",
-            "salted, SALTED",
-    })
+    @MethodSource("parameters__testLoadUserManager__encrypt_passwords")
     public void testLoadUserManager__encrypt_passwords(
             String attrValue,
-            PasswordEncryptorType expectedEncryptPasswords,
+            Class<? extends PasswordEncryptor> expectedEncryptPasswords,
             TestInfo testInfo) {
         final String inputResourceName = "serverConfig__encrypt-password_" + attrValue + ".xml";
         final URL configPath = TestUtils.getInputResource(inputResourceName, testInfo);
@@ -172,7 +172,7 @@ public class ServerConfigLoaderTest {
             return;
         }
 
-        assertEquals(expectedEncryptPasswords, serverConfig.getEncryptPasswords());
+        assertEquals(expectedEncryptPasswords, serverConfig.getPasswordEncryptorClass());
     }
 
     @Test
@@ -252,5 +252,14 @@ public class ServerConfigLoaderTest {
         } catch (IOException | SAXException e) {
             fail(e);
         }
+    }
+
+    private static Stream<Arguments> parameters__testLoadUserManager__encrypt_passwords() {
+        return Stream.of(
+                Arguments.arguments("unset", null),
+                Arguments.arguments("md5", Md5PasswordEncryptor.class),
+                Arguments.arguments("clear", ClearTextPasswordEncryptor.class),
+                Arguments.arguments("salted", SaltedPasswordEncryptor.class)
+        );
     }
 }

@@ -18,6 +18,10 @@ public enum PasswordEncryptorType {
         passwordEncryptor = cls;
     }
 
+    public Class<? extends PasswordEncryptor> getPasswordEncryptorClass() {
+        return passwordEncryptor;
+    }
+
     public PasswordEncryptor constructPasswordEncryptor() {
         try {
             Constructor<? extends PasswordEncryptor> constructor = passwordEncryptor.getConstructor();
@@ -32,10 +36,13 @@ public enum PasswordEncryptorType {
      * The string must match exactly an identifier used to declare an enum constant in this type.
      * (Extraneous whitespace characters are not permitted.)
      *
-     * @return the enum constant with the specified name
-     * @throws IllegalArgumentException if this enum type has no constant with the specified name
+     * @return the enum constant with the specified name, or null if specified value is not PasswordEncryptorType
      */
-    public static PasswordEncryptorType of(String value) {
-        return PasswordEncryptorType.valueOf(value.toUpperCase());
+    public static PasswordEncryptorType orNull(String value) {
+        try {
+            return PasswordEncryptorType.valueOf(value.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
     }
 }
