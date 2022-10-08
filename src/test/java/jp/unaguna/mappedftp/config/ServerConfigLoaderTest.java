@@ -1,14 +1,20 @@
 package jp.unaguna.mappedftp.config;
 
 import jp.unaguna.mappedftp.TestUtils;
-import jp.unaguna.mappedftp.encrypt.PasswordEncryptorType;
 import jp.unaguna.mappedftp.map.AttributeHashMap;
 import jp.unaguna.mappedftp.map.AttributeMissingException;
+import jp.unaguna.mappedftp.stub.PasswordEncryptorStub;
 import jp.unaguna.mappedftp.user.ConfigurablePropertiesUserManagerFactory;
+import org.apache.ftpserver.usermanager.ClearTextPasswordEncryptor;
+import org.apache.ftpserver.usermanager.Md5PasswordEncryptor;
+import org.apache.ftpserver.usermanager.PasswordEncryptor;
+import org.apache.ftpserver.usermanager.SaltedPasswordEncryptor;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.xml.sax.SAXException;
 
@@ -16,6 +22,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -150,15 +157,10 @@ public class ServerConfigLoaderTest {
     }
 
     @ParameterizedTest
-    @CsvSource({
-            "unset,",
-            "clear, CLEAR",
-            "md5, MD5",
-            "salted, SALTED",
-    })
+    @MethodSource("parameters__testLoadUserManager__encrypt_passwords")
     public void testLoadUserManager__encrypt_passwords(
             String attrValue,
-            PasswordEncryptorType expectedEncryptPasswords,
+            Class<? extends PasswordEncryptor> expectedEncryptPasswords,
             TestInfo testInfo) {
         final String inputResourceName = "serverConfig__encrypt-password_" + attrValue + ".xml";
         final URL configPath = TestUtils.getInputResource(inputResourceName, testInfo);
@@ -172,13 +174,21 @@ public class ServerConfigLoaderTest {
             return;
         }
 
-        assertEquals(expectedEncryptPasswords, serverConfig.getEncryptPasswords());
+        assertEquals(expectedEncryptPasswords, serverConfig.getPasswordEncryptorClass());
     }
 
-    @Test
-    public void testLoadUserManager__illegal_encrypt_passwords_in_file_user_manager(TestInfo testInfo) {
-        final URL configPath = TestUtils.getInputResource(
-                "serverConfig__illegal_encrypt_passwords_in_file-user-manager.xml", testInfo);
+    @ParameterizedTest
+    @CsvSource({
+            "dummy, dummy",
+            "String, java.lang.String"
+    })
+    public void testLoadUserManager__illegal_encrypt_passwords_in_file_user_manager(
+            String inputResourceMarker,
+            String expectedInputValue,
+            TestInfo testInfo
+    ) {
+        final String inputResourceName = "serverConfig__encrypt-password_" + inputResourceMarker + ".xml";
+        final URL configPath = TestUtils.getInputResource(inputResourceName, testInfo);
 
         final ServerConfigLoader serverConfigLoader = new ServerConfigLoader();
         try {
@@ -187,7 +197,7 @@ public class ServerConfigLoaderTest {
 
         } catch (ConfigException e) {
             // expected exception
-            assertEquals("Unexpected value is appended to the attribute \"encrypt-passwords\": dummy", e.getMessage());
+            assertEquals("Unexpected value is appended to the attribute \"encrypt-passwords\": " + expectedInputValue, e.getMessage());
 
         } catch (IOException | SAXException e) {
             fail(e);
@@ -252,5 +262,15 @@ public class ServerConfigLoaderTest {
         } catch (IOException | SAXException e) {
             fail(e);
         }
+    }
+
+    private static Stream<Arguments> parameters__testLoadUserManager__encrypt_passwords() {
+        return Stream.of(
+                Arguments.arguments("unset", null),
+                Arguments.arguments("md5", Md5PasswordEncryptor.class),
+                Arguments.arguments("clear", ClearTextPasswordEncryptor.class),
+                Arguments.arguments("salted", SaltedPasswordEncryptor.class),
+                Arguments.arguments("stub_class", PasswordEncryptorStub.class)
+        );
     }
 }

@@ -10,4 +10,10 @@ public class ClasspathUtils {
 
         return ClasspathUtils.class.getClassLoader().getResource(name);
     }
+
+    public static <T> Class<? extends T> getClass(String name, Class<T> base)
+            throws ClassNotFoundException, ClassCastException {
+        Class<?> cls = ClasspathUtils.class.getClassLoader().loadClass(name);
+        return cls.asSubclass(base);
+    }
 }

@@ -1,11 +1,11 @@
 package jp.unaguna.mappedftp.user;
 
+import jp.unaguna.mappedftp.config.ConfigException;
 import jp.unaguna.mappedftp.config.ServerConfig;
 import jp.unaguna.mappedftp.dataclass.Either;
-import jp.unaguna.mappedftp.encrypt.PasswordEncryptorType;
-import jp.unaguna.mappedftp.utils.ClasspathUtils;
 import jp.unaguna.mappedftp.map.AttributeException;
 import jp.unaguna.mappedftp.map.IllegalAttributeException;
+import jp.unaguna.mappedftp.utils.ClasspathUtils;
 import org.apache.ftpserver.ftplet.UserManager;
 import org.apache.ftpserver.usermanager.Md5PasswordEncryptor;
 import org.apache.ftpserver.usermanager.PasswordEncryptor;
@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.lang.reflect.Constructor;
 import java.net.URL;
 
 public class ConfigurablePropertiesUserManagerFactory implements ConfigurableUserManagerFactory {
@@ -21,7 +22,7 @@ public class ConfigurablePropertiesUserManagerFactory implements ConfigurableUse
     private boolean isConfigured = false;
 
     private FileOrUrl userPropertiesFile = null;
-    private PasswordEncryptorType passwordEncryptorType = null;
+    private Class<? extends PasswordEncryptor> passwordEncryptorClass = null;
 
     @Override
     public boolean isConfigured() {
@@ -29,9 +30,18 @@ public class ConfigurablePropertiesUserManagerFactory implements ConfigurableUse
     }
 
     @Override
-    public void applyConfig(ServerConfig serverConfig) throws AttributeException {
+    public void applyConfig(ServerConfig serverConfig) throws AttributeException, ConfigException {
         this.userPropertiesFile = convertUserPropertiesPath(serverConfig.getUserPropertiesPath());
-        this.passwordEncryptorType = serverConfig.getEncryptPasswords();
+        this.passwordEncryptorClass = serverConfig.getPasswordEncryptorClass();
+
+        // test passwordEncryptorClass
+        try {
+            if (passwordEncryptorClass != null) {
+                constructPasswordEncryptor(passwordEncryptorClass);
+            }
+        } catch (ReflectiveOperationException e) {
+            throw new ConfigException("cannot construct the PasswordEncryptor", e);
+        }
 
         this.isConfigured = true;
     }
@@ -58,7 +68,13 @@ public class ConfigurablePropertiesUserManagerFactory implements ConfigurableUse
 
     @Override
     public UserManager createUserManager() {
-        final PasswordEncryptor passwordEncryptor = constructPasswordEncryptor(passwordEncryptorType);
+        final PasswordEncryptor passwordEncryptor;
+        try {
+            passwordEncryptor = constructPasswordEncryptor(passwordEncryptorClass);
+        } catch (ReflectiveOperationException e) {
+            // already tested in #applyConfig, so this exception should not occur
+            throw new RuntimeException(e);
+        }
         final String adminName = "admin";
 
         if (userPropertiesFile == null) {
@@ -73,9 +89,11 @@ public class ConfigurablePropertiesUserManagerFactory implements ConfigurableUse
         }
     }
 
-    private static PasswordEncryptor constructPasswordEncryptor(PasswordEncryptorType type) {
-        if (type != null) {
-            return type.constructPasswordEncryptor();
+    private static PasswordEncryptor constructPasswordEncryptor(Class<? extends PasswordEncryptor> cls)
+            throws ReflectiveOperationException {
+        if (cls != null) {
+            Constructor<? extends PasswordEncryptor> constructor = cls.getConstructor();
+            return constructor.newInstance();
 
         } else {
             // default PasswordEncryptor

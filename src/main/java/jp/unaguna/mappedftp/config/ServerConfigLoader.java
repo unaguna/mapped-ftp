@@ -3,6 +3,8 @@ package jp.unaguna.mappedftp.config;
 import jp.unaguna.mappedftp.encrypt.PasswordEncryptorType;
 import jp.unaguna.mappedftp.map.AttributeHashMap;
 import jp.unaguna.mappedftp.user.ConfigurablePropertiesUserManagerFactory;
+import jp.unaguna.mappedftp.utils.ClasspathUtils;
+import org.apache.ftpserver.usermanager.PasswordEncryptor;
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 
@@ -234,12 +236,19 @@ public class ServerConfigLoader {
         final String attributeName = encryptPasswordAttribute.getName();
         final String attributeValue = encryptPasswordAttribute.getValue();
 
-        try {
-            config.setEncryptPasswords(PasswordEncryptorType.of(attributeValue));
-        } catch (IllegalArgumentException e) {
-            throw new ConfigException("Unexpected value is appended to the attribute \"" +
-                    attributeName + "\": " + attributeValue, e);
+        final PasswordEncryptorType passwordEncryptorType = PasswordEncryptorType.orNull(attributeValue);
+        final Class<? extends PasswordEncryptor> passwordEncryptor;
+        if (passwordEncryptorType != null) {
+            passwordEncryptor = passwordEncryptorType.getPasswordEncryptorClass();
+        } else {
+            try {
+                passwordEncryptor = ClasspathUtils.getClass(attributeValue, PasswordEncryptor.class);
+            } catch (ClassNotFoundException | ClassCastException e) {
+                throw new ConfigException("Unexpected value is appended to the attribute \"" +
+                        attributeName + "\": " + attributeValue);
+            }
         }
+        config.setPasswordEncryptorClass(passwordEncryptor);
     }
 
     /**

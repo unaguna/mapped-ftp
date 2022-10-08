@@ -1,9 +1,9 @@
 package jp.unaguna.mappedftp.config;
 
-import jp.unaguna.mappedftp.encrypt.PasswordEncryptorType;
 import jp.unaguna.mappedftp.filesystem.ConfigurableFileSystemFactory;
 import jp.unaguna.mappedftp.map.AttributeHashMap;
 import jp.unaguna.mappedftp.user.ConfigurableUserManagerFactory;
+import org.apache.ftpserver.usermanager.PasswordEncryptor;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -20,7 +20,7 @@ import java.util.List;
 public class ServerConfig {
     private final List<AttributeHashMap> files = new ArrayList<>();
     private String userPropertiesPath = null;
-    private PasswordEncryptorType encryptPasswords = null;
+    private Class<? extends PasswordEncryptor> passwordEncryptorClass = null;
     private Class<? extends ConfigurableFileSystemFactory> fileSystemFactoryClass = null;
     private Class<? extends ConfigurableUserManagerFactory> userManagerFactoryClass = null;
 
@@ -50,12 +50,12 @@ public class ServerConfig {
         this.userPropertiesPath = userPropertiesPath;
     }
 
-    public PasswordEncryptorType getEncryptPasswords() {
-        return encryptPasswords;
+    public Class<? extends PasswordEncryptor> getPasswordEncryptorClass() {
+        return passwordEncryptorClass;
     }
 
-    public void setEncryptPasswords(PasswordEncryptorType encryptPasswords) {
-        this.encryptPasswords = encryptPasswords;
+    public void setPasswordEncryptorClass(Class<? extends PasswordEncryptor> passwordEncryptorClass) {
+        this.passwordEncryptorClass = passwordEncryptorClass;
     }
 
     /**
