@@ -58,7 +58,7 @@ public class MappedFtpServer {
      * <p>
      *     If not specified, default factory is used.
      * </p>
-     * @param ftpServerFactory
+     * @param ftpServerFactory FtpServerFactory to be used
      */
     public void setFtpServerFactory(FtpServerFactory ftpServerFactory) {
         this.ftpServerFactory = ftpServerFactory;
