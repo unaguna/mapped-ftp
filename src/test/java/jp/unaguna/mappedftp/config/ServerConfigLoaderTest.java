@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.xml.sax.SAXException;
@@ -176,10 +177,18 @@ public class ServerConfigLoaderTest {
         assertEquals(expectedEncryptPasswords, serverConfig.getPasswordEncryptorClass());
     }
 
-    @Test
-    public void testLoadUserManager__illegal_encrypt_passwords_in_file_user_manager(TestInfo testInfo) {
-        final URL configPath = TestUtils.getInputResource(
-                "serverConfig__illegal_encrypt_passwords_in_file-user-manager.xml", testInfo);
+    @ParameterizedTest
+    @CsvSource({
+            "dummy, dummy",
+            "String, java.lang.String"
+    })
+    public void testLoadUserManager__illegal_encrypt_passwords_in_file_user_manager(
+            String inputResourceMarker,
+            String expectedInputValue,
+            TestInfo testInfo
+    ) {
+        final String inputResourceName = "serverConfig__encrypt-password_" + inputResourceMarker + ".xml";
+        final URL configPath = TestUtils.getInputResource(inputResourceName, testInfo);
 
         final ServerConfigLoader serverConfigLoader = new ServerConfigLoader();
         try {
@@ -188,7 +197,7 @@ public class ServerConfigLoaderTest {
 
         } catch (ConfigException e) {
             // expected exception
-            assertEquals("Unexpected value is appended to the attribute \"encrypt-passwords\": dummy", e.getMessage());
+            assertEquals("Unexpected value is appended to the attribute \"encrypt-passwords\": " + expectedInputValue, e.getMessage());
 
         } catch (IOException | SAXException e) {
             fail(e);
