@@ -42,15 +42,15 @@ public class FileTreeNode implements LinkedFileNode {
      * 子孫要素を追加する。
      *
      * <p>
-     *     子要素を追加する場合は、relativePath に長さが1 (ファイル名のみ) のパスを指定する。
-     *     逆に長さが2以上のパスが指定された場合、this の下に指定されたパス通りにディレクトリを作成し、
-     *     作成したディレクトリと fileTreeNode を追加する。
+     * 子要素を追加する場合は、relativePath に長さが1 (ファイル名のみ) のパスを指定する。
+     * 逆に長さが2以上のパスが指定された場合、this の下に指定されたパス通りにディレクトリを作成し、
+     * 作成したディレクトリと fileTreeNode を追加する。
      * </p>
      *
-     * @param file 追加する子孫要素
+     * @param file         追加する子孫要素
      * @param relativePath 追加する要素の this からの相対パス
      */
-    public void addChild(FileTreeItem file, TreePath relativePath) {
+    public void appendSubFile(FileTreeItem file, TreePath relativePath) {
         if (relativePath.isAbsolute()) {
             throw new IllegalArgumentException("relativePath must not be absolute: " + relativePath);
         }
@@ -63,20 +63,23 @@ public class FileTreeNode implements LinkedFileNode {
         // このディレクトリのすぐ下にファイルを置く場合
         if (relativePath.getNameCount() == 1) {
             FileTreeNode fileTreeNode = new FileTreeNode(file, childName);
-            children.put(childName, fileTreeNode);
-            fileTreeNode.parent = this;
+            this.addChild(fileTreeNode, childName);
         }
         // このディレクトリよりも下のディレクトリにファイルを置く場合
         else {
             FileTreeNode childNode = children.get(childName);
             if (childNode == null) {
                 childNode = new FileTreeNode(new FileTreeItemDirectory(), childName);
-                children.put(childName, childNode);
-                childNode.parent = this;
+                this.addChild(childNode, childName);
             }
 
-            childNode.addChild(file, relativePath.subpath(1));
+            childNode.appendSubFile(file, relativePath.subpath(1));
         }
+    }
+
+    public void addChild(FileTreeNode childNode, String childName) {
+        this.children.put(childName, childNode);
+        childNode.parent = this;
     }
 
     @Override

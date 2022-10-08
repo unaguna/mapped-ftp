@@ -33,7 +33,7 @@ public class ReadOnlyFileSystemFactory implements ConfigurableFileSystemFactory 
     public FileSystemView createFileSystemView(User user) throws FtpException {
         FileTreeNode root = new FileTreeNode(new FileTreeItemDirectory(), null);
 
-        files.forEach((path, fileTreeItem) -> root.addChild(fileTreeItem, TreePath.get(path).toRelative()));
+        files.forEach((path, fileTreeItem) -> root.appendSubFile(fileTreeItem, TreePath.get(path).toRelative()));
 
         return new LinkedFileSystemView(root);
     }
