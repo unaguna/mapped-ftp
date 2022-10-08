@@ -218,7 +218,7 @@ public class MappedFtpServer {
             }
         }
 
-        MappedFtpServer server = new MappedFtpServer();
+        final MappedFtpServer server = new MappedFtpServer();
         server.setConfig(config, configPath);
         server.start();
     }
