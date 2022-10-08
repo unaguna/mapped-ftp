@@ -30,8 +30,12 @@ public class MappedFtpServerTest {
         final ServerConfig config = new ServerConfig();
         mappedFtpServer.setFtpServerFactory(ftpServerFactory);
         mappedFtpServer.setConfig(config, "stub_config");
+
+        assertFalse(mappedFtpServer.isStarted());
+
         mappedFtpServer.start();
 
+        assertTrue(mappedFtpServer.isStarted());
         verify(ftpServerFactory.getFtpServer(), times(1)).start();
     }
 
