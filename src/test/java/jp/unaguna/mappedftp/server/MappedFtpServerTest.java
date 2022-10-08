@@ -36,6 +36,26 @@ public class MappedFtpServerTest {
     }
 
     @Test
+    public void testStart__error_if_start_twice() throws FtpException, ConfigException {
+        final FtpServerFactoryStub ftpServerFactory = new FtpServerFactoryStub();
+
+        final MappedFtpServer mappedFtpServer = new MappedFtpServer();
+        final ServerConfig config = new ServerConfig();
+        mappedFtpServer.setFtpServerFactory(ftpServerFactory);
+        mappedFtpServer.setConfig(config, "stub_config");
+        mappedFtpServer.start();
+
+        try {
+            mappedFtpServer.start();
+            fail("expected exception has not been thrown");
+
+        } catch (IllegalStateException e) {
+            // expected exception
+            assertEquals("The server is already started.", e.getMessage());
+        }
+    }
+
+    @Test
     public void testStart__use_specified_UserManagerFactory() throws FtpException, ConfigException {
         final FtpServerFactoryStub ftpServerFactory = new FtpServerFactoryStub();
 
@@ -153,6 +173,26 @@ public class MappedFtpServerTest {
         } catch (IllegalStateException e) {
             // expected exception
             assertEquals("Configuration cannot be changed after the server has been started.", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testSetFtpServerFactory__error_if_already_started() throws FtpException, ConfigException {
+        final FtpServerFactoryStub ftpServerFactory = new FtpServerFactoryStub();
+
+        final MappedFtpServer mappedFtpServer = new MappedFtpServer();
+        final ServerConfig config = new ServerConfig();
+        mappedFtpServer.setFtpServerFactory(ftpServerFactory);
+        mappedFtpServer.setConfig(config, "stub_config");
+        mappedFtpServer.start();
+
+        try {
+            mappedFtpServer.setFtpServerFactory(ftpServerFactory);
+            fail("expected exception has not been thrown");
+
+        } catch (IllegalStateException e) {
+            // expected exception
+            assertEquals("FtpServerFactory cannot be changed after the server has been started.", e.getMessage());
         }
     }
 
