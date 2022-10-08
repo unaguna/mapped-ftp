@@ -3,6 +3,7 @@ package jp.unaguna.mappedftp.config;
 import jp.unaguna.mappedftp.TestUtils;
 import jp.unaguna.mappedftp.map.AttributeHashMap;
 import jp.unaguna.mappedftp.map.AttributeMissingException;
+import jp.unaguna.mappedftp.stub.PasswordEncryptorStub;
 import jp.unaguna.mappedftp.user.ConfigurablePropertiesUserManagerFactory;
 import org.apache.ftpserver.usermanager.ClearTextPasswordEncryptor;
 import org.apache.ftpserver.usermanager.Md5PasswordEncryptor;
@@ -259,7 +260,8 @@ public class ServerConfigLoaderTest {
                 Arguments.arguments("unset", null),
                 Arguments.arguments("md5", Md5PasswordEncryptor.class),
                 Arguments.arguments("clear", ClearTextPasswordEncryptor.class),
-                Arguments.arguments("salted", SaltedPasswordEncryptor.class)
+                Arguments.arguments("salted", SaltedPasswordEncryptor.class),
+                Arguments.arguments("stub_class", PasswordEncryptorStub.class)
         );
     }
 }
