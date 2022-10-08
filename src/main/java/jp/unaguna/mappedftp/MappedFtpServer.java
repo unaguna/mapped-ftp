@@ -34,7 +34,7 @@ public class MappedFtpServer {
     private String serverConfigName = null;
 
     public boolean isStarted() {
-        return ftpServer != null && !ftpServer.isStopped();
+        return ftpServer != null;
     }
 
     /**
@@ -61,10 +61,18 @@ public class MappedFtpServer {
      * @param ftpServerFactory FtpServerFactory to be used
      */
     public void setFtpServerFactory(FtpServerFactory ftpServerFactory) {
+        if (this.isStarted()) {
+            throw new IllegalStateException("FtpServerFactory cannot be changed after the server has been started.");
+        }
+
         this.ftpServerFactory = ftpServerFactory;
     }
 
     public void start() throws FtpException, ConfigException {
+        if (this.isStarted()) {
+            throw new IllegalStateException("The server is already started.");
+        }
+
         final ConfigurableFileSystemFactory fileSystemFactory = constructFileSystemFactory(serverConfig);
         final ConfigurableUserManagerFactory userManagerFactory = constructUserManagerFactory(serverConfig);
 
@@ -210,7 +218,7 @@ public class MappedFtpServer {
             }
         }
 
-        MappedFtpServer server = new MappedFtpServer();
+        final MappedFtpServer server = new MappedFtpServer();
         server.setConfig(config, configPath);
         server.start();
     }
