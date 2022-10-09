@@ -149,6 +149,36 @@ public class FileTreeNodeTest {
         assertEquals(child1, actualChild1.getFile());
     }
 
+    @Test
+    public void testAppendSubFile__with_parent_double_dot() {
+        final FileTreeNode baseNode = new FileTreeNode(new FileTreeItemDirectory(), null);
+        final FileTreeItem child1 = new FileTreeItemEmptyFile();
+
+        baseNode.appendSubFile(child1, TreePath.get("dir1", "..", "dir1", "dir1-1", "child1"));
+
+        // assert that the directory "dir1" was created
+        final List<? extends FtpFile> actualChildrenOfBase = baseNode.listFiles();
+        assertEquals(1, actualChildrenOfBase.size());
+        final FileTreeNode actualDir1 = (FileTreeNode) actualChildrenOfBase.get(0);
+        assertEquals("dir1", actualDir1.getName());
+        assertTrue(actualDir1.isDirectory());
+        assertFalse(actualDir1.isFile());
+
+        // assert that the directory "dir1/dir1-1" was created
+        final List<? extends FtpFile> actualChildrenOfDir1 = actualDir1.listFiles();
+        assertEquals(1, actualChildrenOfDir1.size());
+        final FileTreeNode actualDir1_1 = (FileTreeNode) actualChildrenOfDir1.get(0);
+        assertEquals("dir1-1", actualDir1_1.getName());
+        assertTrue(actualDir1.isDirectory());
+        assertFalse(actualDir1.isFile());
+
+        // assert that the file "dir1/dir1-1/child1" was created
+        final List<? extends FtpFile> actualChildrenOfDir1_1 = actualDir1_1.listFiles();
+        assertEquals(1, actualChildrenOfDir1_1.size());
+        final FileTreeNode actualChild1 = (FileTreeNode) actualChildrenOfDir1_1.get(0);
+        assertEquals(child1, actualChild1.getFile());
+    }
+
     private static Stream<Arguments> parameters__testAppendSubFile__error_when_absolute_path_is_specified() {
         return Stream.of(
                 Arguments.arguments(new FileTreeItemEmptyFile()),

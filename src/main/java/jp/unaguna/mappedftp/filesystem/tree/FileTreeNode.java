@@ -47,16 +47,18 @@ public class FileTreeNode implements LinkedFileNode {
      * 作成したディレクトリと fileTreeNode を追加する。
      * </p>
      *
-     * @param file         追加する子孫要素
-     * @param relativePath 追加する要素の this からの相対パス
+     * @param file          追加する子孫要素
+     * @param _relativePath 追加する要素の this からの相対パス
      */
-    public void appendSubFile(FileTreeItem file, TreePath relativePath) {
-        if (relativePath.isAbsolute()) {
-            throw new IllegalArgumentException("relativePath must not be absolute: " + relativePath);
+    public void appendSubFile(FileTreeItem file, TreePath _relativePath) {
+        if (_relativePath.isAbsolute()) {
+            throw new IllegalArgumentException("relativePath must not be absolute: " + _relativePath);
         }
-        if (relativePath.getNameCount() == 0) {
-            throw new IllegalArgumentException("illegal child path: " + relativePath);
+        if (_relativePath.getNameCount() == 0) {
+            throw new IllegalArgumentException("illegal child path: " + _relativePath);
         }
+
+        final TreePath relativePath = _relativePath.normalize();
 
         final String childName = relativePath.getName(0).toString();
 

@@ -1,8 +1,6 @@
 package jp.unaguna.mappedftp.filesystem;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class TreePath {
@@ -38,7 +36,7 @@ public class TreePath {
         if (this.names.length == 0) {
             return null;
         } else {
-            return this.subpath(0, getNameCount()-1);
+            return this.subpath(0, getNameCount() - 1);
         }
     }
 
@@ -72,6 +70,28 @@ public class TreePath {
         return new TreePath(false, this.names);
     }
 
+    public TreePath normalize() {
+        final Deque<String> newNames = new ArrayDeque<>(this.getNameCount());
+
+        for (String name : this.names) {
+            if (".".equals(name)) {
+                continue;
+            } else if ("..".equals(name)) {
+                if (!newNames.isEmpty()) {
+                    newNames.removeLast();
+                    continue;
+                } else if (this.isAbsolute()) {
+                    // the ".." on head of absolute path is redundant
+                    continue;
+                }
+            }
+
+            newNames.addLast(name);
+        }
+
+        return new TreePath(this.isAbsolute(), newNames.toArray(new String[0]));
+    }
+
     @Override
     public String toString() {
         final StringBuilder builder = new StringBuilder();
@@ -86,7 +106,7 @@ public class TreePath {
 
         builder.append(this.names[0]);
 
-        for (int i=1; i<names.length; i++) {
+        for (int i = 1; i < names.length; i++) {
             final String name = names[i];
             builder.append(SEPARATOR);
             builder.append(name);
@@ -95,7 +115,7 @@ public class TreePath {
         return builder.toString();
     }
 
-    public static TreePath get(String ... names) {
+    public static TreePath get(String... names) {
         final boolean absolute = names.length > 0 && names[0].startsWith(SEPARATOR);
         final List<String> nameList = new ArrayList<>();
 
