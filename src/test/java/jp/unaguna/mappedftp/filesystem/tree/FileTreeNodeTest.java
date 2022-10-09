@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -184,6 +185,27 @@ public class FileTreeNodeTest {
                 Arguments.arguments(new FileTreeItemEmptyFile()),
                 Arguments.arguments(new FileTreeItemDirectory())
         );
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "../dir",
+            "dir1/../../dir1",
+    })
+    public void testAppendSubFile__error_when_path_of_out_of_dir_is_specified(
+            String path
+    ) {
+        final FileTreeNode baseNode = new FileTreeNode(new FileTreeItemDirectory(), null);
+        final FileTreeItem child1 = new FileTreeItemEmptyFile();
+
+        try {
+            baseNode.appendSubFile(child1, TreePath.get(path));
+            fail("expected exception has not been thrown");
+
+        } catch (IllegalArgumentException e) {
+            // expected exception
+            assertEquals("cannot append on out of this directory: " + path, e.getMessage());
+        }
     }
 
     @ParameterizedTest

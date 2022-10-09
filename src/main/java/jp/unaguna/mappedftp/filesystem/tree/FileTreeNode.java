@@ -59,8 +59,11 @@ public class FileTreeNode implements LinkedFileNode {
         }
 
         final TreePath relativePath = _relativePath.normalize();
-
         final String childName = relativePath.getName(0).toString();
+
+        if ("..".equals(childName)) {
+            throw new IllegalArgumentException("cannot append on out of this directory: " + _relativePath);
+        }
 
         // このディレクトリのすぐ下にファイルを置く場合
         if (relativePath.getNameCount() == 1) {
