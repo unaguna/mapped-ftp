@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<MappedFtp>
+    <file-user-manager file="/jp.unaguna.mappedftp/default_user.properties" />
+    <files>
+        <file type="classpath" path="/default-config/default_config.xml" src="/jp.unaguna.mappedftp/default_config.xml" />
+        <file type="classpath" path="/default-config/default_user.properties" src="/jp.unaguna.mappedftp/default_user.properties" />
+    </files>
+</MappedFtp>
