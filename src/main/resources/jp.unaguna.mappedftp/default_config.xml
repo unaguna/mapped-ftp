@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <MappedFtp>
-    <file-user-manager file="/jp.unaguna.mappedftp/default_user.properties" />
+    <file-user-manager file="/jp.unaguna.mappedftp/default_user.properties"/>
     <files>
-        <file type="classpath" path="/default-config/default_config.xml" src="/jp.unaguna.mappedftp/default_config.xml" />
-        <file type="classpath" path="/default-config/default_user.properties" src="/jp.unaguna.mappedftp/default_user.properties" />
+        <file type="url" path="/LICENSE" src="https://raw.githubusercontent.com/unaguna/mapped-ftp/main/LICENSE"/>
+        <file type="classpath" path="/default-config/default_config.xml"
+              src="/jp.unaguna.mappedftp/default_config.xml"/>
+        <file type="classpath" path="/default-config/default_user.properties"
+              src="/jp.unaguna.mappedftp/default_user.properties"/>
     </files>
 </MappedFtp>
