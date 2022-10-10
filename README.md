@@ -20,7 +20,7 @@ This FTP server provides files that are statically defined by a XML file.
     ```
    This command starts the mapped-ftp server with the default configurations.
 
-4. access to `ftp://localhost` with anonymous acount
+4. access to `ftp://localhost` with anonymous account
 
    The following files are provided.
 
@@ -28,6 +28,8 @@ This FTP server provides files that are statically defined by a XML file.
         - The configuration file used now.
     - `/default-config/default_user.properties`
         - The user configuration file used now.
+    - `/LICENSE`
+        - The license of this project. It is got from this repository's [LICENSE](./LICENSE) by HTTPS.
 
 # Configure
 
