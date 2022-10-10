@@ -4,7 +4,7 @@ This FTP server provides files that are statically defined by an XML file.
 
 # Steps to try this server
 
-1. Verify that JAVA >= 8 is installed by a command `java -version`. (This server has been tested in Java8 and Java17)
+1. Verify that JAVA >= 8 is installed by a command `java -version`. (This server has been tested in Java 8, 11, and 17)
 
 2. Create `lib` directory and collect required JARs in the `lib` directory. mappedftp:0.1.x requires the following JARs:
     - mappedftp:0.1.x (download the release from this repository)
