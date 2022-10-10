@@ -1,18 +1,18 @@
 # Mapped FTP Server 0.1.x
 
-This FTP server provides files that are statically defined by a XML file.
+This FTP server provides files that are statically defined by an XML file.
 
 # Steps to try this server
 
 1. Verify that JAVA >= 8 is installed by a command `java -version`. (This server has been tested in Java8 and Java17)
 
-2. Create `lib` directory and collect required JARs in the `lib` directory. mappedftp:0.1.0 requires the following JARs:
-    - mappedftp:0.1.0 (download the release from this repository)
+2. Create `lib` directory and collect required JARs in the `lib` directory. mappedftp:0.1.x requires the following JARs:
+    - mappedftp:0.1.x (download the release from this repository)
     - org.apache.ftpserver:ftpserver-core:1.2.0
     - org.apache.ftpserver:ftplet-api:1.2.0
     - org.apache.mina:mina-core:2.1.6
     - org.slf4j:slf4j-api:1.7.36
-    - (If you want logs, some slf4j implement is also required.)
+    - (If you want logs, some SLF4J implement is also required.)
 
 3. Run the main method of `jp.unaguna.mappedftp.MappedFtpServer`. For example:
     ```shell
