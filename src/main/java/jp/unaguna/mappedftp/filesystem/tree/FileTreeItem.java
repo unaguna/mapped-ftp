@@ -8,6 +8,7 @@ import java.io.OutputStream;
 
 public interface FileTreeItem {
     boolean isDirectory();
+
     default boolean isRegularFile() {
         return !isDirectory();
     }
@@ -16,8 +17,8 @@ public interface FileTreeItem {
      * Create output stream for writing.
      *
      * @param offset The number of bytes at where to start writing.
-     *      If the file is not random accessible,
-     *      any offset other than zero will throw an exception.
+     *               If the file is not random accessible,
+     *               any offset other than zero will throw an exception.
      * @return An {@link OutputStream} used to write to the {@link FtpFile}
      * @throws IOException
      */
@@ -27,8 +28,8 @@ public interface FileTreeItem {
      * Create input stream for reading.
      *
      * @param offset The number of bytes of where to start reading.
-     *          If the file is not random accessible,
-     *          any offset other than zero will throw an exception.
+     *               If the file is not random accessible,
+     *               any offset other than zero will throw an exception.
      * @return An {@link InputStream} used to read the {@link FtpFile}
      * @throws IOException
      */

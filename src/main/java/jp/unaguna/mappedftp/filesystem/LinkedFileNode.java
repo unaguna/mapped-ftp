@@ -15,7 +15,7 @@ public interface LinkedFileNode extends FtpFile {
      * @param relativePath a relative path from this node
      * @return the node
      * @throws NotDirectoryException If an element other than the end of the path is a non-directory file
-     * @throws NoSuchFileException If the file indicated by the path does not exist
+     * @throws NoSuchFileException   If the file indicated by the path does not exist
      */
     LinkedFileNode getNodeByRelativePath(TreePath relativePath) throws NotDirectoryException, NoSuchFileException;
 }

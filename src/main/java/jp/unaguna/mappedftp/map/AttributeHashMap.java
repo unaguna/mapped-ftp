@@ -42,7 +42,7 @@ public class AttributeHashMap extends HashMap<String, String> {
     /**
      * Returns and removes the value of the specified attribute, or defaultValue if this map contains no value for the attribute.
      *
-     * @param name the name of the attribute whose value is to be returned
+     * @param name         the name of the attribute whose value is to be returned
      * @param defaultValue the value to be returned when this map does not contain the specified attribute
      * @return the value of the specified attribute, or defaultValue if this map contains no value for the attribute
      */

@@ -25,13 +25,13 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ReadOnlyFileSystemFactoryTest {
     @Test
     public void testConfigured__true() {
-        final ServerConfig serverConfig = new ServerConfig(){{
-            putFile(new AttributeHashMap(){{
+        final ServerConfig serverConfig = new ServerConfig() {{
+            putFile(new AttributeHashMap() {{
                 put("type", "url");
                 put("path", "/dir1/file1");
                 put("src", "https://dummy1.example.com/");
             }});
-            putFile(new AttributeHashMap(){{
+            putFile(new AttributeHashMap() {{
                 put("type", "url");
                 put("path", "/file2");
                 put("src", "https://dummy2.example.com/");
@@ -58,13 +58,13 @@ public class ReadOnlyFileSystemFactoryTest {
 
     @Test
     public void testCreate__attribute_path() {
-        final ServerConfig serverConfig = new ServerConfig(){{
-            putFile(new AttributeHashMap(){{
+        final ServerConfig serverConfig = new ServerConfig() {{
+            putFile(new AttributeHashMap() {{
                 put("type", "url");
                 put("path", "/dir1/file1");
                 put("src", "https://dummy1.example.com/");
             }});
-            putFile(new AttributeHashMap(){{
+            putFile(new AttributeHashMap() {{
                 put("type", "url");
                 put("path", "/file2");
                 put("src", "https://dummy2.example.com/");
@@ -102,8 +102,8 @@ public class ReadOnlyFileSystemFactoryTest {
 
     @Test
     public void testCreate__illegal_type() {
-        final ServerConfig serverConfig = new ServerConfig(){{
-            putFile(new AttributeHashMap(){{
+        final ServerConfig serverConfig = new ServerConfig() {{
+            putFile(new AttributeHashMap() {{
                 put("type", "dummy");
                 put("path", "/dir1/file1");
             }});
@@ -121,20 +121,20 @@ public class ReadOnlyFileSystemFactoryTest {
             // expected exception
             assertEquals("unknown type is specified: type=\"dummy\"", e.getMessage());
 
-        } catch (AttributeException|FtpException e) {
+        } catch (AttributeException | FtpException e) {
             fail(e);
         }
     }
 
     @Test
     public void testCreate__type_url__attribute_src() {
-        final ServerConfig serverConfig = new ServerConfig(){{
-            putFile(new AttributeHashMap(){{
+        final ServerConfig serverConfig = new ServerConfig() {{
+            putFile(new AttributeHashMap() {{
                 put("type", "url");
                 put("path", "/dir1/file1");
                 put("src", "https://dummy1.example.com/");
             }});
-            putFile(new AttributeHashMap(){{
+            putFile(new AttributeHashMap() {{
                 put("type", "url");
                 put("path", "/file2");
                 put("src", "https://dummy2.example.com/");
@@ -168,8 +168,8 @@ public class ReadOnlyFileSystemFactoryTest {
 
     @Test
     public void testCreate__type_url__error_by_root_as_not_dir() {
-        final ServerConfig serverConfig = new ServerConfig(){{
-            putFile(new AttributeHashMap(){{
+        final ServerConfig serverConfig = new ServerConfig() {{
+            putFile(new AttributeHashMap() {{
                 put("type", "url");
                 put("path", "/");
                 put("src", "https://dummy1.example.com/");
@@ -188,15 +188,15 @@ public class ReadOnlyFileSystemFactoryTest {
             // expected exception
             assertEquals("cannot append a non-directory file on the root \"/\"", e.getMessage());
 
-        } catch (AttributeException|FtpException e) {
+        } catch (AttributeException | FtpException e) {
             fail(e);
         }
     }
 
     @Test
     public void testCreate__type_url__error_by_illegal_url() {
-        final ServerConfig serverConfig = new ServerConfig(){{
-            putFile(new AttributeHashMap(){{
+        final ServerConfig serverConfig = new ServerConfig() {{
+            putFile(new AttributeHashMap() {{
                 put("type", "url");
                 put("path", "/file1");
                 put("src", "dummy1.example.com");
@@ -217,15 +217,15 @@ public class ReadOnlyFileSystemFactoryTest {
             assertInstanceOf(MalformedURLException.class, e.getCause());
             assertTrue(e.getCause().getMessage().contains("dummy1.example.com"));
 
-        } catch (AttributeException|FtpException e) {
+        } catch (AttributeException | FtpException e) {
             fail(e);
         }
     }
 
     @Test
     public void testCreate__type_url__error_by_unknown_attribute() {
-        final ServerConfig serverConfig = new ServerConfig(){{
-            putFile(new AttributeHashMap(){{
+        final ServerConfig serverConfig = new ServerConfig() {{
+            putFile(new AttributeHashMap() {{
                 put("type", "url");
                 put("path", "/dir1/file1");
                 put("src", "https://dummy1.example.com/");
@@ -245,7 +245,7 @@ public class ReadOnlyFileSystemFactoryTest {
             // expected exception
             assertTrue(e.getMessage().endsWith(": dummy"));
 
-        } catch (AttributeException|FtpException e) {
+        } catch (AttributeException | FtpException e) {
             fail(e);
         }
     }
@@ -324,11 +324,11 @@ public class ReadOnlyFileSystemFactoryTest {
 
     @Test
     public void testCreate__type_local__error_by_illegal_path() {
-        final ServerConfig serverConfig = new ServerConfig(){{
-            putFile(new AttributeHashMap(){{
+        final ServerConfig serverConfig = new ServerConfig() {{
+            putFile(new AttributeHashMap() {{
                 put("type", "local");
                 put("path", "/file1");
-                put("src", ":::::");
+                put("src", "::::\0:");
             }});
         }};
 
@@ -344,9 +344,9 @@ public class ReadOnlyFileSystemFactoryTest {
             // expected exception
             assertEquals("illegal attribute: src", e.getMessage());
             assertInstanceOf(InvalidPathException.class, e.getCause());
-            assertTrue(e.getCause().getMessage().contains(":::::"));
+            assertTrue(e.getCause().getMessage().contains("::::\0:"));
 
-        } catch (AttributeException|FtpException e) {
+        } catch (AttributeException | FtpException e) {
             fail(e);
         }
     }
@@ -389,8 +389,8 @@ public class ReadOnlyFileSystemFactoryTest {
     public void testCreate__type_classpath__attribute_src(TestInfo testInfo) {
         String path = TestUtils.getInputResourceClasspath("local.txt", testInfo);
 
-        final ServerConfig serverConfig = new ServerConfig(){{
-            putFile(new AttributeHashMap(){{
+        final ServerConfig serverConfig = new ServerConfig() {{
+            putFile(new AttributeHashMap() {{
                 put("type", "classpath");
                 put("path", "/dir1/file1");
                 put("src", path);
@@ -415,7 +415,7 @@ public class ReadOnlyFileSystemFactoryTest {
 
             assertTextFile(new String[]{"I am a text file for test"}, itemFile1.createInputStream(0));
 
-        } catch (FtpException|IOException e) {
+        } catch (FtpException | IOException e) {
             fail(e);
         }
     }
@@ -424,8 +424,8 @@ public class ReadOnlyFileSystemFactoryTest {
     public void testCreate__type_classpath__error_by_root_as_not_dir(TestInfo testInfo) {
         String path = TestUtils.getInputResourceClasspath("local.txt", testInfo);
 
-        final ServerConfig serverConfig = new ServerConfig(){{
-            putFile(new AttributeHashMap(){{
+        final ServerConfig serverConfig = new ServerConfig() {{
+            putFile(new AttributeHashMap() {{
                 put("type", "classpath");
                 put("path", "/");
                 put("src", path);
@@ -444,15 +444,15 @@ public class ReadOnlyFileSystemFactoryTest {
             // expected exception
             assertEquals("cannot append a non-directory file on the root \"/\"", e.getMessage());
 
-        } catch (AttributeException|FtpException e) {
+        } catch (AttributeException | FtpException e) {
             fail(e);
         }
     }
 
     @Test
     public void testCreate__type_classpath__error_by_non_exist_path() {
-        final ServerConfig serverConfig = new ServerConfig(){{
-            putFile(new AttributeHashMap(){{
+        final ServerConfig serverConfig = new ServerConfig() {{
+            putFile(new AttributeHashMap() {{
                 put("type", "classpath");
                 put("path", "/file1");
                 put("src", "/no/exist/path");
@@ -472,7 +472,7 @@ public class ReadOnlyFileSystemFactoryTest {
             assertEquals("illegal attribute: src", e.getMessage());
             assertTrue(e.getCause().getMessage().contains("/no/exist/path"));
 
-        } catch (AttributeException|FtpException e) {
+        } catch (AttributeException | FtpException e) {
             fail(e);
         }
     }
@@ -481,8 +481,8 @@ public class ReadOnlyFileSystemFactoryTest {
     public void testCreate__type_classpath__error_by_unknown_attribute(TestInfo testInfo) {
         String path = TestUtils.getInputResourceClasspath("local.txt", testInfo);
 
-        final ServerConfig serverConfig = new ServerConfig(){{
-            putFile(new AttributeHashMap(){{
+        final ServerConfig serverConfig = new ServerConfig() {{
+            putFile(new AttributeHashMap() {{
                 put("type", "classpath");
                 put("path", "/dir1/file1");
                 put("src", path);
@@ -502,7 +502,7 @@ public class ReadOnlyFileSystemFactoryTest {
             // expected exception
             assertTrue(e.getMessage().endsWith(": dummy"));
 
-        } catch (AttributeException|FtpException e) {
+        } catch (AttributeException | FtpException e) {
             fail(e);
         }
     }

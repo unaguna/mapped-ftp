@@ -10,5 +10,6 @@ public interface ConfigurableUserManagerFactory extends UserManagerFactory {
      * Returns whether {@link #applyConfig(ServerConfig)} has already been called.
      */
     boolean isConfigured();
+
     void applyConfig(ServerConfig serverConfig) throws AttributeException, ConfigException;
 }
