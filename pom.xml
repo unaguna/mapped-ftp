@@ -16,7 +16,6 @@
 
     <build>
         <plugins>
-            <!-- JUnit 5 でのテスト実行に必要なプラグインを導入 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
