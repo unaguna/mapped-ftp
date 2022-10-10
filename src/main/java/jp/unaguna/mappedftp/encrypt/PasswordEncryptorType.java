@@ -14,6 +14,7 @@ public enum PasswordEncryptorType {
     ;
 
     private final Class<? extends PasswordEncryptor> passwordEncryptor;
+
     PasswordEncryptorType(Class<? extends PasswordEncryptor> cls) {
         passwordEncryptor = cls;
     }

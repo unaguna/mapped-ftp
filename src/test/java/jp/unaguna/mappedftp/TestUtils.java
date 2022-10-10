@@ -27,7 +27,7 @@ public class TestUtils {
      * Return the url of input file prepared for testing.
      *
      * <p>
-     *     The file is searched in the following paths.
+     * The file is searched in the following paths.
      * </p>
      * <ol>
      *     <li><code>/unittest/cases/${simpleNameOfTestClass}_${nameOfTestMethod}/input/</code></li>
@@ -40,7 +40,7 @@ public class TestUtils {
      * </p>
      *
      * @param relativePath the name of file to get
-     * @param testInfo the JUnit test information object
+     * @param testInfo     the JUnit test information object
      * @return the url of the specified input file
      * @throws NoSuchTestResourceException when specified resource is not found
      * @see #getInputResourceClasspath(String, TestInfo)
@@ -54,7 +54,7 @@ public class TestUtils {
      * Return the classpath of input file prepared for testing.
      *
      * <p>
-     *     The file is searched in the following paths.
+     * The file is searched in the following paths.
      * </p>
      * <ol>
      *     <li><code>/unittest/cases/${simpleNameOfTestClass}_${nameOfTestMethod}/input/</code></li>
@@ -67,7 +67,7 @@ public class TestUtils {
      * </p>
      *
      * @param relativePath the name of file to get
-     * @param testInfo the JUnit test information object
+     * @param testInfo     the JUnit test information object
      * @return the classpath of the specified input file
      * @throws NoSuchTestResourceException when specified resource is not found
      * @see #getInputResource(String, TestInfo)
@@ -125,7 +125,7 @@ public class TestUtils {
      * Return the path of the clone of input file prepared for testing.
      *
      * <p>
-     *     The file is searched in the following paths.
+     * The file is searched in the following paths.
      * </p>
      * <ol>
      *     <li><code>/unittest/cases/${simpleNameOfTestClass}_${nameOfTestMethod}/input/</code></li>
@@ -134,7 +134,7 @@ public class TestUtils {
      * </ol>
      *
      * @param relativePath the name of file to get
-     * @param testInfo the JUnit test information object
+     * @param testInfo     the JUnit test information object
      * @return the path of a temporary file whose contents are same as the specified input file
      * @see #getInputResource(String, TestInfo)
      * @see #getInputResourceClasspath(String, TestInfo)
@@ -183,7 +183,7 @@ public class TestUtils {
      * Assert that expected lines equal to actual content of the text file.
      *
      * @param expectedLines expected lines
-     * @param actual the actual text file
+     * @param actual        the actual text file
      * @throws IOException some error occurred when read the actual file
      */
     public static void assertTextFile(String[] expectedLines, InputStream actual) throws IOException {
@@ -192,7 +192,7 @@ public class TestUtils {
                 final BufferedReader reader = new BufferedReader(r)
         ) {
             int i;
-            for (i=0; i < expectedLines.length; i++) {
+            for (i = 0; i < expectedLines.length; i++) {
                 final int lineNum = i;
                 final String expectedLine = expectedLines[i];
                 final String actualLine = reader.readLine();
@@ -209,7 +209,7 @@ public class TestUtils {
             }
 
             // non-expected lines
-            for(;; i++) {
+            for (; ; i++) {
                 final String actualLine = reader.readLine();
                 if (actualLine == null) {
                     break;
@@ -226,10 +226,10 @@ public class TestUtils {
         }
     }
 
-    private static String buildString(String separator, String ...parts) {
+    private static String buildString(String separator, String... parts) {
         final StringBuilder pathBuilder = new StringBuilder(128);
         pathBuilder.append(parts[0]);
-        for (int i=1; i < parts.length; i++) {
+        for (int i = 1; i < parts.length; i++) {
             pathBuilder.append(separator);
             pathBuilder.append(parts[i]);
         }
