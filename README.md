@@ -1,4 +1,4 @@
-# Mapped FTP Server 0.1.0
+# Mapped FTP Server 0.1.x
 
 This FTP server provides files that are statically defined by a XML file.
 
@@ -47,6 +47,8 @@ This file is specified as an argument at runtime and is the configuration file f
 
 This file is written by XML. The root tag is `<MappedFtp>`.
 
+See also [the default configuration](./src/main/resources/jp.unaguna.mappedftp/default_config.xml).
+
 ### Tag `<file-user-manager>`
 
 Configure settings related to users.
@@ -75,3 +77,5 @@ It defines a file to serve.
 This file is specified in base configuration files and is the configuration of users.
 
 The format of this file is same as the one of Apache FTP server.
+
+See also [the default configuration](./src/main/resources/jp.unaguna.mappedftp/default_user.properties).
