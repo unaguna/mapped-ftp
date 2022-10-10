@@ -5,10 +5,10 @@ import jp.unaguna.mappedftp.config.ServerConfig;
 import jp.unaguna.mappedftp.config.ServerConfigLoader;
 import jp.unaguna.mappedftp.filesystem.ConfigurableFileSystemFactory;
 import jp.unaguna.mappedftp.filesystem.ReadOnlyFileSystemFactory;
-import jp.unaguna.mappedftp.utils.ClasspathUtils;
 import jp.unaguna.mappedftp.map.AttributeException;
 import jp.unaguna.mappedftp.user.ConfigurablePropertiesUserManagerFactory;
 import jp.unaguna.mappedftp.user.ConfigurableUserManagerFactory;
+import jp.unaguna.mappedftp.utils.ClasspathUtils;
 import org.apache.ftpserver.FtpServer;
 import org.apache.ftpserver.FtpServerFactory;
 import org.apache.ftpserver.ftplet.FtpException;
@@ -40,7 +40,7 @@ public class MappedFtpServer {
     /**
      * set a server configuration
      *
-     * @param serverConfig the configurations to be set
+     * @param serverConfig     the configurations to be set
      * @param serverConfigName the name of configurations (this is used in error messages)
      * @throws IllegalStateException if the server has been started
      */
@@ -56,8 +56,9 @@ public class MappedFtpServer {
      * specify FtpServerFactory
      *
      * <p>
-     *     If not specified, default factory is used.
+     * If not specified, default factory is used.
      * </p>
+     *
      * @param ftpServerFactory FtpServerFactory to be used
      */
     public void setFtpServerFactory(FtpServerFactory ftpServerFactory) {
@@ -100,8 +101,8 @@ public class MappedFtpServer {
      * Create a {@link ConfigurableUserManagerFactory} according to the configurations and return it.
      *
      * <p>
-     *     It creates an instance of the {@link ConfigurableUserManagerFactory} specified in the configuration.
-     *     If not specified, creates an instance of the default class.
+     * It creates an instance of the {@link ConfigurableUserManagerFactory} specified in the configuration.
+     * If not specified, creates an instance of the default class.
      * </p>
      *
      * @param serverConfig the configurations
@@ -147,8 +148,8 @@ public class MappedFtpServer {
      * Create a {@link ConfigurableFileSystemFactory} according to the configurations and return it.
      *
      * <p>
-     *     It creates an instance of the {@link ConfigurableFileSystemFactory} specified in the configuration.
-     *     If not specified, creates an instance of the default class.
+     * It creates an instance of the {@link ConfigurableFileSystemFactory} specified in the configuration.
+     * If not specified, creates an instance of the default class.
      * </p>
      *
      * @param serverConfig the configurations

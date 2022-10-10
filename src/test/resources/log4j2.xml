@@ -3,14 +3,14 @@
     <Appenders>
         <Console name="STDOUT" target="SYSTEM_OUT">
             <PatternLayout
-                    pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{1.} - %msg%n" />
-            <ThresholdFilter level="trace" />
+                    pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{1.} - %msg%n"/>
+            <ThresholdFilter level="trace"/>
         </Console>
     </Appenders>
 
     <Loggers>
         <Root level="debug">
-            <AppenderRef ref="STDOUT" />
+            <AppenderRef ref="STDOUT"/>
         </Root>
     </Loggers>
 

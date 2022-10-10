@@ -26,9 +26,9 @@ public class FileTreeItemFromURLTest {
         FileTreeItemFromURL fileTreeItem = new FileTreeItemFromURL(source);
 
         final String line;
-        try(InputStream inputStream = fileTreeItem.createInputStream(0);
-            Reader reader = new InputStreamReader(inputStream);
-            BufferedReader bufferedReader = new BufferedReader(reader)) {
+        try (InputStream inputStream = fileTreeItem.createInputStream(0);
+             Reader reader = new InputStreamReader(inputStream);
+             BufferedReader bufferedReader = new BufferedReader(reader)) {
 
             line = bufferedReader.readLine();
             assertNull(bufferedReader.readLine());

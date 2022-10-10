@@ -32,8 +32,8 @@ public class ServerConfigLoader {
      * @param configPath the path of the configuration file to read
      * @return a configuration object
      * @throws ConfigException when the configuration file specifies illegal configuration
-     * @throws IOException when IO error is occurred within reading config file
-     * @throws SAXException when the configuration file is not legal XML file
+     * @throws IOException     when IO error is occurred within reading config file
+     * @throws SAXException    when the configuration file is not legal XML file
      */
     public ServerConfig load(Path configPath) throws ConfigException, IOException, SAXException {
         try (InputStream configAsStream = Files.newInputStream(configPath)) {
@@ -47,8 +47,8 @@ public class ServerConfigLoader {
      * @param configUrl the url of the configuration file to read
      * @return a configuration object
      * @throws ConfigException when the configuration file specifies illegal configuration
-     * @throws IOException when IO error is occurred within reading config file
-     * @throws SAXException when the configuration file is not legal XML file
+     * @throws IOException     when IO error is occurred within reading config file
+     * @throws SAXException    when the configuration file is not legal XML file
      */
     public ServerConfig load(URL configUrl) throws ConfigException, IOException, SAXException {
         try (InputStream configAsStream = configUrl.openStream()) {
@@ -62,8 +62,8 @@ public class ServerConfigLoader {
      * @param configFile configuration file to read
      * @return a configuration object
      * @throws ConfigException when the configuration file specifies illegal configuration
-     * @throws IOException when IO error is occurred within reading config file
-     * @throws SAXException when the configuration file is not legal XML file
+     * @throws IOException     when IO error is occurred within reading config file
+     * @throws SAXException    when the configuration file is not legal XML file
      */
     public ServerConfig load(InputStream configFile) throws ConfigException, IOException, SAXException {
         DocumentBuilderFactory documentbuilderfactory = DocumentBuilderFactory.newInstance();
@@ -98,7 +98,7 @@ public class ServerConfigLoader {
         }
 
         NodeList elements = root.getChildNodes();
-        for(int i=0; i<elements.getLength(); i++){
+        for (int i = 0; i < elements.getLength(); i++) {
             Node element = elements.item(i);
             String tagName = element.getNodeName();
 
@@ -126,7 +126,7 @@ public class ServerConfigLoader {
     /**
      * Load values from &lt;*-user-manager&gt; element and put them into {@link ServerConfig} object.
      *
-     * @param config the configuration object to edit
+     * @param config  the configuration object to edit
      * @param context the context of loading
      * @throws ConfigException when the xml element specifies illegal configuration
      */
@@ -143,7 +143,7 @@ public class ServerConfigLoader {
     /**
      * Load values from &lt;*-user-manager&gt; element and put them into {@link ServerConfig} object.
      *
-     * @param config the configuration object to edit
+     * @param config             the configuration object to edit
      * @param userManagerElement the xml element
      * @throws ConfigException when the xml element specifies illegal configuration
      */
@@ -161,7 +161,7 @@ public class ServerConfigLoader {
     /**
      * Load values from &lt;file-user-manager&gt; element and put them into {@link ServerConfig} object.
      *
-     * @param config the configuration object to edit
+     * @param config             the configuration object to edit
      * @param userManagerElement the xml element
      * @throws ConfigException when the xml element specifies illegal configuration
      */
@@ -172,7 +172,7 @@ public class ServerConfigLoader {
 
         config.setUserManagerFactoryClass(ConfigurablePropertiesUserManagerFactory.class);
 
-        for(int i=0; i<childElements.getLength(); i++){
+        for (int i = 0; i < childElements.getLength(); i++) {
             final Node element = childElements.item(i);
             final String tagName = element.getNodeName();
 
@@ -185,7 +185,7 @@ public class ServerConfigLoader {
             }
         }
 
-        for(int i=0; i<attributes.getLength(); i++){
+        for (int i = 0; i < attributes.getLength(); i++) {
             final Attr attribute = (Attr) attributes.item(i);
             final String attributeName = attribute.getName();
             final String attributeValue = attribute.getValue();
@@ -207,7 +207,7 @@ public class ServerConfigLoader {
     /**
      * Load values from file attribute of &lt;file-user-manager&gt; element and put it into {@link ServerConfig} object.
      *
-     * @param config the configuration object to edit
+     * @param config        the configuration object to edit
      * @param fileAttribute the xml element
      * @throws ConfigException when the xml element specifies illegal configuration
      */
@@ -227,7 +227,7 @@ public class ServerConfigLoader {
     /**
      * Load values from encrypt-passwords attribute of &lt;file-user-manager&gt; element and put it into {@link ServerConfig} object.
      *
-     * @param config the configuration object to edit
+     * @param config                   the configuration object to edit
      * @param encryptPasswordAttribute the xml element
      * @throws ConfigException when the xml element specifies illegal configuration
      */
@@ -254,7 +254,7 @@ public class ServerConfigLoader {
     /**
      * Load values from &lt;files&gt; element and put them into {@link ServerConfig} object.
      *
-     * @param config the configuration object to edit
+     * @param config       the configuration object to edit
      * @param filesElement the xml element
      * @throws ConfigException when the xml element specifies illegal configuration
      */
@@ -262,7 +262,7 @@ public class ServerConfigLoader {
         final String TAG_NAME = "files";
         NodeList fileElements = filesElement.getChildNodes();
 
-        for(int i=0; i<fileElements.getLength(); i++){
+        for (int i = 0; i < fileElements.getLength(); i++) {
             Node element = fileElements.item(i);
             String tagName = element.getNodeName();
 
@@ -283,7 +283,7 @@ public class ServerConfigLoader {
     /**
      * Load values from &lt;file&gt; element and put them into {@link ServerConfig} object.
      *
-     * @param config the configuration object to edit
+     * @param config      the configuration object to edit
      * @param fileElement the xml element
      */
     private void appendFileElement(ServerConfig config, Node fileElement) {
@@ -299,7 +299,7 @@ public class ServerConfigLoader {
     private static AttributeHashMap namedNodeMapToAttributeMap(NamedNodeMap attributeMap) {
         AttributeHashMap map = new AttributeHashMap(attributeMap.getLength(), 1.0F);
 
-        for(int i=0; i<attributeMap.getLength(); i++) {
+        for (int i = 0; i < attributeMap.getLength(); i++) {
             Attr attribute = (Attr) attributeMap.item(i);
 
             map.put(attribute.getName(), attribute.getValue());

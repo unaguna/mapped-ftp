@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <MappedFtp>
     <file-user-manager file="user.properties">
-        <dummy />
+        <dummy/>
     </file-user-manager>
     <files>
-        <file type="url" path="/https/google.txt" src="https://www.google.com/" />
-        <file type="url" path="/https/yahoo.txt" src="https://www.yahoo.co.jp/" />
+        <file type="url" path="/https/google.txt" src="https://www.google.com/"/>
+        <file type="url" path="/https/yahoo.txt" src="https://www.yahoo.co.jp/"/>
     </files>
 </MappedFtp>

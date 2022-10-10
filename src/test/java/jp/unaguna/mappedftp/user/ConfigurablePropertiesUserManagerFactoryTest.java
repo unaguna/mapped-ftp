@@ -48,7 +48,7 @@ public class ConfigurablePropertiesUserManagerFactoryTest {
     public void testCreate__user_properties_path(TestInfo testInfo) {
         String userPropertiesPath = TestUtils.getInputResourceClasspath("user.properties", testInfo);
 
-        final ServerConfig serverConfig = new ServerConfig(){{
+        final ServerConfig serverConfig = new ServerConfig() {{
             setUserPropertiesPath(userPropertiesPath);
         }};
 
@@ -100,15 +100,15 @@ public class ConfigurablePropertiesUserManagerFactoryTest {
 
     /**
      * <p>
-     *     Allow "clear", "md5", and "salted" to be specified as password encryptors
-     *     according to the Apache FTP server specification.
-     *     (<a href="https://mina.apache.org/ftpserver-project/configuration_user_manager_file.html">reference</a>)
+     * Allow "clear", "md5", and "salted" to be specified as password encryptors
+     * according to the Apache FTP server specification.
+     * (<a href="https://mina.apache.org/ftpserver-project/configuration_user_manager_file.html">reference</a>)
      * </p>
      */
     @ParameterizedTest
     @MethodSource("parameters__testCreate__encryptPasswords")
     public void testCreate__encryptPasswords(Class<? extends PasswordEncryptor> encryptPasswords, Class<? extends PasswordEncryptor> expectedEncryptPasswords) {
-        final ServerConfig serverConfig = new ServerConfig(){{
+        final ServerConfig serverConfig = new ServerConfig() {{
             setPasswordEncryptorClass(encryptPasswords);
         }};
 

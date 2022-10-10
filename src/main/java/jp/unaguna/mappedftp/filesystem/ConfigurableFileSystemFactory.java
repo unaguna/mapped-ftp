@@ -9,5 +9,6 @@ public interface ConfigurableFileSystemFactory extends FileSystemFactory {
      * Returns whether {@link #applyConfig(ServerConfig)} has already been called.
      */
     boolean isConfigured();
+
     void applyConfig(ServerConfig serverConfig) throws AttributeException;
 }
