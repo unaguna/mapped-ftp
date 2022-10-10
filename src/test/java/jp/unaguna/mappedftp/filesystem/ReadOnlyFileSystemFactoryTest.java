@@ -328,7 +328,7 @@ public class ReadOnlyFileSystemFactoryTest {
             putFile(new AttributeHashMap(){{
                 put("type", "local");
                 put("path", "/file1");
-                put("src", ":::::");
+                put("src", "::::\0:");
             }});
         }};
 
@@ -344,7 +344,7 @@ public class ReadOnlyFileSystemFactoryTest {
             // expected exception
             assertEquals("illegal attribute: src", e.getMessage());
             assertInstanceOf(InvalidPathException.class, e.getCause());
-            assertTrue(e.getCause().getMessage().contains(":::::"));
+            assertTrue(e.getCause().getMessage().contains("::::\0:"));
 
         } catch (AttributeException|FtpException e) {
             fail(e);

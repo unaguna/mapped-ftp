@@ -106,7 +106,7 @@ public class MappedFtpServerTest {
             putFile(new AttributeHashMap(){{
                 put("type", "classpath");
                 put("path", "/file");
-                put("src", ":::::");    // illegal
+                put("src", "::::\0:");    // illegal
             }});
         }};
         mappedFtpServer.setFtpServerFactory(ftpServerFactory);
