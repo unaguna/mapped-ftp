@@ -64,7 +64,7 @@ public class MappedFtpServerTest {
         final FtpServerFactoryStub ftpServerFactory = new FtpServerFactoryStub();
 
         final MappedFtpServer mappedFtpServer = new MappedFtpServer();
-        final ServerConfig config = new ServerConfig(){{
+        final ServerConfig config = new ServerConfig() {{
             setUserManagerFactoryClass(UserManagerFactoryStub.class);
         }};
         mappedFtpServer.setFtpServerFactory(ftpServerFactory);
@@ -80,7 +80,7 @@ public class MappedFtpServerTest {
         final FtpServerFactoryStub ftpServerFactory = new FtpServerFactoryStub();
 
         final MappedFtpServer mappedFtpServer = new MappedFtpServer();
-        final ServerConfig config = new ServerConfig(){{
+        final ServerConfig config = new ServerConfig() {{
             setUserManagerFactoryClass(UserManagerFactoryStubNonConstructed.class);
         }};
         mappedFtpServer.setFtpServerFactory(ftpServerFactory);
@@ -102,8 +102,8 @@ public class MappedFtpServerTest {
         final FtpServerFactoryStub ftpServerFactory = new FtpServerFactoryStub();
 
         final MappedFtpServer mappedFtpServer = new MappedFtpServer();
-        final ServerConfig config = new ServerConfig(){{
-            putFile(new AttributeHashMap(){{
+        final ServerConfig config = new ServerConfig() {{
+            putFile(new AttributeHashMap() {{
                 put("type", "classpath");
                 put("path", "/file");
                 put("src", "::::\0:");    // illegal
@@ -127,7 +127,7 @@ public class MappedFtpServerTest {
         final FtpServerFactoryStub ftpServerFactory = new FtpServerFactoryStub();
 
         final MappedFtpServer mappedFtpServer = new MappedFtpServer();
-        final ServerConfig config = new ServerConfig(){{
+        final ServerConfig config = new ServerConfig() {{
             setFileSystemFactoryClass(FileSystemFactoryStub.class);
         }};
         mappedFtpServer.setFtpServerFactory(ftpServerFactory);
@@ -143,7 +143,7 @@ public class MappedFtpServerTest {
         final FtpServerFactoryStub ftpServerFactory = new FtpServerFactoryStub();
 
         final MappedFtpServer mappedFtpServer = new MappedFtpServer();
-        final ServerConfig config = new ServerConfig(){{
+        final ServerConfig config = new ServerConfig() {{
             setFileSystemFactoryClass(FileSystemFactoryStubNonConstructed.class);
         }};
         mappedFtpServer.setFtpServerFactory(ftpServerFactory);
