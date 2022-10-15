@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xs:schema xmlns="http://mappedftp.unaguna.jp/mapped-ftpserver" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:aftp="http://mina.apache.org/ftpserver/spring/v1"
+           targetNamespace="http://mappedftp.unaguna.jp/mapped-ftpserver" elementFormDefault="qualified"
+           attributeFormDefault="unqualified">
+    <xs:import namespace="http://mina.apache.org/ftpserver/spring/v1"
+               schemaLocation="https://mina.apache.org/ftpserver-project/ftpserver-1.0.xsd"/>
+
+    <!-- The main entry point, used for setting up an entire FTP server -->
+    <xs:element name="server">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element minOccurs="0" name="listeners">
+                    <xs:complexType>
+                        <xs:choice minOccurs="1" maxOccurs="unbounded">
+                            <xs:element ref="aftp:nio-listener"/>
+                            <xs:element ref="aftp:listener"/>
+                        </xs:choice>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element minOccurs="0" ref="aftp:ftplets"/>
+                <xs:choice minOccurs="0" maxOccurs="1">
+                    <xs:element minOccurs="0" ref="aftp:file-user-manager"/>
+                    <xs:element minOccurs="0" ref="aftp:db-user-manager"/>
+                    <xs:element minOccurs="0" ref="aftp:user-manager"/>
+                </xs:choice>
+                <xs:choice minOccurs="0" maxOccurs="1">
+                    <xs:element minOccurs="0" ref="mapped-filesystem"/>
+                    <xs:element minOccurs="0" ref="aftp:native-filesystem"/>
+                    <xs:element minOccurs="0" ref="aftp:filesystem"/>
+                    <xs:any minOccurs="0"/>
+                </xs:choice>
+                <xs:element minOccurs="0" ref="aftp:commands"/>
+                <xs:element minOccurs="0" ref="aftp:messages"/>
+            </xs:sequence>
+            <xs:attribute name="id" type="xs:ID"/>
+            <xs:attribute name="max-logins" type="xs:int"/>
+            <xs:attribute name="max-anon-logins" type="xs:int"/>
+            <xs:attribute name="anon-enabled" type="xs:boolean"/>
+            <xs:attribute name="max-login-failures" type="xs:int"/>
+            <xs:attribute name="login-failure-delay" type="xs:int"/>
+            <xs:attribute name="max-threads" type="xs:int"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="mapped-filesystem">
+    </xs:element>
+</xs:schema>
+
