@@ -1,6 +1,6 @@
 package jp.unaguna.mappedftp.config.spring;
 
-import jp.unaguna.mappedftp.filesystem.ReadOnlyFileSystemFactory;
+import jp.unaguna.mappedftp.filesystem.FileTreeFileSystemFactory;
 import jp.unaguna.mappedftp.filesystem.tree.FileTreeItem;
 import jp.unaguna.mappedftp.utils.ClasspathUtils;
 import org.apache.ftpserver.config.spring.SpringUtil;
@@ -19,7 +19,7 @@ public class MappedFilesystemBeanDefinitionParser extends AbstractSingleBeanDefi
 
     @Override
     protected Class<?> getBeanClass(Element element) {
-        return ReadOnlyFileSystemFactory.class;
+        return FileTreeFileSystemFactory.class;
     }
 
     @Override

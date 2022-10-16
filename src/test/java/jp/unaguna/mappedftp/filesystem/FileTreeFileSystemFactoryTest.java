@@ -13,7 +13,7 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ReadOnlyFileSystemFactoryTest {
+public class FileTreeFileSystemFactoryTest {
 
     @Test
     public void testCreate__path() {
@@ -24,7 +24,7 @@ public class ReadOnlyFileSystemFactoryTest {
 
         final LinkedFileSystemView fileSystemView;
         try {
-            final ReadOnlyFileSystemFactory factory = new ReadOnlyFileSystemFactory(files);
+            final FileTreeFileSystemFactory factory = new FileTreeFileSystemFactory(files);
             fileSystemView = (LinkedFileSystemView) factory.createFileSystemView(new UserStub());
         } catch (FtpException | FileSystemDefinitionException e) {
             fail(e);
@@ -55,7 +55,7 @@ public class ReadOnlyFileSystemFactoryTest {
         }};
 
         try {
-            new ReadOnlyFileSystemFactory(files);
+            new FileTreeFileSystemFactory(files);
             fail("expected exception has not been thrown");
 
         } catch (FileSystemDefinitionException e) {
