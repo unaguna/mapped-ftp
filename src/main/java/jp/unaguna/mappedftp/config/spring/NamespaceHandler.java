@@ -9,5 +9,7 @@ public class NamespaceHandler extends NamespaceHandlerSupport {
         registerBeanDefinitionParser("server", new ServerBeanDefinitionParser());
         registerBeanDefinitionParser("mapped-filesystem", new MappedFilesystemBeanDefinitionParser());
         registerBeanDefinitionParser("local-file", new LocalFileBeanDefinitionParser());
+        registerBeanDefinitionParser("url-file", new UrlFileBeanDefinitionParser());
+        registerBeanDefinitionParser("classpath-file", new ClasspathFileBeanDefinitionParser());
     }
 }
