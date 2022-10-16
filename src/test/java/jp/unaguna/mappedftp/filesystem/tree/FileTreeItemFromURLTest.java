@@ -6,6 +6,7 @@ import org.junit.jupiter.api.TestInfo;
 
 import java.io.*;
 import java.net.URL;
+import java.net.UnknownHostException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -39,5 +40,23 @@ public class FileTreeItemFromURLTest {
         }
 
         assertEquals("I am a text file for test", line);
+    }
+
+    @Test
+    public void testInputStream__error_by_missing_resource() {
+        final URL source = TestUtils.url("http://dummy1.example.com/");
+
+        FileTreeItemFromURL fileTreeItem = new FileTreeItemFromURL(source);
+
+        try (InputStream ignored = fileTreeItem.createInputStream(0)) {
+            fail("expected exception has not been thrown");
+
+        } catch (UnknownHostException e) {
+            // expected exception
+            assertEquals("dummy1.example.com", e.getMessage());
+
+        } catch (IOException e) {
+            fail(e);
+        }
     }
 }
