@@ -3,7 +3,7 @@ package jp.unaguna.mappedftp.config.spring;
 import jp.unaguna.mappedftp.TestUtils;
 import jp.unaguna.mappedftp.UserStub;
 import jp.unaguna.mappedftp.filesystem.LinkedFileSystemView;
-import jp.unaguna.mappedftp.filesystem.FileTreeFileSystemFactory;
+import jp.unaguna.mappedftp.filesystem.MappingFileSystemFactory;
 import jp.unaguna.mappedftp.filesystem.tree.FileTreeItemFromClasspath;
 import jp.unaguna.mappedftp.filesystem.tree.FileTreeNode;
 import org.apache.ftpserver.ftplet.FtpException;
@@ -25,7 +25,7 @@ public class ClasspathFileBeanDefinitionParserTest {
         // TODO: できれば Parser を直接テストして、他のタグやファイルシステムクラスの仕様変更の影響を受けないようにしたい
         final FileSystemXmlApplicationContext ctx = new FileSystemXmlApplicationContext(configPath.toString());
         final DefaultFtpServer actualServer = (DefaultFtpServer) ctx.getBean("testServer");
-        final FileTreeFileSystemFactory fileSystemFactory = (FileTreeFileSystemFactory) actualServer.getFileSystem();
+        final MappingFileSystemFactory fileSystemFactory = (MappingFileSystemFactory) actualServer.getFileSystem();
 
         try {
             final LinkedFileSystemView fileSystemView = fileSystemFactory.createFileSystemView(new UserStub());

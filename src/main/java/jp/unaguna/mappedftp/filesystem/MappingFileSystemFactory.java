@@ -10,14 +10,14 @@ import org.apache.ftpserver.ftplet.User;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class FileTreeFileSystemFactory implements FileSystemFactory {
+public class MappingFileSystemFactory implements FileSystemFactory {
     private final Map<String, FileTreeItem> files;
 
-    public FileTreeFileSystemFactory() {
+    public MappingFileSystemFactory() {
         this.files = new LinkedHashMap<>();
     }
 
-    public FileTreeFileSystemFactory(Map<String, FileTreeItem> files) throws FileSystemDefinitionException {
+    public MappingFileSystemFactory(Map<String, FileTreeItem> files) throws FileSystemDefinitionException {
         this.files = files;
 
         for (String path : files.keySet()) {

@@ -1,7 +1,7 @@
 package jp.unaguna.mappedftp.config.spring;
 
 import jp.unaguna.mappedftp.TestUtils;
-import jp.unaguna.mappedftp.filesystem.FileTreeFileSystemFactory;
+import jp.unaguna.mappedftp.filesystem.MappingFileSystemFactory;
 import org.apache.ftpserver.impl.DefaultFtpServer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
@@ -19,6 +19,6 @@ public class NamespaceHandlerTest {
         final FileSystemXmlApplicationContext ctx = new FileSystemXmlApplicationContext(configPath.toString());
         final DefaultFtpServer actualServer = (DefaultFtpServer) ctx.getBean("testServer");
 
-        assertInstanceOf(FileTreeFileSystemFactory.class, actualServer.getFileSystem());
+        assertInstanceOf(MappingFileSystemFactory.class, actualServer.getFileSystem());
     }
 }

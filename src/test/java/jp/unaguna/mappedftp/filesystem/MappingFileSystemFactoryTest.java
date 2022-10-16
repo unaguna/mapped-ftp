@@ -13,7 +13,7 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class FileTreeFileSystemFactoryTest {
+public class MappingFileSystemFactoryTest {
 
     @Test
     public void testCreate__path() {
@@ -24,8 +24,8 @@ public class FileTreeFileSystemFactoryTest {
 
         final LinkedFileSystemView fileSystemView;
         try {
-            final FileTreeFileSystemFactory factory = new FileTreeFileSystemFactory(files);
-            fileSystemView = (LinkedFileSystemView) factory.createFileSystemView(new UserStub());
+            final MappingFileSystemFactory factory = new MappingFileSystemFactory(files);
+            fileSystemView = factory.createFileSystemView(new UserStub());
         } catch (FtpException | FileSystemDefinitionException e) {
             fail(e);
             return;
@@ -55,7 +55,7 @@ public class FileTreeFileSystemFactoryTest {
         }};
 
         try {
-            new FileTreeFileSystemFactory(files);
+            new MappingFileSystemFactory(files);
             fail("expected exception has not been thrown");
 
         } catch (FileSystemDefinitionException e) {
