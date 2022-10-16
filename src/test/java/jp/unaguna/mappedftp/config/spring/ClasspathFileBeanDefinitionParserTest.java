@@ -4,9 +4,8 @@ import jp.unaguna.mappedftp.TestUtils;
 import jp.unaguna.mappedftp.UserStub;
 import jp.unaguna.mappedftp.filesystem.LinkedFileSystemView;
 import jp.unaguna.mappedftp.filesystem.ReadOnlyFileSystemFactory;
-import jp.unaguna.mappedftp.filesystem.tree.FileTreeItemFromURL;
+import jp.unaguna.mappedftp.filesystem.tree.FileTreeItemFromClasspath;
 import jp.unaguna.mappedftp.filesystem.tree.FileTreeNode;
-import jp.unaguna.mappedftp.utils.ClasspathUtils;
 import org.apache.ftpserver.ftplet.FtpException;
 import org.apache.ftpserver.impl.DefaultFtpServer;
 import org.junit.jupiter.api.Test;
@@ -31,8 +30,8 @@ public class ClasspathFileBeanDefinitionParserTest {
         try {
             final LinkedFileSystemView fileSystemView = fileSystemFactory.createFileSystemView(new UserStub());
             final FileTreeNode fileTreeNode = (FileTreeNode) fileSystemView.getFile("/file1");
-            final FileTreeItemFromURL file = (FileTreeItemFromURL) fileTreeNode.getFile();
-            assertEquals(ClasspathUtils.getResource("dummy.txt"), file.getSource());
+            final FileTreeItemFromClasspath file = (FileTreeItemFromClasspath) fileTreeNode.getFile();
+            assertEquals("dummy.txt", file.getSource());
 
         } catch (FtpException e) {
             fail(e);
