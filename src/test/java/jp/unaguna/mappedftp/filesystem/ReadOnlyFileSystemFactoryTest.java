@@ -18,7 +18,7 @@ public class ReadOnlyFileSystemFactoryTest {
     @Test
     public void testCreate__path() {
         final Map<String, FileTreeItem> files = new LinkedHashMap<String, FileTreeItem>() {{
-            put("/dir1/file1", new FileTreeItemFromURL("https://dummy1.example.com/"));
+            put("/dir1/file1", new FileTreeItemFromURL(TestUtils.url("https://dummy1.example.com/")));
             put("/file2", new FileTreeItemFromURL(TestUtils.url("https://dummy2.example.com/")));
         }};
 
@@ -51,7 +51,7 @@ public class ReadOnlyFileSystemFactoryTest {
     @Test
     public void testCreate__error_by_root_as_not_dir() {
         final Map<String, FileTreeItem> files = new LinkedHashMap<String, FileTreeItem>() {{
-            put("/", new FileTreeItemFromURL("https://dummy1.example.com/"));
+            put("/", new FileTreeItemFromURL(TestUtils.url("https://dummy1.example.com/")));
         }};
 
         try {

@@ -13,14 +13,6 @@ public class FileTreeItemFromURL extends FileTreeItemReadOnlyFile {
         this.source = source;
     }
 
-    public FileTreeItemFromURL(String source) {
-        try {
-            this.source = new URL(source);
-        } catch (MalformedURLException e) {
-            throw new IllegalArgumentException(e);
-        }
-    }
-
     public URL getSource() {
         return source;
     }
