@@ -22,7 +22,17 @@ import java.util.Map;
 
 public class ReadOnlyFileSystemFactory implements ConfigurableFileSystemFactory {
     private boolean configured = false;
-    private final Map<String, FileTreeItem> files = new LinkedHashMap<>();
+    private final Map<String, FileTreeItem> files;
+
+    public ReadOnlyFileSystemFactory() {
+        this.files = new LinkedHashMap<>();
+    }
+
+    public ReadOnlyFileSystemFactory(Map<String, FileTreeItem> files) {
+        this.files = files;
+
+        // TODO: 設定値のvalidation
+    }
 
     @Override
     public boolean isConfigured() {

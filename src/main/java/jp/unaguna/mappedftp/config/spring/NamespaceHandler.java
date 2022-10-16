@@ -8,5 +8,6 @@ public class NamespaceHandler extends NamespaceHandlerSupport {
     public void init() {
         registerBeanDefinitionParser("server", new ServerBeanDefinitionParser());
         registerBeanDefinitionParser("mapped-filesystem", new MappedFilesystemBeanDefinitionParser());
+        registerBeanDefinitionParser("local-file", new LocalFileBeanDefinitionParser());
     }
 }

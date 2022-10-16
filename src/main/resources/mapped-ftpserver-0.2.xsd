@@ -44,6 +44,18 @@
     </xs:element>
 
     <xs:element name="mapped-filesystem">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element minOccurs="0" maxOccurs="unbounded" ref="local-file"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="local-file">
+        <xs:complexType>
+            <xs:attribute name="path" type="xs:string" use="required"/>
+            <xs:attribute name="src" type="xs:string" use="required"/>
+        </xs:complexType>
     </xs:element>
 </xs:schema>
 
