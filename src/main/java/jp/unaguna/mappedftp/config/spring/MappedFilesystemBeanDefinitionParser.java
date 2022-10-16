@@ -1,7 +1,10 @@
 package jp.unaguna.mappedftp.config.spring;
 
 import jp.unaguna.mappedftp.filesystem.ReadOnlyFileSystemFactory;
+import jp.unaguna.mappedftp.filesystem.tree.FileTreeItem;
+import jp.unaguna.mappedftp.utils.ClasspathUtils;
 import org.apache.ftpserver.config.spring.SpringUtil;
+import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.ManagedMap;
@@ -10,6 +13,7 @@ import org.springframework.beans.factory.xml.ParserContext;
 import org.w3c.dom.Element;
 
 import java.util.List;
+import java.util.Objects;
 
 public class MappedFilesystemBeanDefinitionParser extends AbstractSingleBeanDefinitionParser {
 
@@ -30,7 +34,15 @@ public class MappedFilesystemBeanDefinitionParser extends AbstractSingleBeanDefi
             final BeanDefinition item = parserContext.getDelegate()
                     .parseCustomElement(childElm, builder.getBeanDefinition());
 
-            // TODO: item の class のバリデーション
+            // assert that item is instance of FileTreeItem
+            try {
+                Objects.requireNonNull(item);
+                ClasspathUtils.getClass(item.getBeanClassName(), FileTreeItem.class);
+            } catch (ClassNotFoundException e) {
+                throw new RuntimeException(e);
+            } catch (ClassCastException | NullPointerException e) {
+                throw new BeanCreationException(e.getMessage(), e);
+            }
 
             files.put(path, item);
         }
