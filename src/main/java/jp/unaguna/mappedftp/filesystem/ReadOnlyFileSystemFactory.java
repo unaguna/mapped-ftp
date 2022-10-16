@@ -4,7 +4,6 @@ import jp.unaguna.mappedftp.filesystem.tree.FileTreeItem;
 import jp.unaguna.mappedftp.filesystem.tree.FileTreeItemDirectory;
 import jp.unaguna.mappedftp.filesystem.tree.FileTreeNode;
 import org.apache.ftpserver.ftplet.FileSystemFactory;
-import org.apache.ftpserver.ftplet.FileSystemView;
 import org.apache.ftpserver.ftplet.FtpException;
 import org.apache.ftpserver.ftplet.User;
 
@@ -29,7 +28,7 @@ public class ReadOnlyFileSystemFactory implements FileSystemFactory {
     }
 
     @Override
-    public FileSystemView createFileSystemView(User user) throws FtpException {
+    public LinkedFileSystemView createFileSystemView(User user) throws FtpException {
         FileTreeNode root = new FileTreeNode(new FileTreeItemDirectory(), null);
 
         files.forEach((path, fileTreeItem) -> root.appendSubFile(fileTreeItem, TreePath.get(path).toRelative()));

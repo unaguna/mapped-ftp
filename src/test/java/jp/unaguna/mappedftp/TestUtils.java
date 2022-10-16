@@ -101,6 +101,7 @@ public class TestUtils {
         );
         url = getResource(classpath);
         if (url != null) {
+            LOG.debug("test resource is found: " + url);
             return Pair.of(url, classpath);
         }
 
@@ -113,6 +114,7 @@ public class TestUtils {
         );
         url = getResource(classpath);
         if (url != null) {
+            LOG.debug("test resource is found: " + url);
             return Pair.of(url, classpath);
         }
 
@@ -124,6 +126,7 @@ public class TestUtils {
         );
         url = getResource(classpath);
         if (url != null) {
+            LOG.debug("test resource is found: " + url);
             return Pair.of(url, classpath);
         }
 
