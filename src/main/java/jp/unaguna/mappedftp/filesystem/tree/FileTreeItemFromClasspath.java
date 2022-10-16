@@ -2,11 +2,11 @@ package jp.unaguna.mappedftp.filesystem.tree;
 
 import jp.unaguna.mappedftp.utils.ClasspathUtils;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.MissingResourceException;
 
 public class FileTreeItemFromClasspath extends FileTreeItemReadOnlyFile {
     private final String source;
@@ -20,11 +20,11 @@ public class FileTreeItemFromClasspath extends FileTreeItemReadOnlyFile {
         return source;
     }
 
-    public URL getSourceUrl() {
+    public URL getSourceUrl() throws FileNotFoundException {
         if (sourceUrl == null) {
             sourceUrl = ClasspathUtils.getResource(source);
             if (sourceUrl == null) {
-                throw new MissingResourceException("no such resource: " + source, null, null);
+                throw new FileNotFoundException("no such resource: " + source);
             }
         }
         return sourceUrl;

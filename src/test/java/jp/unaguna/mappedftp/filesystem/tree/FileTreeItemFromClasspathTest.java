@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 
 import java.io.*;
-import java.util.MissingResourceException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -50,7 +49,7 @@ public class FileTreeItemFromClasspathTest {
         try (InputStream ignored = fileTreeItem.createInputStream(0)) {
             fail("expected exception has not been thrown");
 
-        } catch (MissingResourceException e) {
+        } catch (FileNotFoundException e) {
             // expected exception
             assertEquals("no such resource: " + source, e.getMessage());
 
