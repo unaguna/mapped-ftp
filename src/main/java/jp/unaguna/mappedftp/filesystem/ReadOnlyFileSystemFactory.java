@@ -21,7 +21,11 @@ public class ReadOnlyFileSystemFactory implements FileSystemFactory {
     public ReadOnlyFileSystemFactory(Map<String, FileTreeItem> files) throws FileSystemDefinitionException {
         this.files = files;
 
-        // TODO: 設定値のvalidation
+        for (String path : files.keySet()) {
+            if ("/".equals(path)) {
+                throw new FileSystemDefinitionException("cannot append a non-directory file on the root \"/\"");
+            }
+        }
     }
 
     @Override
