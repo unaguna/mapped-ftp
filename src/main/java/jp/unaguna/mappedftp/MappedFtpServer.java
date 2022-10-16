@@ -12,7 +12,7 @@ public class MappedFtpServer {
         final List<String> command = new ArrayList<>();
 
         if (args.length == 0) {
-            final URL defaultConfigUrl = ClasspathUtils.getResource("jp.unaguna.mappedftp/default_config.xml");
+            final URL defaultConfigUrl = ClasspathUtils.getResource("mapped-ftpd-default.xml");
             if (defaultConfigUrl == null) {
                 throw new RuntimeException("The default configuration file is not found.");
             }

@@ -47,7 +47,7 @@ This file is specified as an argument at runtime and is the configuration file f
 
 This file is written by XML. The root tag is `<MappedFtp>`.
 
-See also [the default configuration](./src/main/resources/jp.unaguna.mappedftp/default_config.xml).
+See also [the default configuration](src/main/resources/mapped-ftpd-default.xml).
 
 ### Tag `<file-user-manager>`
 
@@ -78,4 +78,4 @@ This file is specified in base configuration files and is the configuration of u
 
 The format of this file is same as the one of Apache FTP server.
 
-See also [the default configuration](./src/main/resources/jp.unaguna.mappedftp/default_user.properties).
+See also [the default configuration](src/main/resources/mapped-ftpd-default-users.properties).

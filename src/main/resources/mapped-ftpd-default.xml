@@ -6,16 +6,17 @@
         http://mappedftp.unaguna.jp/mapped-ftpserver http://mappedftp.unaguna.jp/mapped-ftpserver-0.2.xsd
         "
         id="myServer"
+        anon-enabled="true"
 >
     <listeners>
         <nio-listener name="default" port="21"/>
     </listeners>
-    <file-user-manager file="jp.unaguna.mappedftp/default_user.properties" encrypt-passwords="md5"/>
+    <file-user-manager file="mapped-ftpd-default-users.properties" encrypt-passwords="md5"/>
     <mapped-filesystem>
         <url-file path="/LICENSE" src="https://raw.githubusercontent.com/unaguna/mapped-ftp/main/LICENSE"/>
         <classpath-file path="/default-config/default_config.xml"
-                        src="/jp.unaguna.mappedftp/default_config.xml"/>
+                        src="/mapped-ftpd-default.xml"/>
         <classpath-file path="/default-config/default_user.properties"
-                        src="/jp.unaguna.mappedftp/default_user.properties"/>
+                        src="/mapped-ftpd-default-users.properties"/>
     </mapped-filesystem>
 </server>
