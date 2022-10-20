@@ -86,3 +86,62 @@ The content specified by URL is served by FTP server.
 |-----------|-------------------------------------------------------------------------------------------------|
 | path      | (Required) The path in the FTP filesystem. Must be UNIX style.                                  |
 | src       | (Required) The source of the file content. This is the URL such as `http://...` or `ftp://...`. |
+
+# Embedded Usage
+
+This FTP server can also be used within Java code.
+Originally,
+[Apache FTP server can be embedded in java code](https://mina.apache.org/ftpserver-project/embedding_ftpserver.html),
+but by using `jp.unaguna.mappedftp.filesystem.MappingServer`,
+the Mapped-FTP-Server functionality can also be used.
+
+For example, a server can be started as follows.
+
+```java
+import jp.unaguna.mappedftp.filesystem.FileSystemDefinitionException;
+import jp.unaguna.mappedftp.filesystem.MappingFileSystemFactory;
+import jp.unaguna.mappedftp.filesystem.tree.FileTreeItem;
+import jp.unaguna.mappedftp.filesystem.tree.FileTreeItemFromClasspath;
+import jp.unaguna.mappedftp.filesystem.tree.FileTreeItemFromLocalFile;
+import jp.unaguna.mappedftp.filesystem.tree.FileTreeItemFromURL;
+import org.apache.ftpserver.FtpServer;
+import org.apache.ftpserver.FtpServerFactory;
+import org.apache.ftpserver.ftplet.FileSystemFactory;
+import org.apache.ftpserver.ftplet.FtpException;
+
+import java.net.URL;
+import java.nio.file.Paths;
+import java.util.HashMap;
+
+class MyServer {
+    public static void main(String[] args) throws java.net.MalformedURLException, FileSystemDefinitionException, FtpException {
+        // start with a factory of Apache FTP Server
+        FtpServerFactory serverFactory = new FtpServerFactory();
+
+        // settings (e.g. https://mina.apache.org/ftpserver-project/embedding_ftpserver.html)
+
+        // define my filesystem with Mapped FTP Server's class
+        HashMap<String, FileTreeItem> fileMapping = new HashMap<>() {{
+            // file content will be got from GitHub by HTTPS
+            put("/README",
+                    new FileTreeItemFromURL(new URL("https://raw.githubusercontent.com/unaguna/mapped-ftp/main/README.md")));
+
+            // file content will be got from classpath
+            put("/config/config_example.xml",
+                    new FileTreeItemFromClasspath("/mapped-ftpd-default.xml"));
+
+            // file content will be read from local file (if not exists, download will fail)
+            put("/my.txt",
+                    new FileTreeItemFromLocalFile(Paths.get("./my.txt")));
+        }};
+        FileSystemFactory myFileSystemFactory = new MappingFileSystemFactory(fileMapping);
+
+        // apply my filesystem
+        serverFactory.setFileSystem(myFileSystemFactory);
+
+        // start the server
+        FtpServer server = serverFactory.createServer();
+        server.start();
+    }
+}
+```
