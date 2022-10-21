@@ -5,26 +5,24 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 
 import java.io.*;
-import java.net.URL;
-import java.net.UnknownHostException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class FileTreeItemFromURLTest {
+public class FileTreeItemFromClasspathTest {
     @Test
     public void testSource(TestInfo testInfo) {
-        final URL source = TestUtils.getInputResource("local.txt", testInfo);
+        final String source = TestUtils.getInputResourceClasspath("local.txt", testInfo);
 
-        FileTreeItemFromURL fileTreeItem = new FileTreeItemFromURL(source);
+        FileTreeItemFromClasspath fileTreeItem = new FileTreeItemFromClasspath(source);
 
         assertEquals(source, fileTreeItem.getSource());
     }
 
     @Test
     public void testInputStream(TestInfo testInfo) {
-        final URL source = TestUtils.getInputResource("local.txt", testInfo);
+        final String source = TestUtils.getInputResourceClasspath("local.txt", testInfo);
 
-        FileTreeItemFromURL fileTreeItem = new FileTreeItemFromURL(source);
+        FileTreeItemFromClasspath fileTreeItem = new FileTreeItemFromClasspath(source);
 
         final String line;
         try (InputStream inputStream = fileTreeItem.createInputStream(0);
@@ -44,16 +42,16 @@ public class FileTreeItemFromURLTest {
 
     @Test
     public void testInputStream__error_by_missing_resource() {
-        final URL source = TestUtils.url("http://dummy1.example.com/");
+        final String source = "dummy/no_exists";
 
-        FileTreeItemFromURL fileTreeItem = new FileTreeItemFromURL(source);
+        FileTreeItemFromClasspath fileTreeItem = new FileTreeItemFromClasspath(source);
 
         try (InputStream ignored = fileTreeItem.createInputStream(0)) {
             fail("expected exception has not been thrown");
 
-        } catch (UnknownHostException e) {
+        } catch (FileNotFoundException e) {
             // expected exception
-            assertEquals("dummy1.example.com", e.getMessage());
+            assertEquals("no such resource: " + source, e.getMessage());
 
         } catch (IOException e) {
             fail(e);

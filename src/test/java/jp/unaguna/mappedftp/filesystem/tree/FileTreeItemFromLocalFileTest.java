@@ -6,6 +6,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 
 import java.io.*;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -49,5 +52,23 @@ public class FileTreeItemFromLocalFileTest {
         } finally {
             TestUtils.deleteTempFile(localPath);
         }
+    }
+
+    @Test
+    public void testInputStream__error_by_missing_resource() {
+        final Path path = Paths.get("/dummy/no_exists");
+        FileTreeItemFromLocalFile fileTreeItem = new FileTreeItemFromLocalFile(path);
+
+        try (InputStream ignored = fileTreeItem.createInputStream(0)) {
+            fail("expected exception has not been thrown");
+
+        } catch (NoSuchFileException e) {
+            // expected exception
+            assertEquals(path.toString(), e.getMessage());
+
+        } catch (IOException e) {
+            fail(e);
+        }
+
     }
 }
