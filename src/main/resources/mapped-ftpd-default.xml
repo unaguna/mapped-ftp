@@ -13,7 +13,9 @@
     </listeners>
     <file-user-manager file="mapped-ftpd-default-users.properties" encrypt-passwords="md5"/>
     <mapped-filesystem>
-        <url-file path="/LICENSE" src="https://raw.githubusercontent.com/unaguna/mapped-ftp/main/LICENSE"/>
+        <url-file path="/LICENSE"
+                  owner="unaguna" group="unaguna"
+                  src="https://raw.githubusercontent.com/unaguna/mapped-ftp/main/LICENSE"/>
         <classpath-file path="/default-config/default_config.xml"
                         src="/mapped-ftpd-default.xml"/>
         <classpath-file path="/default-config/default_user.properties"
