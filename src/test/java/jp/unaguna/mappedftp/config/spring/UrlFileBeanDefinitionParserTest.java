@@ -33,8 +33,34 @@ public class UrlFileBeanDefinitionParserTest {
             final FileTreeNode fileTreeNode = (FileTreeNode) fileSystemView.getFile("/file1");
             final FileTreeItemFromURL file = (FileTreeItemFromURL) fileTreeNode.getFile();
             assertEquals("http://dummy1.example.com/", file.getSource().toString());
+            assertNull(file.getLastModified());
             assertNull(file.getOwnerName());
             assertNull(file.getGroupName());
+
+        } catch (FtpException e) {
+            fail(e);
+        }
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "config__last_modified__long.xml, 1234",
+    })
+    public void testParse__with_last_modified__const(
+            String inputResourceName, long expectedLastModified, TestInfo testInfo
+    ) {
+        final URL configPath = TestUtils.getInputResource(inputResourceName, testInfo);
+
+        final FileSystemXmlApplicationContext ctx = new FileSystemXmlApplicationContext(configPath.toString());
+        final DefaultFtpServer actualServer = (DefaultFtpServer) ctx.getBean("testServer");
+        final MappingFileSystemFactory fileSystemFactory = (MappingFileSystemFactory) actualServer.getFileSystem();
+
+        try {
+            final LinkedFileSystemView fileSystemView = fileSystemFactory.createFileSystemView(new UserStub());
+            final FileTreeNode fileTreeNode = (FileTreeNode) fileSystemView.getFile("/file1");
+            final FileTreeItemFromURL file = (FileTreeItemFromURL) fileTreeNode.getFile();
+            assertEquals("http://dummy1.example.com/", file.getSource().toString());
+            assertEquals(expectedLastModified, file.getLastModified());
 
         } catch (FtpException e) {
             fail(e);

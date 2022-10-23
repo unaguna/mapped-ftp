@@ -6,6 +6,7 @@ import org.springframework.beans.factory.xml.AbstractSingleBeanDefinitionParser;
 import org.w3c.dom.Element;
 
 public class UrlFileBeanDefinitionParser extends AbstractSingleBeanDefinitionParser {
+    private static final LastModifiedParser LAST_MODIFIED_PARSER = new LastModifiedParser();
 
     @Override
     protected Class<?> getBeanClass(Element element) {
@@ -22,6 +23,10 @@ public class UrlFileBeanDefinitionParser extends AbstractSingleBeanDefinitionPar
         }
         if (element.hasAttribute("group")) {
             builder.addPropertyValue("groupName", element.getAttribute("group"));
+        }
+        if (element.hasAttribute("last-modified")) {
+            builder.addPropertyValue("lastModifiedFactory",
+                    LAST_MODIFIED_PARSER.parse(element.getAttribute("last-modified")));
         }
     }
 }

@@ -311,6 +311,7 @@
         <xs:complexType>
             <xs:attribute name="path" type="xs:string" use="required"/>
             <xs:attribute name="src" type="xs:string" use="required"/>
+            <xs:attribute name="last-modified" type="xs:long" use="optional"/>
             <xs:attribute name="owner" type="xs:string" use="optional"/>
             <xs:attribute name="group" type="xs:string" use="optional"/>
         </xs:complexType>
@@ -320,6 +321,7 @@
         <xs:complexType>
             <xs:attribute name="path" type="xs:string" use="required"/>
             <xs:attribute name="src" type="xs:string" use="required"/>
+            <xs:attribute name="last-modified" type="xs:long" use="optional"/>
             <xs:attribute name="owner" type="xs:string" use="optional"/>
             <xs:attribute name="group" type="xs:string" use="optional"/>
         </xs:complexType>
@@ -329,6 +331,7 @@
         <xs:complexType>
             <xs:attribute name="path" type="xs:string" use="required"/>
             <xs:attribute name="src" type="xs:string" use="required"/>
+            <xs:attribute name="last-modified" type="xs:long" use="optional"/>
             <xs:attribute name="owner" type="xs:string" use="optional"/>
             <xs:attribute name="group" type="xs:string" use="optional"/>
         </xs:complexType>
