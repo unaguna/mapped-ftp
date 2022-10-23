@@ -42,4 +42,8 @@ public interface FileTreeItem {
     default String getGroupName() {
         return null;
     }
+
+    default Long getLastModified() {
+        return null;
+    }
 }

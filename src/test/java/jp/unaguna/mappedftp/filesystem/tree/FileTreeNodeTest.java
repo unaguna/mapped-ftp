@@ -1,6 +1,7 @@
 package jp.unaguna.mappedftp.filesystem.tree;
 
 import jp.unaguna.mappedftp.filesystem.TreePath;
+import jp.unaguna.mappedftp.filesystem.tree.date.DateFactory;
 import org.apache.ftpserver.ftplet.FtpFile;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -654,7 +655,9 @@ public class FileTreeNodeTest {
     public void testGetLastModified() {
         final FileTreeNode baseNode = new FileTreeNode(new FileTreeItemDirectory(), null);
         final FileTreeItem child1 = new FileTreeItemDirectory();
-        final FileTreeItem child2 = new FileTreeItemEmptyFile();
+        final FileTreeItem child2 = new FileTreeItemEmptyFile() {{
+            setLastModifiedFactory(DateFactory.constance(1000L));
+        }};
         final TreePath child1Path = TreePath.get("dir1", "dir1-1", "child1");
         final TreePath child2Path = TreePath.get("dir1", "dir1-1", "child2");
 
@@ -669,7 +672,7 @@ public class FileTreeNodeTest {
             assertInstanceOf(Long.class, baseNode.getLastModified());
             assertInstanceOf(Long.class, dir1Node.getLastModified());
             assertInstanceOf(Long.class, dir1_1Node.getLastModified());
-            assertInstanceOf(Long.class, child2Node.getLastModified());
+            assertEquals(1000L, child2Node.getLastModified());
 
         } catch (NotDirectoryException | NoSuchFileException e) {
             fail(e);

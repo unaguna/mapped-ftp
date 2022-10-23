@@ -204,7 +204,12 @@ public class FileTreeNode implements LinkedFileNode {
 
     @Override
     public long getLastModified() {
-        return new Date().getTime();
+        final Long lastModified = file.getLastModified();
+        if (lastModified != null) {
+            return lastModified;
+        } else {
+            return new Date().getTime();
+        }
     }
 
     @Override

@@ -1,12 +1,16 @@
 package jp.unaguna.mappedftp.filesystem.tree;
 
 import jp.unaguna.mappedftp.TestUtils;
+import jp.unaguna.mappedftp.filesystem.tree.date.DateFactory;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.io.*;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -98,5 +102,32 @@ public class FileTreeItemFromClasspathTest {
         final FileTreeItemFromClasspath fileTreeItem = new FileTreeItemFromClasspath(source);
 
         assertNull(fileTreeItem.getGroupName());
+    }
+
+    private static Stream<Arguments> parameters__testGetLastModified() {
+        return Stream.of(
+                Arguments.arguments(DateFactory.constance(0L), 0L),
+                Arguments.arguments(DateFactory.constance(1666501478_000L), 1666501478_000L)
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("parameters__testGetLastModified")
+    public void testGetLastModified(DateFactory dateFactory, long expected, TestInfo testInfo) {
+        final String source = TestUtils.getInputResourceClasspath("local.txt", testInfo);
+
+        final FileTreeItemFromClasspath fileTreeItem = new FileTreeItemFromClasspath(source);
+        fileTreeItem.setLastModifiedFactory(dateFactory);
+
+        assertEquals(expected, fileTreeItem.getLastModified());
+    }
+
+    @Test
+    public void testGetLastModified__null_if_not_specified(TestInfo testInfo) {
+        final String source = TestUtils.getInputResourceClasspath("local.txt", testInfo);
+
+        final FileTreeItemFromClasspath fileTreeItem = new FileTreeItemFromClasspath(source);
+
+        assertNull(fileTreeItem.getLastModified());
     }
 }
