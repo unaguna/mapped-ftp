@@ -18,5 +18,12 @@ public class LocalFileBeanDefinitionParser extends AbstractSingleBeanDefinitionP
     protected void doParse(final Element element,
                            final BeanDefinitionBuilder builder) {
         builder.addConstructorArgValue(Paths.get(element.getAttribute("src")));
+
+        if (element.hasAttribute("owner")) {
+            builder.addPropertyValue("ownerName", element.getAttribute("owner"));
+        }
+        if (element.hasAttribute("group")) {
+            builder.addPropertyValue("groupName", element.getAttribute("group"));
+        }
     }
 }

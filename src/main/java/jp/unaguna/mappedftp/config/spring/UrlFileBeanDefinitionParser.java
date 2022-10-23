@@ -16,5 +16,12 @@ public class UrlFileBeanDefinitionParser extends AbstractSingleBeanDefinitionPar
     protected void doParse(final Element element,
                            final BeanDefinitionBuilder builder) {
         builder.addConstructorArgValue(element.getAttribute("src"));
+
+        if (element.hasAttribute("owner")) {
+            builder.addPropertyValue("ownerName", element.getAttribute("owner"));
+        }
+        if (element.hasAttribute("group")) {
+            builder.addPropertyValue("groupName", element.getAttribute("group"));
+        }
     }
 }

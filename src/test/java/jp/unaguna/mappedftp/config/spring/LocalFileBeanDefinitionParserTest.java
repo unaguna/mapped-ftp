@@ -10,13 +10,15 @@ import org.apache.ftpserver.ftplet.FtpException;
 import org.apache.ftpserver.impl.DefaultFtpServer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 import java.net.URL;
 import java.nio.file.Paths;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class LocalFileBeanDefinitionParserTest {
     @Test
@@ -33,6 +35,36 @@ public class LocalFileBeanDefinitionParserTest {
             final FileTreeNode fileTreeNode = (FileTreeNode) fileSystemView.getFile("/file1");
             final FileTreeItemFromLocalFile file = (FileTreeItemFromLocalFile) fileTreeNode.getFile();
             assertEquals(Paths.get("dir1/dummy.txt"), file.getSource());
+            assertNull(file.getOwnerName());
+            assertNull(file.getGroupName());
+
+        } catch (FtpException e) {
+            fail(e);
+        }
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "config__owner.xml, test_owner, ",
+            "config__group.xml, , test_group",
+            "config__owner_and_group.xml, test_owner, test_group",
+    })
+    public void testParse__with_owner_and_group(
+            String inputResourceName, String expectedOwnerName, String expectedGroupName, TestInfo testInfo
+    ) {
+        final URL configPath = TestUtils.getInputResource(inputResourceName, testInfo);
+
+        final FileSystemXmlApplicationContext ctx = new FileSystemXmlApplicationContext(configPath.toString());
+        final DefaultFtpServer actualServer = (DefaultFtpServer) ctx.getBean("testServer");
+        final MappingFileSystemFactory fileSystemFactory = (MappingFileSystemFactory) actualServer.getFileSystem();
+
+        try {
+            final LinkedFileSystemView fileSystemView = fileSystemFactory.createFileSystemView(new UserStub());
+            final FileTreeNode fileTreeNode = (FileTreeNode) fileSystemView.getFile("/file1");
+            final FileTreeItemFromLocalFile file = (FileTreeItemFromLocalFile) fileTreeNode.getFile();
+            assertEquals(Paths.get("dir1/dummy.txt"), file.getSource());
+            assertEquals(expectedOwnerName, file.getOwnerName());
+            assertEquals(expectedGroupName, file.getGroupName());
 
         } catch (FtpException e) {
             fail(e);

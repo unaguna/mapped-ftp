@@ -68,6 +68,8 @@ The specified file in the local filesystem is served by FTP server.
 |-----------|------------------------------------------------------------------------------------------|
 | path      | (Required) The path in the FTP filesystem. Must be UNIX style.                           |
 | src       | (Required) The source of the file content. This is the filepath in the local filesystem. |
+| owner     | (Optional) The owner name of the file. If not specified, the default name is used.       |
+| group     | (Optional) The group name of the file. If not specified, the default name is used.       |
 
 ### Tag `<classpath-file>` in `<mapped-filesystem>`
 
@@ -77,6 +79,8 @@ The specified file in classpath is served by FTP server.
 |-----------|-------------------------------------------------------------------------------------------|
 | path      | (Required) The path in the FTP filesystem. Must be UNIX style.                            |
 | src       | (Required) The source of the file content. This is the resource path in the class loader. |
+| owner     | (Optional) The owner name of the file. If not specified, the default name is used.        |
+| group     | (Optional) The group name of the file. If not specified, the default name is used.        |
 
 ### Tag `<url-file>` in `<mapped-filesystem>`
 
@@ -86,6 +90,8 @@ The content specified by URL is served by FTP server.
 |-----------|-------------------------------------------------------------------------------------------------|
 | path      | (Required) The path in the FTP filesystem. Must be UNIX style.                                  |
 | src       | (Required) The source of the file content. This is the URL such as `http://...` or `ftp://...`. |
+| owner     | (Optional) The owner name of the file. If not specified, the default name is used.              |
+| group     | (Optional) The group name of the file. If not specified, the default name is used.              |
 
 # Embedded Usage
 

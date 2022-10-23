@@ -4,6 +4,8 @@ import jp.unaguna.mappedftp.TemporaryFile;
 import jp.unaguna.mappedftp.TestUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.io.*;
 import java.nio.file.NoSuchFileException;
@@ -70,5 +72,65 @@ public class FileTreeItemFromLocalFileTest {
             fail(e);
         }
 
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"admin", "test", ""})
+    public void testGetOwnerName(String ownerName, TestInfo testInfo) {
+        final TemporaryFile localPath = TestUtils.getInputResourceAsTempFile("local.txt", testInfo);
+
+        try {
+            FileTreeItemFromLocalFile fileTreeItem = new FileTreeItemFromLocalFile(localPath.toPath());
+            fileTreeItem.setOwnerName(ownerName);
+
+            assertEquals(ownerName, fileTreeItem.getOwnerName());
+
+        } finally {
+            TestUtils.deleteTempFile(localPath);
+        }
+    }
+
+    @Test
+    public void testGetOwnerName__null_if_not_specified(TestInfo testInfo) {
+        final TemporaryFile localPath = TestUtils.getInputResourceAsTempFile("local.txt", testInfo);
+
+        try {
+            FileTreeItemFromLocalFile fileTreeItem = new FileTreeItemFromLocalFile(localPath.toPath());
+
+            assertNull(fileTreeItem.getOwnerName());
+
+        } finally {
+            TestUtils.deleteTempFile(localPath);
+        }
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"admin", "test", ""})
+    public void testGetGroupName(String groupName, TestInfo testInfo) {
+        final TemporaryFile localPath = TestUtils.getInputResourceAsTempFile("local.txt", testInfo);
+
+        try {
+            FileTreeItemFromLocalFile fileTreeItem = new FileTreeItemFromLocalFile(localPath.toPath());
+            fileTreeItem.setGroupName(groupName);
+
+            assertEquals(groupName, fileTreeItem.getGroupName());
+
+        } finally {
+            TestUtils.deleteTempFile(localPath);
+        }
+    }
+
+    @Test
+    public void testGetGroupName__null_if_not_specified(TestInfo testInfo) {
+        final TemporaryFile localPath = TestUtils.getInputResourceAsTempFile("local.txt", testInfo);
+
+        try {
+            FileTreeItemFromLocalFile fileTreeItem = new FileTreeItemFromLocalFile(localPath.toPath());
+
+            assertNull(fileTreeItem.getGroupName());
+
+        } finally {
+            TestUtils.deleteTempFile(localPath);
+        }
     }
 }

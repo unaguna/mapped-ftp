@@ -34,4 +34,12 @@ public interface FileTreeItem {
      * @throws IOException
      */
     InputStream createInputStream(long offset) throws IOException;
+
+    default String getOwnerName() {
+        return null;
+    }
+
+    default String getGroupName() {
+        return null;
+    }
 }

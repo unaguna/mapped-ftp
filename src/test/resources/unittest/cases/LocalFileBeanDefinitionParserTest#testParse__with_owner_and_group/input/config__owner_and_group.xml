@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<server
+        xmlns="http://mappedftp.unaguna.jp/mapped-ftpserver"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="
+        http://mappedftp.unaguna.jp/mapped-ftpserver http://mappedftp.unaguna.jp/mapped-ftpserver-0.2.xsd
+        "
+        id="testServer"
+>
+
+    <mapped-filesystem>
+        <local-file path="/file1" src="dir1/dummy.txt" owner="test_owner" group="test_group"/>
+    </mapped-filesystem>
+</server>

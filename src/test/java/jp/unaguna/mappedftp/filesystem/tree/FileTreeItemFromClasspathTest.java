@@ -3,6 +3,8 @@ package jp.unaguna.mappedftp.filesystem.tree;
 import jp.unaguna.mappedftp.TestUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.io.*;
 
@@ -56,5 +58,45 @@ public class FileTreeItemFromClasspathTest {
         } catch (IOException e) {
             fail(e);
         }
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"admin", "test", ""})
+    public void testGetOwnerName(String ownerName, TestInfo testInfo) {
+        final String source = TestUtils.getInputResourceClasspath("local.txt", testInfo);
+
+        final FileTreeItemFromClasspath fileTreeItem = new FileTreeItemFromClasspath(source);
+        fileTreeItem.setOwnerName(ownerName);
+
+        assertEquals(ownerName, fileTreeItem.getOwnerName());
+    }
+
+    @Test
+    public void testGetOwnerName__null_if_not_specified(TestInfo testInfo) {
+        final String source = TestUtils.getInputResourceClasspath("local.txt", testInfo);
+
+        final FileTreeItemFromClasspath fileTreeItem = new FileTreeItemFromClasspath(source);
+
+        assertNull(fileTreeItem.getOwnerName());
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"admin", "test", ""})
+    public void testGetGroupName(String groupName, TestInfo testInfo) {
+        final String source = TestUtils.getInputResourceClasspath("local.txt", testInfo);
+
+        final FileTreeItemFromClasspath fileTreeItem = new FileTreeItemFromClasspath(source);
+        fileTreeItem.setGroupName(groupName);
+
+        assertEquals(groupName, fileTreeItem.getGroupName());
+    }
+
+    @Test
+    public void testGetGroupName__null_if_not_specified(TestInfo testInfo) {
+        final String source = TestUtils.getInputResourceClasspath("local.txt", testInfo);
+
+        final FileTreeItemFromClasspath fileTreeItem = new FileTreeItemFromClasspath(source);
+
+        assertNull(fileTreeItem.getGroupName());
     }
 }
