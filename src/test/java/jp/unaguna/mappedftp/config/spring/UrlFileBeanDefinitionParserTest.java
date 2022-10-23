@@ -45,6 +45,9 @@ public class UrlFileBeanDefinitionParserTest {
     @ParameterizedTest
     @CsvSource({
             "config__last_modified__long.xml, 1234",
+            "config__last_modified__iso8601_extended.xml, 1666469078000",
+            "config__last_modified__iso8601_extended_z.xml, 1666501478000",
+            "config__last_modified__iso8601_extended_offset.xml, 1666505078000",
     })
     public void testParse__with_last_modified__const(
             String inputResourceName, long expectedLastModified, TestInfo testInfo
