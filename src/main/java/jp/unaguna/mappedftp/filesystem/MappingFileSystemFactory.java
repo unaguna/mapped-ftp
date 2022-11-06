@@ -11,7 +11,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class MappingFileSystemFactory implements FileSystemFactory {
-    private final Map<String, FileTreeItem> files;
+    protected final Map<String, FileTreeItem> files;
 
     public MappingFileSystemFactory() {
         this.files = new LinkedHashMap<>();
@@ -29,10 +29,21 @@ public class MappingFileSystemFactory implements FileSystemFactory {
 
     @Override
     public LinkedFileSystemView createFileSystemView(User user) throws FtpException {
-        FileTreeNode root = new FileTreeNode(new FileTreeItemDirectory(), null);
+        final LinkedFileNode root = buildRoot(user);
+        return new LinkedFileSystemView(root);
+    }
+
+    /**
+     * Construct root node with {@link #files}
+     *
+     * @param user The user for which the file system should be created
+     * @return The root node which {@link LinkedFileSystemView} uses
+     */
+    public LinkedFileNode buildRoot(User user) {
+        final FileTreeNode root = new FileTreeNode(new FileTreeItemDirectory(), null);
 
         files.forEach((path, fileTreeItem) -> root.appendSubFile(fileTreeItem, TreePath.get(path).toRelative()));
 
-        return new LinkedFileSystemView(root);
+        return root;
     }
 }
