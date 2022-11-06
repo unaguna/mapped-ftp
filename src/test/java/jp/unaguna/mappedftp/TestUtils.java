@@ -105,6 +105,21 @@ public class TestUtils {
             return Pair.of(url, classpath);
         }
 
+        for (String tag : testInfo.getTags()) {
+            classpath = buildString(
+                    "/",
+                    "unittest/cases",
+                    testClassName + "@" + tag,
+                    "input",
+                    relativePath
+            );
+            url = getResource(classpath);
+            if (url != null) {
+                LOG.debug("test resource is found: " + url);
+                return Pair.of(url, classpath);
+            }
+        }
+
         classpath = buildString(
                 "/",
                 "unittest/cases",

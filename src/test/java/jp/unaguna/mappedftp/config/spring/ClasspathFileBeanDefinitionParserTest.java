@@ -8,6 +8,7 @@ import jp.unaguna.mappedftp.filesystem.tree.FileTreeItemFromClasspath;
 import jp.unaguna.mappedftp.filesystem.tree.FileTreeNode;
 import org.apache.ftpserver.ftplet.FtpException;
 import org.apache.ftpserver.impl.DefaultFtpServer;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -50,6 +51,7 @@ public class ClasspathFileBeanDefinitionParserTest {
             "config__last_modified__iso8601_extended_z.xml, 1666501478000",
             "config__last_modified__iso8601_extended_offset.xml, 1666505078000",
     })
+    @Tag("testParse__with_last_modified")
     public void testParse__with_last_modified__const(
             String inputResourceName, long expectedLastModified, TestInfo testInfo
     ) {
