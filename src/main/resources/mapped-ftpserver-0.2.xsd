@@ -28,6 +28,16 @@
     <xs:import namespace="http://www.springframework.org/schema/beans"
                schemaLocation="http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"/>
 
+    <xs:simpleType name="lastModifiedEnum">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="current"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="lastModified">
+        <xs:union memberTypes="xs:long xs:dateTime lastModifiedEnum"/>
+    </xs:simpleType>
+
     <!-- The main entry point, used for setting up an entire FTP server -->
     <xs:element name="server">
         <xs:complexType>
@@ -311,6 +321,7 @@
         <xs:complexType>
             <xs:attribute name="path" type="xs:string" use="required"/>
             <xs:attribute name="src" type="xs:string" use="required"/>
+            <xs:attribute name="last-modified" type="lastModified" use="optional"/>
             <xs:attribute name="owner" type="xs:string" use="optional"/>
             <xs:attribute name="group" type="xs:string" use="optional"/>
         </xs:complexType>
@@ -320,6 +331,7 @@
         <xs:complexType>
             <xs:attribute name="path" type="xs:string" use="required"/>
             <xs:attribute name="src" type="xs:string" use="required"/>
+            <xs:attribute name="last-modified" type="lastModified" use="optional"/>
             <xs:attribute name="owner" type="xs:string" use="optional"/>
             <xs:attribute name="group" type="xs:string" use="optional"/>
         </xs:complexType>
@@ -329,6 +341,7 @@
         <xs:complexType>
             <xs:attribute name="path" type="xs:string" use="required"/>
             <xs:attribute name="src" type="xs:string" use="required"/>
+            <xs:attribute name="last-modified" type="lastModified" use="optional"/>
             <xs:attribute name="owner" type="xs:string" use="optional"/>
             <xs:attribute name="group" type="xs:string" use="optional"/>
         </xs:complexType>

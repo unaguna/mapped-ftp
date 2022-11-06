@@ -39,7 +39,8 @@ public class TestUtils {
      * The file is searched in the following paths.
      * </p>
      * <ol>
-     *     <li><code>/unittest/cases/${simpleNameOfTestClass}_${nameOfTestMethod}/input/</code></li>
+     *     <li><code>/unittest/cases/${simpleNameOfTestClass}#${nameOfTestMethod}/input/</code></li>
+     *     <li><code>/unittest/cases/${simpleNameOfTestClass}@${nameOfTestTag}/input/</code></li>
      *     <li><code>/unittest/cases/${simpleNameOfTestClass}/input/</code></li>
      *     <li><code>/unittest/input/</code></li>
      * </ol>
@@ -103,6 +104,21 @@ public class TestUtils {
         if (url != null) {
             LOG.debug("test resource is found: " + url);
             return Pair.of(url, classpath);
+        }
+
+        for (String tag : testInfo.getTags()) {
+            classpath = buildString(
+                    "/",
+                    "unittest/cases",
+                    testClassName + "@" + tag,
+                    "input",
+                    relativePath
+            );
+            url = getResource(classpath);
+            if (url != null) {
+                LOG.debug("test resource is found: " + url);
+                return Pair.of(url, classpath);
+            }
         }
 
         classpath = buildString(

@@ -8,6 +8,7 @@ import org.w3c.dom.Element;
 import java.nio.file.Paths;
 
 public class LocalFileBeanDefinitionParser extends AbstractSingleBeanDefinitionParser {
+    private static final LastModifiedParser LAST_MODIFIED_PARSER = new LastModifiedParser();
 
     @Override
     protected Class<?> getBeanClass(Element element) {
@@ -24,6 +25,10 @@ public class LocalFileBeanDefinitionParser extends AbstractSingleBeanDefinitionP
         }
         if (element.hasAttribute("group")) {
             builder.addPropertyValue("groupName", element.getAttribute("group"));
+        }
+        if (element.hasAttribute("last-modified")) {
+            builder.addPropertyValue("lastModifiedFactory",
+                    LAST_MODIFIED_PARSER.parse(element.getAttribute("last-modified")));
         }
     }
 }
