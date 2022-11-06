@@ -106,6 +106,7 @@ The `last-modified` attribute mentioned above can have the values like following
 - `2022-01-01T11:22:33+09:00` - ISO8601 extended format with time offset
 - `1641036153000` - the milliseconds passed from 1970-01-01T00:00:00Z
     - like `Date#getTime` and `Instant#toEpochMilli`
+- `current` - Special value: Current time is used each time.
 
 # Embedded Usage
 
