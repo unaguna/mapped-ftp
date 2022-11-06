@@ -14,23 +14,30 @@ public class LastModifiedParser {
     public DateFactory parse(String value) {
         Instant timestamp;
 
+        // expects integer
         final Matcher integerMatcher = INTEGER_PATTERN.matcher(value);
         if (integerMatcher.find()) {
             return DateFactory.constance(Long.parseLong(value));
         }
 
+        // expects special strings
+        if ("current".equals(value)) {
+            return DateFactory.eachTime();
+        }
+
+        // expects ISO-8601 strings (without offset)
         timestamp = parseLocalDateTimeOrNull(value);
         if (timestamp != null) {
             return DateFactory.constance(timestamp);
         }
 
+        // expects ISO-8601 strings (with offset)
         timestamp = parseOffsetDateTimeOrNull(value);
         if (timestamp != null) {
             return DateFactory.constance(timestamp);
         }
 
         throw new IllegalArgumentException("cannot parse the last modified time: " + value);
-
     }
 
     private Instant parseLocalDateTimeOrNull(String value) {

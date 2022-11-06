@@ -16,6 +16,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 import java.net.URL;
+import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -66,6 +67,35 @@ public class UrlFileBeanDefinitionParserTest {
             final FileTreeItemFromURL file = (FileTreeItemFromURL) fileTreeNode.getFile();
             assertEquals("http://dummy1.example.com/", file.getSource().toString());
             assertEquals(expectedLastModified, file.getLastModified());
+
+        } catch (FtpException e) {
+            fail(e);
+        }
+    }
+
+    @Test
+    @Tag("testParse__with_last_modified")
+    public void testParse__with_last_modified__current(
+            TestInfo testInfo
+    ) {
+        final URL configPath = TestUtils.getInputResource("config__last_modified__current.xml", testInfo);
+
+        final FileSystemXmlApplicationContext ctx = new FileSystemXmlApplicationContext(configPath.toString());
+        final DefaultFtpServer actualServer = (DefaultFtpServer) ctx.getBean("testServer");
+        final MappingFileSystemFactory fileSystemFactory = (MappingFileSystemFactory) actualServer.getFileSystem();
+
+        try {
+            final LinkedFileSystemView fileSystemView = fileSystemFactory.createFileSystemView(new UserStub());
+            final FileTreeNode fileTreeNode = (FileTreeNode) fileSystemView.getFile("/file1");
+            final FileTreeItemFromURL file = (FileTreeItemFromURL) fileTreeNode.getFile();
+            assertEquals("http://dummy1.example.com/", file.getSource().toString());
+
+            final long expectedLastModifiedLower = new Date().getTime();
+            final long actualLastModified = file.getLastModified();
+            final long expectedLastModifiedUpper = new Date().getTime();
+
+            assertTrue(expectedLastModifiedLower <= actualLastModified);
+            assertTrue(expectedLastModifiedUpper >= actualLastModified);
 
         } catch (FtpException e) {
             fail(e);
