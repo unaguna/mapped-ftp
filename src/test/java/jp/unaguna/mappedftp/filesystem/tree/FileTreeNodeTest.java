@@ -1,10 +1,12 @@
 package jp.unaguna.mappedftp.filesystem.tree;
 
 import jp.unaguna.mappedftp.filesystem.TreePath;
+import jp.unaguna.mappedftp.filesystem.tree.date.DateFactory;
 import org.apache.ftpserver.ftplet.FtpFile;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -611,11 +613,51 @@ public class FileTreeNodeTest {
         }
     }
 
+    @ParameterizedTest
+    @CsvSource({
+            "admin,admin",
+            "test,test",
+            // cannot contain spaces
+            "ad min,anonymous",
+            // cannot empty string
+            "'',anonymous",
+            // cannot be null
+            ",anonymous",
+    })
+    public void testGetOwnerName(String ownerName, String expectedOwnerName) {
+        final FileTreeItem fileTreeItem = new FileTreeItemStub()
+                .setOwnerName(ownerName);
+        final FileTreeNode fileTreeNode = new FileTreeNode(fileTreeItem, "file1");
+
+        assertEquals(expectedOwnerName, fileTreeNode.getOwnerName());
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "admin,admin",
+            "test,test",
+            // cannot contain spaces
+            "ad min,anonymous",
+            // cannot empty string
+            "'',anonymous",
+            // cannot be null
+            ",anonymous",
+    })
+    public void testGetGroupName(String groupName, String expectedGroupName) {
+        final FileTreeItem fileTreeItem = new FileTreeItemStub()
+                .setGroupName(groupName);
+        final FileTreeNode fileTreeNode = new FileTreeNode(fileTreeItem, "file1");
+
+        assertEquals(expectedGroupName, fileTreeNode.getGroupName());
+    }
+
     @Test
     public void testGetLastModified() {
         final FileTreeNode baseNode = new FileTreeNode(new FileTreeItemDirectory(), null);
         final FileTreeItem child1 = new FileTreeItemDirectory();
-        final FileTreeItem child2 = new FileTreeItemEmptyFile();
+        final FileTreeItem child2 = new FileTreeItemEmptyFile() {{
+            setLastModifiedFactory(DateFactory.constance(1000L));
+        }};
         final TreePath child1Path = TreePath.get("dir1", "dir1-1", "child1");
         final TreePath child2Path = TreePath.get("dir1", "dir1-1", "child2");
 
@@ -630,7 +672,7 @@ public class FileTreeNodeTest {
             assertInstanceOf(Long.class, baseNode.getLastModified());
             assertInstanceOf(Long.class, dir1Node.getLastModified());
             assertInstanceOf(Long.class, dir1_1Node.getLastModified());
-            assertInstanceOf(Long.class, child2Node.getLastModified());
+            assertEquals(1000L, child2Node.getLastModified());
 
         } catch (NotDirectoryException | NoSuchFileException e) {
             fail(e);
@@ -826,10 +868,26 @@ public class FileTreeNodeTest {
     private static class FileTreeItemStub implements FileTreeItem {
         private final InputStream inputStreamStub;
         private final OutputStream outputStreamStub;
+        private String ownerName;
+        private String groupName;
 
         public FileTreeItemStub(InputStream inputStreamStub, OutputStream outputStreamStub) {
             this.inputStreamStub = inputStreamStub;
             this.outputStreamStub = outputStreamStub;
+        }
+
+        public FileTreeItemStub() {
+            this(new InputStreamStub(), new OutputStreamStub());
+        }
+
+        public FileTreeItemStub setOwnerName(String ownerName) {
+            this.ownerName = ownerName;
+            return this;
+        }
+
+        public FileTreeItemStub setGroupName(String groupName) {
+            this.groupName = groupName;
+            return this;
         }
 
         @Override
@@ -845,6 +903,16 @@ public class FileTreeNodeTest {
         @Override
         public InputStream createInputStream(long offset) {
             return inputStreamStub;
+        }
+
+        @Override
+        public String getOwnerName() {
+            return ownerName;
+        }
+
+        @Override
+        public String getGroupName() {
+            return groupName;
         }
     }
 

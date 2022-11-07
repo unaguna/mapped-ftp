@@ -9,6 +9,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.file.Files;
@@ -23,6 +24,14 @@ import static org.junit.jupiter.api.Assertions.fail;
 public class TestUtils {
     private static final Logger LOG = LoggerFactory.getLogger(TestUtils.class.getName());
 
+    public static URL url(String value) {
+        try {
+            return new URL(value);
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     /**
      * Return the url of input file prepared for testing.
      *
@@ -30,7 +39,8 @@ public class TestUtils {
      * The file is searched in the following paths.
      * </p>
      * <ol>
-     *     <li><code>/unittest/cases/${simpleNameOfTestClass}_${nameOfTestMethod}/input/</code></li>
+     *     <li><code>/unittest/cases/${simpleNameOfTestClass}#${nameOfTestMethod}/input/</code></li>
+     *     <li><code>/unittest/cases/${simpleNameOfTestClass}@${nameOfTestTag}/input/</code></li>
      *     <li><code>/unittest/cases/${simpleNameOfTestClass}/input/</code></li>
      *     <li><code>/unittest/input/</code></li>
      * </ol>
@@ -92,7 +102,23 @@ public class TestUtils {
         );
         url = getResource(classpath);
         if (url != null) {
+            LOG.debug("test resource is found: " + url);
             return Pair.of(url, classpath);
+        }
+
+        for (String tag : testInfo.getTags()) {
+            classpath = buildString(
+                    "/",
+                    "unittest/cases",
+                    testClassName + "@" + tag,
+                    "input",
+                    relativePath
+            );
+            url = getResource(classpath);
+            if (url != null) {
+                LOG.debug("test resource is found: " + url);
+                return Pair.of(url, classpath);
+            }
         }
 
         classpath = buildString(
@@ -104,6 +130,7 @@ public class TestUtils {
         );
         url = getResource(classpath);
         if (url != null) {
+            LOG.debug("test resource is found: " + url);
             return Pair.of(url, classpath);
         }
 
@@ -115,6 +142,7 @@ public class TestUtils {
         );
         url = getResource(classpath);
         if (url != null) {
+            LOG.debug("test resource is found: " + url);
             return Pair.of(url, classpath);
         }
 

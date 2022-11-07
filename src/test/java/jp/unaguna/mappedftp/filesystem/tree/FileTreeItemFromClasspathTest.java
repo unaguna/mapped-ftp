@@ -10,27 +10,25 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.io.*;
-import java.net.URL;
-import java.net.UnknownHostException;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class FileTreeItemFromURLTest {
+public class FileTreeItemFromClasspathTest {
     @Test
     public void testSource(TestInfo testInfo) {
-        final URL source = TestUtils.getInputResource("local.txt", testInfo);
+        final String source = TestUtils.getInputResourceClasspath("local.txt", testInfo);
 
-        FileTreeItemFromURL fileTreeItem = new FileTreeItemFromURL(source);
+        FileTreeItemFromClasspath fileTreeItem = new FileTreeItemFromClasspath(source);
 
         assertEquals(source, fileTreeItem.getSource());
     }
 
     @Test
     public void testInputStream(TestInfo testInfo) {
-        final URL source = TestUtils.getInputResource("local.txt", testInfo);
+        final String source = TestUtils.getInputResourceClasspath("local.txt", testInfo);
 
-        FileTreeItemFromURL fileTreeItem = new FileTreeItemFromURL(source);
+        FileTreeItemFromClasspath fileTreeItem = new FileTreeItemFromClasspath(source);
 
         final String line;
         try (InputStream inputStream = fileTreeItem.createInputStream(0);
@@ -50,16 +48,16 @@ public class FileTreeItemFromURLTest {
 
     @Test
     public void testInputStream__error_by_missing_resource() {
-        final URL source = TestUtils.url("http://dummy1.example.com/");
+        final String source = "dummy/no_exists";
 
-        FileTreeItemFromURL fileTreeItem = new FileTreeItemFromURL(source);
+        FileTreeItemFromClasspath fileTreeItem = new FileTreeItemFromClasspath(source);
 
         try (InputStream ignored = fileTreeItem.createInputStream(0)) {
             fail("expected exception has not been thrown");
 
-        } catch (UnknownHostException e) {
+        } catch (FileNotFoundException e) {
             // expected exception
-            assertEquals("dummy1.example.com", e.getMessage());
+            assertEquals("no such resource: " + source, e.getMessage());
 
         } catch (IOException e) {
             fail(e);
@@ -68,40 +66,40 @@ public class FileTreeItemFromURLTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"admin", "test", ""})
-    public void testGetOwnerName(String ownerName) {
-        final URL source = TestUtils.url("http://dummy1.example.com/");
+    public void testGetOwnerName(String ownerName, TestInfo testInfo) {
+        final String source = TestUtils.getInputResourceClasspath("local.txt", testInfo);
 
-        final FileTreeItemFromURL fileTreeItem = new FileTreeItemFromURL(source);
+        final FileTreeItemFromClasspath fileTreeItem = new FileTreeItemFromClasspath(source);
         fileTreeItem.setOwnerName(ownerName);
 
         assertEquals(ownerName, fileTreeItem.getOwnerName());
     }
 
     @Test
-    public void testGetOwnerName__null_if_not_specified() {
-        final URL source = TestUtils.url("http://dummy1.example.com/");
+    public void testGetOwnerName__null_if_not_specified(TestInfo testInfo) {
+        final String source = TestUtils.getInputResourceClasspath("local.txt", testInfo);
 
-        final FileTreeItemFromURL fileTreeItem = new FileTreeItemFromURL(source);
+        final FileTreeItemFromClasspath fileTreeItem = new FileTreeItemFromClasspath(source);
 
         assertNull(fileTreeItem.getOwnerName());
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"admin", "test", ""})
-    public void testGetGroupName(String groupName) {
-        final URL source = TestUtils.url("http://dummy1.example.com/");
+    public void testGetGroupName(String groupName, TestInfo testInfo) {
+        final String source = TestUtils.getInputResourceClasspath("local.txt", testInfo);
 
-        final FileTreeItemFromURL fileTreeItem = new FileTreeItemFromURL(source);
+        final FileTreeItemFromClasspath fileTreeItem = new FileTreeItemFromClasspath(source);
         fileTreeItem.setGroupName(groupName);
 
         assertEquals(groupName, fileTreeItem.getGroupName());
     }
 
     @Test
-    public void testGetGroupName__null_if_not_specified() {
-        final URL source = TestUtils.url("http://dummy1.example.com/");
+    public void testGetGroupName__null_if_not_specified(TestInfo testInfo) {
+        final String source = TestUtils.getInputResourceClasspath("local.txt", testInfo);
 
-        final FileTreeItemFromURL fileTreeItem = new FileTreeItemFromURL(source);
+        final FileTreeItemFromClasspath fileTreeItem = new FileTreeItemFromClasspath(source);
 
         assertNull(fileTreeItem.getGroupName());
     }
@@ -115,20 +113,20 @@ public class FileTreeItemFromURLTest {
 
     @ParameterizedTest
     @MethodSource("parameters__testGetLastModified")
-    public void testGetLastModified(DateFactory dateFactory, long expected) {
-        final URL source = TestUtils.url("http://dummy1.example.com/");
+    public void testGetLastModified(DateFactory dateFactory, long expected, TestInfo testInfo) {
+        final String source = TestUtils.getInputResourceClasspath("local.txt", testInfo);
 
-        final FileTreeItemFromURL fileTreeItem = new FileTreeItemFromURL(source);
+        final FileTreeItemFromClasspath fileTreeItem = new FileTreeItemFromClasspath(source);
         fileTreeItem.setLastModifiedFactory(dateFactory);
 
         assertEquals(expected, fileTreeItem.getLastModified());
     }
 
     @Test
-    public void testGetLastModified__null_if_not_specified() {
-        final URL source = TestUtils.url("http://dummy1.example.com/");
+    public void testGetLastModified__null_if_not_specified(TestInfo testInfo) {
+        final String source = TestUtils.getInputResourceClasspath("local.txt", testInfo);
 
-        final FileTreeItemFromURL fileTreeItem = new FileTreeItemFromURL(source);
+        final FileTreeItemFromClasspath fileTreeItem = new FileTreeItemFromClasspath(source);
 
         assertNull(fileTreeItem.getLastModified());
     }

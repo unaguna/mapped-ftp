@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<server
+        xmlns="http://mappedftp.unaguna.jp/mapped-ftpserver"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="
+        http://mappedftp.unaguna.jp/mapped-ftpserver http://mappedftp.unaguna.jp/mapped-ftpserver-0.2.xsd
+        "
+        id="testServer"
+>
+    <listeners>
+        <nio-listener name="default" port="21">
+            <ssl>
+                <keystore file="mykeystore.jks" password="secret"
+                          key-password="otherSecret"/>
+                <truststore file="mytruststore.jks" password="secret"/>
+            </ssl>
+            <data-connection idle-timeout="60">
+                <active enabled="true" local-address="1.2.3.4" local-port="2323" ip-check="true"/>
+                <passive ports="123-125" address="1.2.3.4" external-address="1.2.3.4"/>
+            </data-connection>
+            <blacklist>1.2.3.0/16, 1.2.4.0/16, 1.2.3.4</blacklist>
+        </nio-listener>
+    </listeners>
+    <file-user-manager file="mapped-ftpd-default-users.properties"/>
+    <mapped-filesystem>
+        <local-file path="/local_file" src="./dummy.txt"/>
+        <classpath-file path="/classpath_file" src="dummy.txt"/>
+        <url-file path="/url_file" src="http://dummy1.example.com/"/>
+    </mapped-filesystem>
+    <messages languages="en"/>
+</server>

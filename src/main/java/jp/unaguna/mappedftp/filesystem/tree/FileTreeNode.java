@@ -4,6 +4,8 @@ import jp.unaguna.mappedftp.filesystem.LinkedFileNode;
 import jp.unaguna.mappedftp.filesystem.LinkedFileSystemView;
 import jp.unaguna.mappedftp.filesystem.TreePath;
 import org.apache.ftpserver.ftplet.FtpFile;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,6 +20,8 @@ import java.util.*;
  * It uses its tree structure to provide the functions required by {@link LinkedFileSystemView}.
  */
 public class FileTreeNode implements LinkedFileNode {
+    private static final Logger LOG = LoggerFactory.getLogger(FileTreeNode.class.getName());
+
     private FileTreeNode parent = null;
     private final String name;
     private final Map<String, FileTreeNode> children;
@@ -185,12 +189,12 @@ public class FileTreeNode implements LinkedFileNode {
 
     @Override
     public String getOwnerName() {
-        return null;
+        return validateNameOrDefault(this.file.getOwnerName());
     }
 
     @Override
     public String getGroupName() {
-        return null;
+        return validateNameOrDefault(this.file.getGroupName());
     }
 
     @Override
@@ -200,7 +204,12 @@ public class FileTreeNode implements LinkedFileNode {
 
     @Override
     public long getLastModified() {
-        return new Date().getTime();
+        final Long lastModified = file.getLastModified();
+        if (lastModified != null) {
+            return lastModified;
+        } else {
+            return new Date().getTime();
+        }
     }
 
     @Override
@@ -248,5 +257,21 @@ public class FileTreeNode implements LinkedFileNode {
     @Override
     public InputStream createInputStream(long offset) throws IOException {
         return file.createInputStream(offset);
+    }
+
+    private String validateNameOrDefault(String value) {
+        if (value == null) {
+            return "anonymous";
+        } else if (value.isEmpty()) {
+            LOG.warn("An owner or group of files cannot be empty string. Instead, use a default value \"" + "anonymous" + "\"");
+            LOG.warn("    file: " + this.getAbsolutePath());
+            return "anonymous";
+        } else if (value.contains(" ")) {
+            LOG.warn("An owner or group of files cannot contain space. Instead, use a default value \"" + "anonymous" + "\"");
+            LOG.warn("    file: " + this.getAbsolutePath());
+            return "anonymous";
+        } else {
+            return value;
+        }
     }
 }

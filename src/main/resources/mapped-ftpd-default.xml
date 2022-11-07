@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<server
+        xmlns="http://mappedftp.unaguna.jp/mapped-ftpserver"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="
+        http://mappedftp.unaguna.jp/mapped-ftpserver http://mappedftp.unaguna.jp/mapped-ftpserver-0.2.xsd
+        "
+        id="myServer"
+        anon-enabled="true"
+>
+    <listeners>
+        <nio-listener name="default" port="21"/>
+    </listeners>
+    <file-user-manager file="mapped-ftpd-default-users.properties" encrypt-passwords="md5"/>
+    <mapped-filesystem>
+        <url-file path="/LICENSE"
+                  owner="unaguna" group="unaguna"
+                  src="https://raw.githubusercontent.com/unaguna/mapped-ftp/main/LICENSE"/>
+        <classpath-file path="/default-config/default_config.xml"
+                        src="/mapped-ftpd-default.xml"/>
+        <classpath-file path="/default-config/default_user.properties"
+                        src="/mapped-ftpd-default-users.properties"/>
+    </mapped-filesystem>
+</server>
